@@ -126,7 +126,7 @@ for sym, (fi, cs, vs, ff) in SER.items():
     rets = [cs[i] / cs[i - 1] - 1 for i in range(1, len(cs))]
     s_rec = statistics.pstdev(rets[-10:])
     s_pri = statistics.pstdev(rets[-40:-10])
-    if s_pri <= 1e-9: continue
+    if s_pri <= 1e-9: continue  # degenerate flat series; never fires on current data
     cr = s_rec / s_pri
     t10 = (max(cs[-10:]) - min(cs[-10:])) / cs[-1]
     v_rec = sum(vs[-10:]) / 10

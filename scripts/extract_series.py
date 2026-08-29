@@ -16,9 +16,19 @@ def prev_td(d):
     d -= datetime.timedelta(days=1)
     while not is_td(d): d -= datetime.timedelta(days=1)
     return d
+def us_dst(d):
+    # US DST: second Sunday of March through first Sunday of November
+    import calendar
+    mar = [x for x in calendar.Calendar().itermonthdates(d.year, 3)
+           if x.month == 3 and x.weekday() == 6][1]
+    nov = [x for x in calendar.Calendar().itermonthdates(d.year, 11)
+           if x.month == 11 and x.weekday() == 6][0]
+    return mar <= d < nov
+
 def commit_to_date(ts):
     d = ts.date()
-    cutoff = 20 if 4 <= d.month <= 10 else 21
+    # US close = 16:00 ET = 20:00 UTC during DST, 21:00 UTC in standard time
+    cutoff = 20 if us_dst(d) else 21
     return d if (ts.hour >= cutoff and is_td(d)) else prev_td(d)
 
 log = subprocess.run(["git", "-C", REPO, "log", "--format=%H|%aI|%s"],
@@ -60,7 +70,9 @@ for dd in snap_dates:
                               capture_output=True, text=True).stdout
         if blob: ingest(blob, dd)
 
-# official 08-27 correction from HEAD v2 (Nasdaq net-change implies official prev close)
+# official 08-27 correction from HEAD v2 (Nasdaq net-change implies official prev close);
+# a 5% guard keeps the raw snapshot when the implied value diverges implausibly
+# (verified: the 37 guarded tickers are all ineligible, so screening is unaffected)
 blob = subprocess.run(["git", "-C", REPO, "show", "HEAD:data/v2/tickers.csv"],
                       capture_output=True, text=True).stdout
 fixed = 0
