@@ -9,7 +9,7 @@ M = O["meta"]
 now_hkt = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)
 STAMP = now_hkt.strftime("%m.%d_%H%M")
 BUILD_TS = now_hkt.strftime("%Y-%m-%d %H:%M HKT")
-OUTNAME = f"20MA_uptrend_watchlistGit_R2.00_claudefable5xhigh_{STAMP}.html"
+OUTNAME = f"20MA_uptrend_watchlistGit_R2.01_claudefable5xhigh_{STAMP}.html"
 
 PAGE_DEFS = [
     ("1", "PAGE 1 · 總覽", "爆發潛力排名", None),
@@ -70,9 +70,16 @@ def sector_cell(r):
     gtag = f'<i class="gics">GICS·{esc(r["gsec"])}</i>' if (r["sp500"] and r.get("gsec")) else ""
     return f'<div class="sect"><b>{esc(zh)}</b> <span>{esc(en)}</span>{gtag}<em>{esc(sub)}</em></div>'
 
+def tv_url(r):
+    # user's TradingView chart layout, e.g. PARR -> .../chart/Q1c5VWwD/?symbol=nyse%3Aparr
+    sym = r["sym"].replace("/", ".").lower()
+    if r["exch"] != "—":
+        return f'https://www.tradingview.com/chart/Q1c5VWwD/?symbol={r["exch"].lower()}%3A{esc(sym)}'
+    return f'https://www.tradingview.com/chart/Q1c5VWwD/?symbol={esc(sym)}'
+
 def tick_cell(r):
     sp = '<span class="badge">S&amp;P500</span>' if r["sp500"] else ""
-    return (f'<div class="tk"><a href="https://www.tradingview.com/symbols/{esc(r["exch"] if r["exch"] != "—" else "")}-{esc(r["sym"].replace(".", "-"))}/" target="_blank" rel="noopener">{esc(r["sym"])}</a>'
+    return (f'<div class="tk"><a href="{tv_url(r)}" target="_blank" rel="noopener">{esc(r["sym"])}</a>'
             f'<span class="ex">{esc(r["exch"])}</span>{sp}<em>{esc(r["name"][:34])}</em></div>')
 
 def price_cell(r):
@@ -258,7 +265,7 @@ foot = f"""
 ③ 類別：Nasdaq 分類（全體）＋ GICS Sector / Sub-Industry（S&amp;P 500 成分股，klaywang24/market-chronicle）；交易所：irachex/open-stock-data。<br>
 ④ VCP 只用收盤/成交量計算（快照無日內高低價）；經 6 組獨立代理人對抗性驗證（lineage / 條件 / VCP 數學 / 規格）。<br>
 ⑤ <b>數據終點 {M["last_date"]}，建置時間 {BUILD_TS}</b> ·（週末，08-28 五係最後交易日）· 本表只係篩選工具，唔係投資建議。<br>
-⑥ 連結格式：Ticker 點擊開 TradingView。
+⑥ 連結格式：Ticker 點擊開 TradingView chart（https://www.tradingview.com/chart/Q1c5VWwD/?symbol=交易所%3Aticker）。
 </div>"""
 
 html_doc = f"""<title>20MA Uptrend Watchlist R2</title>
