@@ -150,8 +150,9 @@ for comp in ("cr", "t10", "vr", "pc"):
     for s, p in zip(syms, pr): elig[s]["pr_" + comp] = p
 for s in syms:
     e = elig[s]
-    e["vcp"] = round(100 * (0.35 * (1 - e["pr_cr"]) + 0.25 * (1 - e["pr_t10"])
-                            + 0.20 * (1 - e["pr_vr"]) + 0.20 * (1 - e["pr_pc"])), 1)
+    e["vcp_raw"] = 100 * (0.35 * (1 - e["pr_cr"]) + 0.25 * (1 - e["pr_t10"])
+                          + 0.20 * (1 - e["pr_vr"]) + 0.20 * (1 - e["pr_pc"]))
+    e["vcp"] = round(e["vcp_raw"], 1)
 
 # ---------------- per-page qualification ----------------
 qual = {p: {} for p in PAGES}
@@ -184,7 +185,7 @@ def row(sym, q):
         "mcap": m.get("mcap", 0),
         "close": round(cs[-1], 2), "ma": round(q["ma"], 2), "below_ma": cs[-1] < q["ma"],
         "slope": round(q["slope"], 2), "L": q["L"], "W": q["W"],
-        "vcp": elig[sym]["vcp"],
+        "vcp": elig[sym]["vcp"], "_vcpr": elig[sym]["vcp_raw"],
         "vcp_c": {k: round(elig[sym][k], 4) for k in ("cr", "t10", "vr", "pc")},
         "hits": hits[sym],
         "hl": [[CAL[SER[sym][0] + i] if False else CAL[i + SER[sym][0]], round(c, 4)] for i, c in q["hl"]],
@@ -199,7 +200,7 @@ out = {"meta": {"last_date": LAST_DATE, "cal_first": CAL[0], "cal_last": CAL[-1]
        "pages": {}}
 for p, (L, W, label) in PAGES.items():
     rows = [row(s, q) for s, q in qual[p].items()]
-    rows.sort(key=lambda r: -r["vcp"])
+    rows.sort(key=lambda r: -r["_vcpr"])
     out["pages"][str(p)] = {"L": L, "W": W, "label": label,
                             "qualified": len(rows), "rows": rows[:50]}
     print(f"P{p} ({label}, MA{L}, W={W}): qualified {len(rows)}, listing top 50 by VCP")
@@ -211,10 +212,18 @@ for p in PAGES:
         listed.setdefault(r["sym"], dict(r, ranks={}))["ranks"][str(p)] = i
 p1 = []
 for s, r in listed.items():
-    score = round(0.7 * r["vcp"] + 0.3 * (hits[s] / 4 * 100), 1)
-    r["score"] = score
+    score_raw = 0.7 * r["_vcpr"] + 0.3 * (hits[s] / 4 * 100)
+    r["score"] = round(score_raw, 1)
+    r["_scorer"] = score_raw
     p1.append(r)
-p1.sort(key=lambda r: -r["score"])
+p1.sort(key=lambda r: -r["_scorer"])
+for r in p1:
+    del r["_scorer"]
+for pdata in out["pages"].values():
+    for r in pdata["rows"]:
+        r.pop("_vcpr", None)
+for r in p1:
+    r.pop("_vcpr", None)
 out["page1"] = p1
 print(f"P1 summary: {len(p1)} distinct tickers")
 json.dump(out, open(f"{SCRATCH}/screen_results.json", "w"), ensure_ascii=False)
