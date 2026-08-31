@@ -12,6 +12,7 @@
 | R3.00 | R2 基礎上新增 **底部確定性 7 項量化**（突破中間高位/回補幅度/守底時間/下試量縮/回撤遞減/相對強度/均線位置）；排名改為 **綜合分數 = 0.5×VCP + 0.5×確定性**；每隻上榜股加 **下跌→回升原因** 欄（[Bigdata.com](https://bigdata.com) 新聞索引＋公開網頁逐隻研究，附信心度）及 2026年6–8月市場背景卡 |
 | R4.00 | R3 分欄互動版：VCP／確定性分拆兩欄＋TOP BAR「按VCP／按確定性」排序；7 項確定性證據分拆 7 個可排序欄；下跌/回升原因分拆兩欄（濃縮，🔥 高亮市場熱炒 news-driven 催化）；欄闊可拖拉調整 |
 | R5.00 | R4 分層版（含分層缺陷修正）：每個時間框拆成 **大型股(≥$10B)／中型股($2B–$10B)／小型股(<$2B)** 三個獨立 top 50 榜，共 12 個分層頁＋總表（217 隻不重複）；新增市值欄（可排序）、**🔥 熱炒 news-driven 催化劑獨立欄**＋每頁頂部可點擊橫幅 |
+| R6.00 | **數據更新至 2026-08-31 收盤**。改用真實日線 OHLCV 鏡像（[natezone/market-tracker](https://github.com/natezone/market-tracker)，收市後推送）取代 Nasdaq 快照重建；宇宙改為 **S&P 1500 綜合指數**（1,504 隻），分層改用 **指數成分**（S&P 500／400／600 = 大／中／小型股）|
 
 報告為獨立 HTML，直接用瀏覽器開啟；頁面切換、light/dark 主題內建。
 
@@ -40,7 +41,17 @@
 
 ## 數據來源與重建
 
-環境內可達的數據源為 GitHub 每日鏡像，逐 git commit 重建每日收盤/成交量序列：
+環境內可達的數據源只有 GitHub 公開 repo（其餘行情站與 API 一律被網絡政策封鎖）。
+
+**R6 起（現行）** — 直接讀取真實日線 OHLCV：
+
+- [natezone/market-tracker](https://github.com/natezone/market-tracker)：每交易日 14:00 及 22:00 UTC 由 yfinance 更新，
+  `data/UNIFIED/history/<TICKER>.csv`（`Date,Open,High,Low,Close,Volume`），涵蓋 S&P 1500 綜合指數約 1,560 隻、約 3 年歷史。
+  遇上游跑漏某一日（如 2026-08-28），由上一個 commit 還原。
+- 指數成分／GICS 分類／公司名：同 repo 的 `data/SP500|SP400|SP600/latest_metrics.csv`。
+- 市值：由 Nasdaq 快照推算股數（市值 ÷ 收盤），再以最新收盤重估。
+
+**R2–R5（歷史版本）** — 逐 git commit 重建每日收盤/成交量序列：
 
 - 價格/成交量：[zyhe16/top-us-stock-tickers](https://github.com/zyhe16/top-us-stock-tickers)
   每日 Nasdaq 快照（`tickers/all.csv` + `tickers/sp500.csv`），依 commit 時間映射至美股交易日；
@@ -48,7 +59,7 @@
 - GICS 類別（S&P 500）：[klaywang24/market-chronicle](https://github.com/klaywang24/market-chronicle)
 - 交易所歸屬：[irachex/open-stock-data](https://github.com/irachex/open-stock-data)
 
-抽樣驗證：R2 重建序列與 R1 報告的底部價格 10/10 完全一致，20MA 平均偏差 0.18%；
+抽樣驗證：R2 重建序列與 R1 報告的底部價格 10/10 完全一致，20MA 平均偏差 0.18%；R6 的 yfinance 日線與 R5 的 Nasdaq 快照兩條獨立血緣交叉核對，2,932 個重疊收盤價中 2,926 個（99.8%）偏差 <0.5%、中位偏差 0.000%；
 另經 6 組獨立代理人對抗性驗證（lineage / 頁面條件 / VCP 數學 / 規格合規）。
 
 限制:快照只有收盤價與成交量（無日內高低價），VCP 以收盤/成交量計算;價格未除息調整;
