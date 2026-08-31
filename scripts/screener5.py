@@ -263,10 +263,15 @@ TIERS = [("a", "big", "大型股", 10e9, float("inf")),
          ("c", "small", "小型股", 0.0, 2e9)]
 
 def cap_tier(mcap):
+    """Market-cap tier. Instruments with no cap in the Nasdaq feed (preferred /
+    depositary shares, SPACs, closed-end funds) return "x" and are left out of
+    the cap-tier pages rather than silently counted as small caps."""
+    if not mcap or mcap <= 0:
+        return "x"
     for key, _, _, lo, hi in TIERS:
         if lo <= mcap < hi:
             return key
-    return "c"
+    return "x"
 
 def row(sym, q):
     fi, cs, vs, ff = SER[sym]
@@ -317,6 +322,10 @@ out = {"meta": {"last_date": LAST_DATE, "cal_first": CAL[0], "cal_last": CAL[-1]
        "pages": {}}
 
 all_rows = {p: [row(s, q) for s, q in qual[p].items()] for p in PAGES}
+unknown = {str(p): sum(1 for r in all_rows[p] if r["tier"] == "x") for p in PAGES}
+unknown_syms = sorted({r["sym"] for p in PAGES for r in all_rows[p] if r["tier"] == "x"})
+out["meta"]["unknown_cap"] = {"per_timeframe": unknown, "symbols": unknown_syms}
+print(f"未知市值（非普通股，已排除出分層頁）: {len(unknown_syms)} 隻 {unknown_syms} | 各時間框 {unknown}")
 for p, (L, W, label) in PAGES.items():
     for key, en, zh, lo, hi in TIERS:
         rows = [r for r in all_rows[p] if r["tier"] == key]
@@ -326,6 +335,8 @@ for p, (L, W, label) in PAGES.items():
                              "tier_zh": zh, "tier_en": en,
                              "qualified": len(rows), "rows": rows[:50]}
         print(f"P{pid} ({label} · {zh}): qualified {len(rows)}, listing {min(50, len(rows))}")
+    tot = sum(out["pages"][f"{p}{k}"]["qualified"] for k, _, _, _, _ in TIERS) + unknown[str(p)]
+    print(f"  守恆 P{p}: 三層 + 未知市值 {unknown[str(p)]} = {tot}")
 
 PAGE_IDS = [f"{p}{k}" for p in PAGES for k, _, _, _, _ in TIERS]
 listed = {}

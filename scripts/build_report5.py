@@ -384,7 +384,7 @@ rules_html = f"""
 <div class="card rules">
 <h2>篩選規則（R5 · 大／中／小型股分層 + 熱炒催化劑標示）</h2>
 ① <b>Universe：{esc(UNIVERSE_LINE)}</b>。<br>
-② <b>市值分層</b>：<b>大型股 ≥$10B</b> · <b>中型股 $2B–$10B</b> · <b>小型股 &lt;$2B</b>（含通過流動性門檻嘅微型股）。每個時間框各自分三層，<b>每層獨立取 top 50</b>，細價股唔會再被大價股擠走。<br>
+② <b>市值分層</b>：<b>大型股 ≥$10B</b> · <b>中型股 $2B–$10B</b> · <b>小型股 &lt;$2B</b>（含通過流動性門檻嘅微型股）。每個時間框各自分三層，<b>每層獨立取 top 50</b>，細價股唔會再被大價股擠走。<b>快照無市值數據嘅非普通股證券（優先股／存託股、SPAC、封閉式基金）唔會當成小型股</b>，已剔出分層頁 —— 本次共 {esc(len(M.get("unknown_cap", {}).get("symbols", [])))} 隻（{esc("、".join(M.get("unknown_cap", {}).get("symbols", [])))}）。<br>
 ③ <b>MA 上升</b>：PAGE 2a-c：<b>10 天 MA</b> 較 <b>5 個交易日</b>前高；PAGE 3/4/5：<b>20 天 MA</b> 分別較 <b>10 / 21 / 42 個交易日</b>前高；且 MA 最後 3 日逐日上升、期內 ≥70% 日子上升。<br>
 ④ <b>「底」</b>：某日收盤係 ±3 日內最低，且 3 日前收盤高過佢、3 日後收盤高過佢；相鄰 ≤3 日去重。 ⑤ <b>一底高於一底</b>：45 個交易日內 ≥2 個底逐個遞升，最近一個底喺 25 日內。<br>
 ⑥ <b>VCP 指數（0–100）</b>：10日/前30日波幅（35%）＋近10日區間佔價（25%）＋近10日/前30日成交量（20%）＋近15日/前30–45日區間（20%），全體百分位合成。<br>
@@ -417,7 +417,8 @@ secs.append(f'''<section id="p1">
 <div class="legend"><span><i class="sw" style="background:var(--ink2)"></i>收盤</span>
 <span><i class="sw" style="background:var(--seq)"></i>MA</span>
 <span><i class="sw" style="background:var(--good);height:8px;width:8px;border-radius:50%"></i>底部（最後60個交易日）</span>
-<span>上榜分頁：2大 = PAGE 2a（1星期·大型股），如此類推</span></div>
+<span>上榜分頁：2大 = PAGE 2a（1星期·大型股），如此類推</span>
+<span>走勢圖／斜率取<b>最短一個達標時間框</b>（該股上榜分頁中最前者）；各時間框詳情見對應分層頁</span></div>
 </section>''')
 
 for p, tf_zh, tf_sub in TF:
@@ -448,7 +449,7 @@ foot = f"""
 <h2>備註 · 數據 lineage</h2>
 ① 覆蓋範圍：美國上市普通股 {c["total"]:,} 隻（含 S&amp;P 500 全部 503 隻）；外國註冊而非 S&amp;P 500 嘅美國上市股未有完整歷史，未納入。價格未除息調整。市值取自 Nasdaq 快照（08-28）。<br>
 ② 數據重建：GitHub 每日 Nasdaq 快照鏡像（zyhe16/top-us-stock-tickers）逐 commit 重建收盤序列，{M["n_days"]} 個交易日（{M["cal_first"]} → {M["cal_last"]}）；4 日無快照以前值填補；08-27 以官方 net-change 校正；與 R1 抽樣核對底部價 10/10 一致、20MA 平均偏差 0.18%。<br>
-③ 類別：Nasdaq 分類＋GICS（S&amp;P 500）；交易所：irachex/open-stock-data。VCP、確定性 7 項及排名邏輯經獨立代理人對抗性驗證（R3 階段 6 組、R5 分層邏輯 1 組）。<br>
+③ 類別：Nasdaq 分類＋GICS（S&amp;P 500）；交易所：irachex/open-stock-data。VCP、確定性 7 項及排名邏輯經獨立代理人對抗性驗證（R3 階段 6 組、R5 分層邏輯 1 組）：12 頁排名、三層守恆、分層歸屬、與前版指標一致性、總表聯集及名次映射全部 PASS；驗證揪出「無市值數據被當成小型股」一項缺陷，已於本版修正（改為剔出分層頁並喺上方列明）。<br>
 ④ 原因及熱炒催化劑由 AI 代理經 <a href="https://bigdata.com" target="_blank" rel="noopener">Bigdata.com</a> 新聞索引及公開網頁研究後濃縮——係新聞摘要，可能有錯漏，請以原始公告為準。<br>
 ⑤ <b>數據終點 {M["last_date"]}，建置時間 {BUILD_TS}</b>（週末，08-28 五係最後交易日）· 快照只有收盤/成交量 · 本表只係篩選工具，唔係投資建議。<br>
 ⑥ Ticker 點擊開 TradingView chart（https://www.tradingview.com/chart/Q1c5VWwD/?symbol=交易所%3Aticker）。
