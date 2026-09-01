@@ -1,18 +1,13 @@
 <title>20MA Uptrend Watchlist R6</title>
 <style>
-:root{color-scheme:light;--pg:#f9f9f7;--sf:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--mut:#898781;
- --grid:#e1e0d9;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--seq:#2a78d6;--link:#1c5cab;--good:#006300;
- --warn:#8a5a00;--bad:#9c2121;--hl:#eef3fa;--meter:#dfe7f2;--okbg:#eaf3ea;--nobg:#f3ecec;
- --hype:#9a4a00;--hypebg:#fdf1de;--hypebd:#e0a341;--tierA:#1c5cab;--tierB:#6a4ba8;--tierC:#0d7a5f}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
- --pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--mut:#898781;--grid:#2c2c2a;--axis:#383835;
- --ring:rgba(255,255,255,.10);--seq:#3987e5;--link:#6da7ec;--good:#0ca30c;--warn:#d99a2b;--bad:#e06c6c;
+/* Committed dark theme: the palette is defined once on :root and never
+   flips, so the page reads the same whatever theme the viewer is in. */
+:root{color-scheme:dark;
+ --pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--mut:#898781;
+ --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);
+ --seq:#3987e5;--link:#6da7ec;--good:#0ca30c;--warn:#d99a2b;--bad:#e06c6c;
  --hl:#16202d;--meter:#25303e;--okbg:#15230f;--nobg:#2a1c1c;
- --hype:#f2b95f;--hypebg:#2d2211;--hypebd:#8f6d2c;--tierA:#6da7ec;--tierB:#a98ce8;--tierC:#3fc49b}}
-:root[data-theme="dark"]{color-scheme:dark;--pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;
- --mut:#898781;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--seq:#3987e5;
- --link:#6da7ec;--good:#0ca30c;--warn:#d99a2b;--bad:#e06c6c;--hl:#16202d;--meter:#25303e;
- --okbg:#15230f;--nobg:#2a1c1c;--hype:#f2b95f;--hypebg:#2d2211;--hypebd:#8f6d2c;
+ --hype:#f2b95f;--hypebg:#2d2211;--hypebd:#8f6d2c;
  --tierA:#6da7ec;--tierB:#a98ce8;--tierC:#3fc49b}
 *{box-sizing:border-box}
 body{margin:0;background:var(--pg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif}
@@ -263,7 +258,7 @@ section[hidden]{display:none}
 <h2>備註 · 數據 lineage</h2>
 ① <b>覆蓋範圍（R6 有變）</b>：本版改用 S&amp;P 1500 綜合指數成分（1,504 隻有 08-31 收盤），涵蓋美股約九成市值，但<b>唔再包括指數以外嘅細價股／微型股</b>——R5 嘅 217 隻上榜股中有 103 隻唔屬 S&amp;P 1500，故未出現喺本版。價格未除息調整。<br>② <b>數據來源（R6 有變）</b>：改用 GitHub 每日鏡像 natezone/market-tracker 嘅真實日線 OHLCV（yfinance 來源，收市後 20:09 UTC 推送），逐隻股票讀取完整日線歷史，本表取最近 260 個交易日（2025-08-19 → 2026-08-31）；該次跑漏咗 08-28，已由上一個 commit 完整還原（1,500 隻）。<b>與 R5 嘅獨立來源（Nasdaq 每日快照）交叉核對：2,932 個重疊收盤價中 2,926 個（99.8%）偏差 &lt;0.5%，中位偏差 0.000%</b>。<br>③ 類別：Nasdaq 分類＋GICS（S&amp;P 500）；交易所：irachex/open-stock-data。VCP、確定性 7 項及排名邏輯沿用 R3–R5 定義（未改動），已經 R3 階段 6 組、R5 分層 1 組獨立代理人對抗性驗證：12 頁排名、三層守恆、分層歸屬、與前版指標一致性、總表聯集及名次映射全部 PASS；驗證揪出「無市值數據被當成小型股」一項缺陷，已於本版修正（改為剔出分層頁並喺上方列明）。<br>
 ④ 原因及熱炒催化劑由 AI 代理經 <a href="https://bigdata.com" target="_blank" rel="noopener">Bigdata.com</a> 新聞索引及公開網頁研究後濃縮——係新聞摘要，可能有錯漏，請以原始公告為準。<br>
-⑤ <b>數據終點 2026-08-31，建置時間 2026-09-01 06:31 HKT</b>（週末，08-28 五係最後交易日）· 快照只有收盤/成交量 · 本表只係篩選工具，唔係投資建議。<br>
+⑤ <b>數據終點 2026-08-31，建置時間 2026-09-02 00:06 HKT</b>（週末，08-28 五係最後交易日）· 快照只有收盤/成交量 · 本表只係篩選工具，唔係投資建議。<br>
 ⑥ Ticker 點擊開 TradingView chart（https://www.tradingview.com/chart/Q1c5VWwD/?symbol=交易所%3Aticker）。
 </div>
 </div>

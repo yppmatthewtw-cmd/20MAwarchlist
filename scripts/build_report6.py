@@ -12,7 +12,7 @@ M = O["meta"]
 now_hkt = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)
 STAMP = now_hkt.strftime("%m.%d_%H%M")
 BUILD_TS = now_hkt.strftime("%Y-%m-%d %H:%M HKT")
-OUTNAME = f"20MA_uptrend_watchlistGit_R6.00_claudeopus5max_{STAMP}.html"
+OUTNAME = f"20MA_uptrend_watchlistGit_R6.01_claudeopus5max_{STAMP}.html"
 
 TF = [("2", "1星期", "10MA · 5個交易日"), ("3", "2星期", "20MA · 10個交易日"),
       ("4", "1個月", "20MA · 21個交易日"), ("5", "2個月", "20MA · 42個交易日")]
@@ -224,19 +224,14 @@ UNIVERSE_LINE = (f'S&P 1500 綜合指數成分（大型 S&P 500 ＋ 中型 S&P 4
                  f'價格 ≥$2 {c["price"]:,} 隻 · 流動性達標（20日中位成交額 ≥$1M）{c["liq"]:,} 隻合資格')
 
 css = """
-:root{color-scheme:light;--pg:#f9f9f7;--sf:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--mut:#898781;
- --grid:#e1e0d9;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--seq:#2a78d6;--link:#1c5cab;--good:#006300;
- --warn:#8a5a00;--bad:#9c2121;--hl:#eef3fa;--meter:#dfe7f2;--okbg:#eaf3ea;--nobg:#f3ecec;
- --hype:#9a4a00;--hypebg:#fdf1de;--hypebd:#e0a341;--tierA:#1c5cab;--tierB:#6a4ba8;--tierC:#0d7a5f}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
- --pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--mut:#898781;--grid:#2c2c2a;--axis:#383835;
- --ring:rgba(255,255,255,.10);--seq:#3987e5;--link:#6da7ec;--good:#0ca30c;--warn:#d99a2b;--bad:#e06c6c;
+/* Committed dark theme: the palette is defined once on :root and never
+   flips, so the page reads the same whatever theme the viewer is in. */
+:root{color-scheme:dark;
+ --pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--mut:#898781;
+ --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);
+ --seq:#3987e5;--link:#6da7ec;--good:#0ca30c;--warn:#d99a2b;--bad:#e06c6c;
  --hl:#16202d;--meter:#25303e;--okbg:#15230f;--nobg:#2a1c1c;
- --hype:#f2b95f;--hypebg:#2d2211;--hypebd:#8f6d2c;--tierA:#6da7ec;--tierB:#a98ce8;--tierC:#3fc49b}}
-:root[data-theme="dark"]{color-scheme:dark;--pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;
- --mut:#898781;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--seq:#3987e5;
- --link:#6da7ec;--good:#0ca30c;--warn:#d99a2b;--bad:#e06c6c;--hl:#16202d;--meter:#25303e;
- --okbg:#15230f;--nobg:#2a1c1c;--hype:#f2b95f;--hypebg:#2d2211;--hypebd:#8f6d2c;
+ --hype:#f2b95f;--hypebg:#2d2211;--hypebd:#8f6d2c;
  --tierA:#6da7ec;--tierB:#a98ce8;--tierC:#3fc49b}
 *{box-sizing:border-box}
 body{margin:0;background:var(--pg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif}
