@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Sub-Sector 資金流向 Watchlist — 111 sub-sectors x 5 sessions of money-flow scores.
 
-Pages: 總覽 / 每日矩陣 / GICS 板塊匯總 / 背離與輪動. Dark theme, sortable + resizable columns.
+Pages: 總覽 / 每日矩陣 / GICS 板塊匯總 / 背離與輪動.
+Light/dark themes (auto / light / dark, remembered), sortable + resizable columns.
 """
 import json, datetime, html, os, statistics, collections
 
@@ -11,7 +12,7 @@ M = F["meta"]; ROWS = F["rows"]; DAYS = M["days"]
 now_hkt = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)
 STAMP = now_hkt.strftime("%m.%d_%H%M")
 BUILD_TS = now_hkt.strftime("%Y-%m-%d %H:%M HKT")
-OUTNAME = f"SubSector_flow_watchlist_R1.00_claudeopus5high_{STAMP}.html"
+OUTNAME = f"SubSector_flow_watchlist_R1.01_claudeopus5high_{STAMP}.html"
 WD = "一二三四五六日"
 
 def esc(s): return html.escape(str(s), quote=True)
@@ -220,13 +221,40 @@ today_bot = sorted(live, key=lambda r: r["days"][last]["z"])[:5]
 mkt = M["mkt_med"]
 
 css = """
-:root{color-scheme:dark;--navh:70px;
+:root{color-scheme:light;--navh:70px;
+ /* 淺色（預設）：暖白紙面，藍色主調，資金流向另有一套語意色階 */
+ --pg:#f6f5f1;--sf:#fffffe;--ink:#17171a;--ink2:#4b4a46;--mut:#7a7770;
+ --grid:#e4e2db;--axis:#c6c3ba;--ring:rgba(23,23,26,.13);
+ --seq:#1c5fbe;--link:#154fa3;--good:#1a7f37;--warn:#8a5a0b;--bad:#b3261e;
+ --hl:#edf2fb;--meter:#e3e6ec;--shadow:rgba(20,20,25,.16);
+ --p3:#9fdcb7;--p3t:#0a3f20;--p2:#c6ebd4;--p2t:#0e4a27;--p1:#e4f5ea;--p1t:#1a5c33;
+ --z0:#efeeea;--z0t:#6f6c66;
+ --n1:#fdeced;--n1t:#8e2b26;--n2:#f7ced0;--n2t:#7c211d;--n3:#eeadb0;--n3t:#6a1714;
+ --pt:#14743a;--nt:#b3261e;--dcellhov:brightness(.965);
+ --hot5:#c2410c;--hot4:#8a5a0b;--hot3:#4b4a46;--hot2:#2b6cb0;--hot1:#1e4e8c;
+ --posbd:#8fd0a8;--negbd:#e2a0a0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
  --pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--mut:#898781;
  --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);
  --seq:#3987e5;--link:#6da7ec;--good:#2ea043;--warn:#d99a2b;--bad:#e06c6c;
- --hl:#16202d;--meter:#25303e;
- --p3:#0e5c2f;--p2:#14713a;--p1:#1b3d28;--z0:#232322;--n1:#3d1f22;--n2:#7a2530;--n3:#98202f;
- --pt:#7ee0a0;--nt:#ff9a9a}
+ --hl:#16202d;--meter:#25303e;--shadow:rgba(0,0,0,.45);
+ --p3:#0e5c2f;--p3t:#eafff0;--p2:#14713a;--p2t:#dcf7e5;--p1:#1b3d28;--p1t:#b9e7c8;
+ --z0:#232322;--z0t:#8f8d86;
+ --n1:#3d1f22;--n1t:#f0c2c2;--n2:#7a2530;--n2t:#ffe0e0;--n3:#98202f;--n3t:#fff0f0;
+ --pt:#7ee0a0;--nt:#ff9a9a;--dcellhov:brightness(1.18);
+ --hot5:#ff8f5e;--hot4:#d99a2b;--hot3:#c3c2b7;--hot2:#7fb2e8;--hot1:#5c8fd6;
+ --posbd:#1e5c34;--negbd:#6b2731}}
+:root[data-theme="dark"]{color-scheme:dark;
+ --pg:#0d0d0d;--sf:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--mut:#898781;
+ --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);
+ --seq:#3987e5;--link:#6da7ec;--good:#2ea043;--warn:#d99a2b;--bad:#e06c6c;
+ --hl:#16202d;--meter:#25303e;--shadow:rgba(0,0,0,.45);
+ --p3:#0e5c2f;--p3t:#eafff0;--p2:#14713a;--p2t:#dcf7e5;--p1:#1b3d28;--p1t:#b9e7c8;
+ --z0:#232322;--z0t:#8f8d86;
+ --n1:#3d1f22;--n1t:#f0c2c2;--n2:#7a2530;--n2t:#ffe0e0;--n3:#98202f;--n3t:#fff0f0;
+ --pt:#7ee0a0;--nt:#ff9a9a;--dcellhov:brightness(1.18);
+ --hot5:#ff8f5e;--hot4:#d99a2b;--hot3:#c3c2b7;--hot2:#7fb2e8;--hot1:#5c8fd6;
+ --posbd:#1e5c34;--negbd:#6b2731}
 *{box-sizing:border-box}
 body{margin:0;background:var(--pg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif}
 .wrap{max-width:1680px;margin:0 auto;padding:24px 18px 60px}
@@ -286,9 +314,9 @@ tr:hover td{background:var(--hl)}
 .ss .cyc{display:block;font-size:9.5px;color:var(--seq);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sec{font-size:11.5px;color:var(--ink2)}
 .sdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--seq);margin-right:5px;vertical-align:1px}
-.sdot.s0{background:#5b8ff9}.sdot.s1{background:#61ddaa}.sdot.s2{background:#f6bd16}.sdot.s3{background:#7262fd}
-.sdot.s4{background:#78d3f8}.sdot.s5{background:#9661bc}.sdot.s6{background:#f6903d}.sdot.s7{background:#008685}
-.sdot.s8{background:#f08bb4}.sdot.s9{background:#c2c8d5}.sdot.s10{background:#e8684a}
+.sdot.s0{background:#4a7fe0}.sdot.s1{background:#2aa87a}.sdot.s2{background:#d09a12}.sdot.s3{background:#6b5bd6}
+.sdot.s4{background:#3aa6cf}.sdot.s5{background:#8a55b0}.sdot.s6{background:#e07b2a}.sdot.s7{background:#0e7a79}
+.sdot.s8{background:#d1699a}.sdot.s9{background:#8c93a3}.sdot.s10{background:#d9553a}
 .mc b{display:block;font-size:13px}
 .mc .meter{display:block;height:5px;border-radius:3px;background:var(--meter);margin-top:3px}
 .mc .meter i{display:block;height:100%;border-radius:3px;background:var(--seq)}
@@ -296,10 +324,10 @@ tr:hover td{background:var(--hl)}
 .dcell{font-variant-numeric:tabular-nums;font-weight:700;text-align:center;font-size:13px;border-radius:0}
 .dcell .gz{display:block;font-weight:400;font-size:9px;opacity:.85}
 .dcell.big{font-size:15px}
-.gp3{background:var(--p3);color:#eafff0}.gp2{background:var(--p2);color:#dcf7e5}.gp1{background:var(--p1);color:#b9e7c8}
-.g00{background:var(--z0);color:var(--mut)}
-.gn1{background:var(--n1);color:#f0c2c2}.gn2{background:var(--n2);color:#ffe0e0}.gn3{background:var(--n3);color:#fff0f0}
-tr:hover td.dcell{filter:brightness(1.18)}
+.gp3{background:var(--p3);color:var(--p3t)}.gp2{background:var(--p2);color:var(--p2t)}.gp1{background:var(--p1);color:var(--p1t)}
+.g00{background:var(--z0);color:var(--z0t)}
+.gn1{background:var(--n1);color:var(--n1t)}.gn2{background:var(--n2);color:var(--n2t)}.gn3{background:var(--n3);color:var(--n3t)}
+tr:hover td.dcell{filter:var(--dcellhov)}
 .chips5{display:flex;gap:2px}
 .chipd{flex:1;text-align:center;font-size:11px;font-weight:700;border-radius:4px;padding:2px 0;font-variant-numeric:tabular-nums}
 .tr b{display:block;font-size:12px;font-variant-numeric:tabular-nums}
@@ -308,7 +336,7 @@ tr:hover td.dcell{filter:brightness(1.18)}
 .tr.up b,.tr.up span{color:var(--pt)}.tr.dn b,.tr.dn span{color:var(--nt)}.tr.fl b,.tr.fl span{color:var(--mut)}
 .hv{text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
 .hv .hl{display:block;font-weight:400;font-size:9px;color:var(--mut)}
-.hv.h5{color:#ff8f5e}.hv.h4{color:var(--warn)}.hv.h3{color:var(--ink2)}.hv.h2{color:#7fb2e8}.hv.h1{color:#5c8fd6}
+.hv.h5{color:var(--hot5)}.hv.h4{color:var(--hot4)}.hv.h3{color:var(--hot3)}.hv.h2{color:var(--hot2)}.hv.h1{color:var(--hot1)}
 .qc b{display:inline-block;font-size:13px;font-variant-numeric:tabular-nums}
 .qc b.qok{color:var(--ink)}.qc b.qmid{color:var(--warn)}.qc b.qlo{color:var(--bad)}
 .qt{display:inline-block;font-size:9px;color:var(--mut);border:1px dashed var(--axis);border-radius:6px;padding:0 4px;margin-left:3px}
@@ -316,6 +344,11 @@ tr:hover td.dcell{filter:brightness(1.18)}
 .bk .tk{font-size:10.5px;color:var(--link);text-decoration:none;background:var(--hl);border:1px solid var(--ring);
  border-radius:6px;padding:1px 5px;font-variant-numeric:tabular-nums}
 .bk .tk:hover{background:var(--seq);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--ring);border-radius:20px;overflow:hidden;background:var(--sf)}
+.seg button{border:0;border-radius:0;padding:8px 12px;font-size:12px;font-weight:600;background:transparent;color:var(--mut)}
+.seg button+button{border-left:1px solid var(--ring)}
+.seg button.on{background:var(--seq);color:#fff}
+.seg button:focus-visible,.nav button:focus-visible,th.srt:focus-visible{outline:2px solid var(--seq);outline-offset:2px}
 .bk .tk.sup{border-style:dashed;color:var(--ink2)}
 .miss{font-size:9px;color:var(--mut);border:1px dotted var(--axis);border-radius:6px;padding:0 4px}
 .etf{font-size:11px;color:var(--ink2)}
@@ -325,13 +358,13 @@ tr:hover td.dcell{filter:brightness(1.18)}
 .bar.bp{background:var(--good)}.bar.bn{background:var(--bad)}
 .lst{white-space:normal}
 .pill{display:inline-block;font-size:10px;border-radius:9px;padding:1px 6px;margin:1px 3px 1px 0;border:1px solid var(--ring)}
-.pill.pos{color:var(--pt);border-color:#1e5c34}.pill.neg{color:var(--nt);border-color:#6b2731}
+.pill.pos{color:var(--pt);border-color:var(--posbd)}.pill.neg{color:var(--nt);border-color:var(--negbd)}
 .qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
 .qbox{background:var(--sf);border:1px solid var(--ring);border-radius:10px;padding:12px 14px}
 .qbox h3{margin:0 0 8px;font-size:13px}
 .qbox h3 span{display:block;font-size:10.5px;color:var(--mut);font-weight:400;margin-top:2px}
 .qbox h3 .cnt{color:var(--seq)}
-.qbox.hotout{border-color:#7a2530}.qbox.coldin{border-color:#1e5c34}
+.qbox.hotout{border-color:var(--negbd)}.qbox.coldin{border-color:var(--posbd)}
 .qrow{display:flex;gap:8px;align-items:baseline;font-size:12px;padding:3px 0;border-top:1px solid var(--grid)}
 .qrow b{min-width:118px;color:var(--ink)}
 .qrow .qz{font-variant-numeric:tabular-nums;font-weight:700;min-width:46px}
@@ -343,7 +376,7 @@ tr:hover td.dcell{filter:brightness(1.18)}
 .foot{font-size:11.5px;color:var(--ink2);line-height:1.8}
 .foot b{color:var(--ink)}
 section[hidden]{display:none}
-.fixhead{position:fixed;z-index:5;overflow:hidden;display:none;background:var(--sf);border-bottom:1px solid var(--grid);box-shadow:0 4px 10px rgba(0,0,0,.45)}
+.fixhead{position:fixed;z-index:5;overflow:hidden;display:none;background:var(--sf);border-bottom:1px solid var(--grid);box-shadow:0 4px 10px var(--shadow)}
 .fixhead table{table-layout:fixed;border-collapse:collapse;font-size:12.5px}
 .fixhead th{position:static}
 @media (max-width:600px){.nav button .s{display:none}.nav button{padding:7px 10px;font-size:12px}}
@@ -451,15 +484,15 @@ foot = f"""
 屬市場微觀結構代理指標。淨額估算只涵蓋籃子代表股，唔等於整個子板塊嘅資金額。<br>
 ⑤ 子板塊定義、熱度分、週期定位與 LEADING INDICATOR 全部取自附件工作簿
 <b>US_Market_Sector_SubSector_HeatMap_R2_20260903.xlsx</b>（02 主表 111 列），本表只新增資金流向計分。<br>
-⑥ <b>建置時間 {BUILD_TS}</b> · 點擊成分股開 TradingView chart · 本表只係研究工具，唔係投資建議。
+⑥ <b>建置時間 {BUILD_TS}</b> · 點擊成分股開 TradingView chart · 版面可切淺色／深色（預設「自動」跟隨系統或檢視器設定）· 本表只係研究工具，唔係投資建議。
 </div>"""
 
 html_doc = f"""<title>Sub-Sector 資金流向 Watchlist R1</title>
 <style>{css}</style>
 <div class="wrap">
-<h1>Sub-Sector 資金流向 Watchlist R1（111 個子板塊 × 5 個交易日逐日打分）</h1>
+<h1>Sub-Sector 資金流向 Watchlist R1.01（111 個子板塊 × 5 個交易日逐日打分）</h1>
 <div class="sub">資料至 <b>{DAYS[-1]}</b>（美東星期{WD[datetime.date.fromisoformat(DAYS[-1]).weekday()]}）收盤 ·
-計分視窗 {DAYS[0]} → {DAYS[-1]} · 樣本 {M["n_tick"]} 隻代表股 · 逐日橫向百分位 0–100 · 固定深色版面</div>
+計分視窗 {DAYS[0]} → {DAYS[-1]} · 樣本 {M["n_tick"]} 隻代表股 · 逐日橫向百分位 0–100 · <b>淺色／深色版面可切換</b>（右上「版面」按鈕，選擇會記住）</div>
 {rules}
 <nav class="nav">
 <div class="nrow">
@@ -474,13 +507,50 @@ html_doc = f"""<title>Sub-Sector 資金流向 Watchlist R1</title>
 <button class="sortb" data-sort="mfd">淨額估算</button>
 <button class="sortb" data-sort="slope">趨勢</button>
 <button class="sortb" data-sort="ret5">籃子報酬</button>
-<button class="sortb" data-sort="heat">工作簿熱度</button></div>
+<button class="sortb" data-sort="heat">工作簿熱度</button>
+<span class="div"></span>
+<span class="lab">版面</span>
+<div class="seg" id="thm" role="group" aria-label="淺色／深色版面">
+<button data-t="auto" title="跟隨系統或檢視器設定">自動</button>
+<button data-t="light" title="淺色版面">☀ 淺色</button>
+<button data-t="dark" title="深色版面">🌙 深色</button></div></div>
 </nav>
 {"".join(secs)}
 {foot}
 </div>
 <script>
 (function() {{
+  // ---- theme: 自動（跟隨系統／檢視器）／淺色／深色，選擇存 localStorage ----
+  var root = document.documentElement, tbtns = document.querySelectorAll('#thm button');
+  var pref = 'auto';
+  try {{ pref = localStorage.getItem('subtheme') || 'auto'; }} catch (e) {{}}
+  if (pref !== 'light' && pref !== 'dark') pref = 'auto';
+  var applying = false;
+  function applyTheme() {{
+    applying = true;
+    if (pref === 'auto') root.removeAttribute('data-theme');
+    else if (root.getAttribute('data-theme') !== pref) root.setAttribute('data-theme', pref);
+    tbtns.forEach(function(b) {{
+      var on = b.dataset.t === pref;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }});
+    applying = false;
+  }}
+  tbtns.forEach(function(b) {{
+    b.addEventListener('click', function() {{
+      pref = b.dataset.t;
+      try {{ localStorage.setItem('subtheme', pref); }} catch (e) {{}}
+      applyTheme();
+    }});
+  }});
+  applyTheme();
+  // the artifact viewer stamps data-theme on <html> for its own theme; an explicit
+  // in-page choice must survive that, so re-assert it whenever the attribute changes
+  new MutationObserver(function() {{
+    if (!applying && pref !== 'auto' && root.getAttribute('data-theme') !== pref) applyTheme();
+  }}).observe(root, {{attributes: true, attributeFilter: ['data-theme']}});
+
   var gbtns = document.querySelectorAll('.nav button[data-g]');
   var sbtns = document.querySelectorAll('.nav button.sortb');
   var navEl = document.querySelector('.nav');
