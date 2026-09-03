@@ -1,0 +1,2025 @@
+{
+ "groups": [
+  {
+   "n": 1,
+   "cat": "A.運算核心",
+   "sub": "A1 GPU / Accelerator 加速器",
+   "code": "A1",
+   "zh": "GPU / Accelerator 加速器",
+   "tier": "大型",
+   "members": [
+    "NVDA",
+    "AMD",
+    "INTC"
+   ],
+   "us": [
+    "NVDA",
+    "AMD",
+    "INTC"
+   ],
+   "nonus": [],
+   "rsi": 50.1,
+   "ret1w": -2.3,
+   "ret1m": 3.9,
+   "ret3m": 80.2,
+   "flowRatio": 5.9,
+   "flowB": 225.6,
+   "quad": "改善",
+   "rs": 90.93,
+   "rsmom": 101.89,
+   "color": "#D85A30",
+   "mtier": {
+    "NVDA": "大型",
+    "AMD": "大型",
+    "INTC": "大型"
+   },
+   "mregion": {
+    "NVDA": "🇺🇸",
+    "AMD": "🇺🇸",
+    "INTC": "🇺🇸"
+   }
+  },
+  {
+   "n": 2,
+   "cat": "A.運算核心",
+   "sub": "A2 ASIC Designers 客製 AI 晶片設計",
+   "code": "A2",
+   "zh": "ASIC Designers 客製 AI 晶片設計",
+   "tier": "大型",
+   "members": [
+    "AVGO",
+    "MRVL"
+   ],
+   "us": [
+    "AVGO",
+    "MRVL"
+   ],
+   "nonus": [],
+   "rsi": 50.8,
+   "ret1w": -0.5,
+   "ret1m": -6.8,
+   "ret3m": 64.9,
+   "flowRatio": 14.7,
+   "flowB": 186.3,
+   "quad": "落後",
+   "rs": 94.89,
+   "rsmom": 99.38,
+   "color": "#BA7517",
+   "mtier": {
+    "AVGO": "大型",
+    "MRVL": "大型"
+   },
+   "mregion": {
+    "AVGO": "🇺🇸",
+    "MRVL": "🇺🇸"
+   }
+  },
+  {
+   "n": 3,
+   "cat": "A.運算核心",
+   "sub": "A3 中國 AI 晶片 China AI Chips",
+   "code": "A3",
+   "zh": "中國 AI 晶片 China AI Chips",
+   "tier": "大型",
+   "members": [
+    "688256.SS",
+    "688041.SS"
+   ],
+   "us": [],
+   "nonus": [
+    "688256.SS",
+    "688041.SS"
+   ],
+   "rsi": 60.9,
+   "ret1w": 12.3,
+   "ret1m": 28.2,
+   "ret3m": 85.7,
+   "flowRatio": 28.7,
+   "flowB": 524.9,
+   "quad": "改善",
+   "rs": 99.93,
+   "rsmom": 100.1,
+   "color": "#7F77DD",
+   "mtier": {
+    "688256.SS": "大型",
+    "688041.SS": "大型"
+   },
+   "mregion": {
+    "688256.SS": "🇨🇳",
+    "688041.SS": "🇨🇳"
+   }
+  },
+  {
+   "n": 4,
+   "cat": "A.運算核心",
+   "sub": "A4 運算 IP / SoC / Edge 裝置 Compute IP, SoC & Edge",
+   "code": "A4",
+   "zh": "運算 IP / SoC / Edge 裝置 Compute IP, SoC & Edge",
+   "tier": "大型",
+   "members": [
+    "ARM",
+    "QCOM",
+    "2454.TW",
+    "AAPL"
+   ],
+   "us": [
+    "ARM",
+    "QCOM",
+    "AAPL"
+   ],
+   "nonus": [
+    "2454.TW"
+   ],
+   "rsi": 51.3,
+   "ret1w": 0.7,
+   "ret1m": -5.6,
+   "ret3m": 86.8,
+   "flowRatio": 16.7,
+   "flowB": 695.3,
+   "quad": "落後",
+   "rs": 99.53,
+   "rsmom": 86.97,
+   "color": "#1D9E75",
+   "mtier": {
+    "ARM": "大型",
+    "QCOM": "大型",
+    "2454.TW": "大型",
+    "AAPL": "大型"
+   },
+   "mregion": {
+    "ARM": "🇬🇧",
+    "QCOM": "🇺🇸",
+    "2454.TW": "🇹🇼",
+    "AAPL": "🇺🇸"
+   }
+  },
+  {
+   "n": 5,
+   "cat": "AA.AI Neo Cloud",
+   "sub": "AA1 Neo Cloud 純算力玩家",
+   "code": "AA1",
+   "zh": "Neo Cloud 純算力玩家",
+   "tier": "中型",
+   "members": [
+    "APLD",
+    "IREN",
+    "NBIS",
+    "CRWV"
+   ],
+   "us": [
+    "APLD",
+    "IREN",
+    "NBIS",
+    "CRWV"
+   ],
+   "nonus": [],
+   "rsi": 41.8,
+   "ret1w": -1.4,
+   "ret1m": -14.3,
+   "ret3m": 28.1,
+   "flowRatio": 3.2,
+   "flowB": 20,
+   "quad": "落後",
+   "rs": 84.13,
+   "rsmom": 82.81,
+   "color": "#378ADD",
+   "mtier": {
+    "APLD": "中型",
+    "IREN": "大型",
+    "NBIS": "大型",
+    "CRWV": "大型"
+   },
+   "mregion": {
+    "APLD": "🇺🇸",
+    "IREN": "🇦🇺",
+    "NBIS": "🇺🇸",
+    "CRWV": "🇺🇸"
+   }
+  },
+  {
+   "n": 6,
+   "cat": "AA.AI Neo Cloud",
+   "sub": "AA2 Hyperscaler 雲",
+   "code": "AA2",
+   "zh": "Hyperscaler 雲",
+   "tier": "大型",
+   "members": [
+    "MSFT",
+    "GOOGL",
+    "AMZN"
+   ],
+   "us": [
+    "MSFT",
+    "GOOGL",
+    "AMZN"
+   ],
+   "nonus": [],
+   "rsi": 45.6,
+   "ret1w": -1.1,
+   "ret1m": -4,
+   "ret3m": 7.3,
+   "flowRatio": 6.6,
+   "flowB": 159,
+   "quad": "改善",
+   "rs": 89.24,
+   "rsmom": 100.06,
+   "color": "#888780",
+   "mtier": {
+    "MSFT": "大型",
+    "GOOGL": "大型",
+    "AMZN": "大型"
+   },
+   "mregion": {
+    "MSFT": "🇺🇸",
+    "GOOGL": "🇺🇸",
+    "AMZN": "🇺🇸"
+   }
+  },
+  {
+   "n": 7,
+   "cat": "AA.AI Neo Cloud",
+   "sub": "AA3 中國雲 / AI 平台 China Cloud",
+   "code": "AA3",
+   "zh": "中國雲 / AI 平台 China Cloud",
+   "tier": "大型",
+   "members": [
+    "BABA",
+    "TCEHY",
+    "BIDU"
+   ],
+   "us": [
+    "BABA",
+    "TCEHY",
+    "BIDU"
+   ],
+   "nonus": [],
+   "rsi": 54.5,
+   "ret1w": 6.5,
+   "ret1m": -1.1,
+   "ret3m": -5.2,
+   "flowRatio": -11,
+   "flowB": -13.8,
+   "quad": "改善",
+   "rs": 86.11,
+   "rsmom": 105.49,
+   "color": "#D4537E",
+   "mtier": {
+    "BABA": "大型",
+    "TCEHY": "大型",
+    "BIDU": "大型"
+   },
+   "mregion": {
+    "BABA": "🇨🇳",
+    "TCEHY": "🇨🇳",
+    "BIDU": "🇨🇳"
+   }
+  },
+  {
+   "n": 8,
+   "cat": "B.製造",
+   "sub": "B1 Foundry 代工",
+   "code": "B1",
+   "zh": "Foundry 代工",
+   "tier": "大型",
+   "members": [
+    "TSM",
+    "005930.KS",
+    "GFS"
+   ],
+   "us": [
+    "TSM",
+    "GFS"
+   ],
+   "nonus": [
+    "005930.KS"
+   ],
+   "rsi": 46,
+   "ret1w": -6.6,
+   "ret1m": -5.9,
+   "ret3m": 38,
+   "flowRatio": 15.3,
+   "flowB": 79624.9,
+   "quad": "改善",
+   "rs": 98.28,
+   "rsmom": 102.49,
+   "color": "#639922",
+   "mtier": {
+    "TSM": "大型",
+    "005930.KS": "大型",
+    "GFS": "大型"
+   },
+   "mregion": {
+    "TSM": "🇹🇼",
+    "005930.KS": "🇰🇷",
+    "GFS": "🇺🇸"
+   }
+  },
+  {
+   "n": 9,
+   "cat": "B.製造",
+   "sub": "B10 半導體材料②光刻膠/特氣 Photoresist & Gas",
+   "code": "B10",
+   "zh": "半導體材料②光刻膠/特氣 Photoresist & Gas",
+   "tier": "大型",
+   "members": [
+    "300346.SZ",
+    "603650.SH",
+    "300236.SZ",
+    "688268.SH",
+    "688106.SH",
+    "4186.T",
+    "LIN",
+    "APD"
+   ],
+   "us": [
+    "LIN",
+    "APD"
+   ],
+   "nonus": [
+    "300346.SZ",
+    "603650.SH",
+    "300236.SZ",
+    "688268.SH",
+    "688106.SH",
+    "4186.T"
+   ],
+   "rsi": 54.9,
+   "ret1w": -6.7,
+   "ret1m": 23.8,
+   "ret3m": 51.1,
+   "flowRatio": 15.4,
+   "flowB": 223.5,
+   "quad": "領先",
+   "rs": 105.65,
+   "rsmom": 115.28,
+   "color": "#C25D2E",
+   "mtier": {
+    "300346.SZ": "大型",
+    "603650.SH": "大型",
+    "300236.SZ": "大型",
+    "688268.SH": "大型",
+    "688106.SH": "大型",
+    "4186.T": "大型",
+    "LIN": "大型",
+    "APD": "大型"
+   },
+   "mregion": {
+    "300346.SZ": "🇨🇳",
+    "603650.SH": "🇨🇳",
+    "300236.SZ": "🇨🇳",
+    "688268.SH": "🇨🇳",
+    "688106.SH": "🇨🇳",
+    "4186.T": "🇯🇵",
+    "LIN": "🇺🇸",
+    "APD": "🇺🇸"
+   }
+  },
+  {
+   "n": 10,
+   "cat": "B.製造",
+   "sub": "B11 PCB材料①覆銅板CCL+銅箔",
+   "code": "B11",
+   "zh": "PCB材料①覆銅板CCL+銅箔",
+   "tier": "大型",
+   "members": [
+    "600183.SH",
+    "688519.SH",
+    "603186.SH",
+    "002636.SZ",
+    "2383.TW",
+    "301511.SZ",
+    "301217.SZ",
+    "688020.SH",
+    "688388.SH",
+    "301150.SZ"
+   ],
+   "us": [],
+   "nonus": [
+    "600183.SH",
+    "688519.SH",
+    "603186.SH",
+    "002636.SZ",
+    "2383.TW",
+    "301511.SZ",
+    "301217.SZ",
+    "688020.SH",
+    "688388.SH",
+    "301150.SZ"
+   ],
+   "rsi": 48.8,
+   "ret1w": -8.3,
+   "ret1m": 16.2,
+   "ret3m": 146.9,
+   "flowRatio": 25.2,
+   "flowB": 630,
+   "quad": "領先",
+   "rs": 114.51,
+   "rsmom": 110.67,
+   "color": "#4E7AB5",
+   "mtier": {
+    "600183.SH": "大型",
+    "688519.SH": "大型",
+    "603186.SH": "大型",
+    "002636.SZ": "大型",
+    "2383.TW": "大型",
+    "301511.SZ": "大型",
+    "301217.SZ": "大型",
+    "688020.SH": "大型",
+    "688388.SH": "大型",
+    "301150.SZ": "大型"
+   },
+   "mregion": {
+    "600183.SH": "🇨🇳",
+    "688519.SH": "🇨🇳",
+    "603186.SH": "🇨🇳",
+    "002636.SZ": "🇨🇳",
+    "2383.TW": "🇹🇼",
+    "301511.SZ": "🇨🇳",
+    "301217.SZ": "🇨🇳",
+    "688020.SH": "🇨🇳",
+    "688388.SH": "🇨🇳",
+    "301150.SZ": "🇨🇳"
+   }
+  },
+  {
+   "n": 11,
+   "cat": "B.製造",
+   "sub": "B12 PCB材料②電子布/樹脂/填料+製造",
+   "code": "B12",
+   "zh": "PCB材料②電子布/樹脂/填料+製造",
+   "tier": "大型",
+   "members": [
+    "603256.SH",
+    "600176.SH",
+    "301526.SZ",
+    "601208.SH",
+    "605589.SH",
+    "688300.SH",
+    "688733.SH",
+    "002409.SZ",
+    "002916.SZ"
+   ],
+   "us": [],
+   "nonus": [
+    "603256.SH",
+    "600176.SH",
+    "301526.SZ",
+    "601208.SH",
+    "605589.SH",
+    "688300.SH",
+    "688733.SH",
+    "002409.SZ",
+    "002916.SZ"
+   ],
+   "rsi": 51.9,
+   "ret1w": -5.1,
+   "ret1m": 25.8,
+   "ret3m": 128.7,
+   "flowRatio": 22.2,
+   "flowB": 467.4,
+   "quad": "領先",
+   "rs": 115.3,
+   "rsmom": 108.75,
+   "color": "#D85A30",
+   "mtier": {
+    "603256.SH": "大型",
+    "600176.SH": "大型",
+    "301526.SZ": "大型",
+    "601208.SH": "大型",
+    "605589.SH": "大型",
+    "688300.SH": "大型",
+    "688733.SH": "中型",
+    "002409.SZ": "大型",
+    "002916.SZ": "大型"
+   },
+   "mregion": {
+    "603256.SH": "🇨🇳",
+    "600176.SH": "🇨🇳",
+    "301526.SZ": "🇨🇳",
+    "601208.SH": "🇨🇳",
+    "605589.SH": "🇨🇳",
+    "688300.SH": "🇨🇳",
+    "688733.SH": "🇨🇳",
+    "002409.SZ": "🇨🇳",
+    "002916.SZ": "🇨🇳"
+   }
+  },
+  {
+   "n": 12,
+   "cat": "B.製造",
+   "sub": "B2 半導體前段設備 Front-End Equipment",
+   "code": "B2",
+   "zh": "半導體前段設備 Front-End Equipment",
+   "tier": "大型",
+   "members": [
+    "ASML",
+    "AMAT",
+    "LRCX",
+    "KLAC"
+   ],
+   "us": [
+    "ASML",
+    "AMAT",
+    "LRCX",
+    "KLAC"
+   ],
+   "nonus": [],
+   "rsi": 52.1,
+   "ret1w": -6.8,
+   "ret1m": 12.6,
+   "ret3m": 43.2,
+   "flowRatio": 12.2,
+   "flowB": 103.6,
+   "quad": "領先",
+   "rs": 106.4,
+   "rsmom": 113.98,
+   "color": "#E24B4A",
+   "mtier": {
+    "ASML": "大型",
+    "AMAT": "大型",
+    "LRCX": "大型",
+    "KLAC": "大型"
+   },
+   "mregion": {
+    "ASML": "🇳🇱",
+    "AMAT": "🇺🇸",
+    "LRCX": "🇺🇸",
+    "KLAC": "🇺🇸"
+   }
+  },
+  {
+   "n": 13,
+   "cat": "B.製造",
+   "sub": "B3 先進封裝 + 測試 Advanced Packaging & Test",
+   "code": "B3",
+   "zh": "先進封裝 + 測試 Advanced Packaging & Test",
+   "tier": "大型",
+   "members": [
+    "600584.SH",
+    "002156.SZ",
+    "002185.SZ",
+    "688362.SH",
+    "ASM.AS",
+    "FORM",
+    "AEHR",
+    "CAMT",
+    "ONTO",
+    "SMHN.DE",
+    "ASX",
+    "AMKR",
+    "3037.TW",
+    "4062.T",
+    "ATS.VI",
+    "6857.T",
+    "TER",
+    "2449.TW",
+    "6239.TW"
+   ],
+   "us": [
+    "FORM",
+    "AEHR",
+    "CAMT",
+    "ONTO",
+    "ASX",
+    "AMKR",
+    "TER"
+   ],
+   "nonus": [
+    "600584.SH",
+    "002156.SZ",
+    "002185.SZ",
+    "688362.SH",
+    "ASM.AS",
+    "SMHN.DE",
+    "3037.TW",
+    "4062.T",
+    "ATS.VI",
+    "6857.T",
+    "2449.TW",
+    "6239.TW"
+   ],
+   "rsi": 50.6,
+   "ret1w": -3.8,
+   "ret1m": 12.6,
+   "ret3m": 63.5,
+   "flowRatio": 8.7,
+   "flowB": 2584.4,
+   "quad": "領先",
+   "rs": 103.02,
+   "rsmom": 106.81,
+   "color": "#0F6E56",
+   "mtier": {
+    "600584.SH": "大型",
+    "002156.SZ": "大型",
+    "002185.SZ": "大型",
+    "688362.SH": "大型",
+    "ASM.AS": "大型",
+    "FORM": "中型",
+    "AEHR": "中型",
+    "CAMT": "中型",
+    "ONTO": "大型",
+    "SMHN.DE": "小型",
+    "ASX": "大型",
+    "AMKR": "大型",
+    "3037.TW": "大型",
+    "4062.T": "大型",
+    "ATS.VI": "中型",
+    "6857.T": "大型",
+    "TER": "大型",
+    "2449.TW": "大型",
+    "6239.TW": "大型"
+   },
+   "mregion": {
+    "600584.SH": "🇨🇳",
+    "002156.SZ": "🇨🇳",
+    "002185.SZ": "🇨🇳",
+    "688362.SH": "🇨🇳",
+    "ASM.AS": "🇳🇱",
+    "FORM": "🇺🇸",
+    "AEHR": "🇺🇸",
+    "CAMT": "🇮🇱",
+    "ONTO": "🇺🇸",
+    "SMHN.DE": "🇩🇪",
+    "ASX": "🇹🇼",
+    "AMKR": "🇺🇸",
+    "3037.TW": "🇹🇼",
+    "4062.T": "🇯🇵",
+    "ATS.VI": "🇦🇹",
+    "6857.T": "🇯🇵",
+    "TER": "🇺🇸",
+    "2449.TW": "🇹🇼",
+    "6239.TW": "🇹🇼"
+   }
+  },
+  {
+   "n": 14,
+   "cat": "B.製造",
+   "sub": "B4 光模塊/化合物半導體設備 Optical/Compound Equip",
+   "code": "B4",
+   "zh": "光模塊/化合物半導體設備 Optical/Compound Equip",
+   "tier": "中型",
+   "members": [
+    "AIXA.DE",
+    "VECO"
+   ],
+   "us": [
+    "VECO"
+   ],
+   "nonus": [
+    "AIXA.DE"
+   ],
+   "rsi": 41.9,
+   "ret1w": -8.8,
+   "ret1m": -8.9,
+   "ret3m": 38,
+   "flowRatio": 5.7,
+   "flowB": 0.5,
+   "quad": "落後",
+   "rs": 94.68,
+   "rsmom": 95.55,
+   "color": "#B0712A",
+   "mtier": {
+    "AIXA.DE": "中型",
+    "VECO": "中型"
+   },
+   "mregion": {
+    "AIXA.DE": "🇩🇪",
+    "VECO": "🇺🇸"
+   }
+  },
+  {
+   "n": 15,
+   "cat": "B.製造",
+   "sub": "B5 EDA 設計工具",
+   "code": "B5",
+   "zh": "EDA 設計工具",
+   "tier": "大型",
+   "members": [
+    "SNPS",
+    "CDNS"
+   ],
+   "us": [
+    "SNPS",
+    "CDNS"
+   ],
+   "nonus": [],
+   "rsi": 47.1,
+   "ret1w": -1,
+   "ret1m": -5.1,
+   "ret3m": 19.7,
+   "flowRatio": 6.5,
+   "flowB": 7,
+   "quad": "改善",
+   "rs": 92.23,
+   "rsmom": 101.67,
+   "color": "#5A86C9",
+   "mtier": {
+    "SNPS": "大型",
+    "CDNS": "大型"
+   },
+   "mregion": {
+    "SNPS": "🇺🇸",
+    "CDNS": "🇺🇸"
+   }
+  },
+  {
+   "n": 16,
+   "cat": "B.製造",
+   "sub": "B6 玻璃基板①母材 Glass Material",
+   "code": "B6",
+   "zh": "玻璃基板①母材 Glass Material",
+   "tier": "大型",
+   "members": [
+    "1802.TW",
+    "5201.T",
+    "5214.T"
+   ],
+   "us": [],
+   "nonus": [
+    "1802.TW",
+    "5201.T",
+    "5214.T"
+   ],
+   "rsi": 39.8,
+   "ret1w": -7.1,
+   "ret1m": -3.8,
+   "ret3m": 5.9,
+   "flowRatio": 7.1,
+   "flowB": 104.8,
+   "quad": "改善",
+   "rs": 93.82,
+   "rsmom": 109.34,
+   "color": "#9A5BB5",
+   "mtier": {
+    "1802.TW": "大型",
+    "5201.T": "大型",
+    "5214.T": "大型"
+   },
+   "mregion": {
+    "1802.TW": "🇹🇼",
+    "5201.T": "🇯🇵",
+    "5214.T": "🇯🇵"
+   }
+  },
+  {
+   "n": 17,
+   "cat": "B.製造",
+   "sub": "B7 玻璃基板②TGV設備 Equipment",
+   "code": "B7",
+   "zh": "玻璃基板②TGV設備 Equipment",
+   "tier": "大型",
+   "members": [
+    "2467.TW",
+    "LPK.DE"
+   ],
+   "us": [],
+   "nonus": [
+    "2467.TW",
+    "LPK.DE"
+   ],
+   "rsi": 42.2,
+   "ret1w": -11.9,
+   "ret1m": -4.5,
+   "ret3m": 72.1,
+   "flowRatio": 4.8,
+   "flowB": 3.9,
+   "quad": "落後",
+   "rs": 93.49,
+   "rsmom": 96.68,
+   "color": "#3F9C8E",
+   "mtier": {
+    "2467.TW": "大型",
+    "LPK.DE": "小型"
+   },
+   "mregion": {
+    "2467.TW": "🇹🇼",
+    "LPK.DE": "🇩🇪"
+   }
+  },
+  {
+   "n": 18,
+   "cat": "B.製造",
+   "sub": "B8 玻璃基板③載板/面板級 Substrate",
+   "code": "B8",
+   "zh": "玻璃基板③載板/面板級 Substrate",
+   "tier": "大型",
+   "members": [
+    "000725.SZ",
+    "603773.SH",
+    "002436.SZ",
+    "300456.SZ",
+    "600552.SH",
+    "002106.SZ",
+    "3481.TW",
+    "8046.TW",
+    "3189.TW",
+    "4958.TW",
+    "011790.KS",
+    "009150.KS",
+    "011070.KS",
+    "7912.T",
+    "300433.SZ"
+   ],
+   "us": [],
+   "nonus": [
+    "000725.SZ",
+    "603773.SH",
+    "002436.SZ",
+    "300456.SZ",
+    "600552.SH",
+    "002106.SZ",
+    "3481.TW",
+    "8046.TW",
+    "3189.TW",
+    "4958.TW",
+    "011790.KS",
+    "009150.KS",
+    "011070.KS",
+    "7912.T",
+    "300433.SZ"
+   ],
+   "rsi": 50,
+   "ret1w": -9.2,
+   "ret1m": 1.9,
+   "ret3m": 97.7,
+   "flowRatio": 21.3,
+   "flowB": 30504.6,
+   "quad": "領先",
+   "rs": 111.25,
+   "rsmom": 100.34,
+   "color": "#C26A8D",
+   "mtier": {
+    "000725.SZ": "大型",
+    "603773.SH": "大型",
+    "002436.SZ": "大型",
+    "300456.SZ": "大型",
+    "600552.SH": "大型",
+    "002106.SZ": "大型",
+    "3481.TW": "大型",
+    "8046.TW": "大型",
+    "3189.TW": "大型",
+    "4958.TW": "大型",
+    "011790.KS": "大型",
+    "009150.KS": "大型",
+    "011070.KS": "大型",
+    "7912.T": "大型",
+    "300433.SZ": "大型"
+   },
+   "mregion": {
+    "000725.SZ": "🇨🇳",
+    "603773.SH": "🇨🇳",
+    "002436.SZ": "🇨🇳",
+    "300456.SZ": "🇨🇳",
+    "600552.SH": "🇨🇳",
+    "002106.SZ": "🇨🇳",
+    "3481.TW": "🇹🇼",
+    "8046.TW": "🇹🇼",
+    "3189.TW": "🇹🇼",
+    "4958.TW": "🇹🇼",
+    "011790.KS": "🇰🇷",
+    "009150.KS": "🇰🇷",
+    "011070.KS": "🇰🇷",
+    "7912.T": "🇯🇵",
+    "300433.SZ": "🇨🇳"
+   }
+  },
+  {
+   "n": 19,
+   "cat": "B.製造",
+   "sub": "B9 半導體材料①矽晶圓 Silicon Wafer",
+   "code": "B9",
+   "zh": "半導體材料①矽晶圓 Silicon Wafer",
+   "tier": "大型",
+   "members": [
+    "688126.SH",
+    "002129.SZ",
+    "605358.SH",
+    "4063.T",
+    "3436.T"
+   ],
+   "us": [],
+   "nonus": [
+    "688126.SH",
+    "002129.SZ",
+    "605358.SH",
+    "4063.T",
+    "3436.T"
+   ],
+   "rsi": 52.6,
+   "ret1w": -4.2,
+   "ret1m": 9.9,
+   "ret3m": 83.2,
+   "flowRatio": 13.1,
+   "flowB": 944.8,
+   "quad": "領先",
+   "rs": 108.4,
+   "rsmom": 105.94,
+   "color": "#7A8B2E",
+   "mtier": {
+    "688126.SH": "大型",
+    "002129.SZ": "大型",
+    "605358.SH": "大型",
+    "4063.T": "大型",
+    "3436.T": "大型"
+   },
+   "mregion": {
+    "688126.SH": "🇨🇳",
+    "002129.SZ": "🇨🇳",
+    "605358.SH": "🇨🇳",
+    "4063.T": "🇯🇵",
+    "3436.T": "🇯🇵"
+   }
+  },
+  {
+   "n": 20,
+   "cat": "C.記憶體儲存",
+   "sub": "C1 HBM / DRAM 高頻寬記憶體",
+   "code": "C1",
+   "zh": "HBM / DRAM 高頻寬記憶體",
+   "tier": "大型",
+   "members": [
+    "000021.SZ",
+    "600667.SH",
+    "000660.KS",
+    "MU",
+    "2408.TW",
+    "2344.TW"
+   ],
+   "us": [
+    "MU"
+   ],
+   "nonus": [
+    "000021.SZ",
+    "600667.SH",
+    "000660.KS",
+    "2408.TW",
+    "2344.TW"
+   ],
+   "rsi": 53.2,
+   "ret1w": -4.3,
+   "ret1m": 25.3,
+   "ret3m": 134.2,
+   "flowRatio": 24.3,
+   "flowB": 158023,
+   "quad": "轉弱",
+   "rs": 111.91,
+   "rsmom": 99.02,
+   "color": "#BA7517",
+   "mtier": {
+    "000021.SZ": "大型",
+    "600667.SH": "大型",
+    "000660.KS": "大型",
+    "MU": "大型",
+    "2408.TW": "大型",
+    "2344.TW": "大型"
+   },
+   "mregion": {
+    "000021.SZ": "🇨🇳",
+    "600667.SH": "🇨🇳",
+    "000660.KS": "🇰🇷",
+    "MU": "🇺🇸",
+    "2408.TW": "🇹🇼",
+    "2344.TW": "🇹🇼"
+   }
+  },
+  {
+   "n": 21,
+   "cat": "C.記憶體儲存",
+   "sub": "C2 NAND / Storage 快閃儲存",
+   "code": "C2",
+   "zh": "NAND / Storage 快閃儲存",
+   "tier": "大型",
+   "members": [
+    "SNDK",
+    "WDC",
+    "STX",
+    "285A.T"
+   ],
+   "us": [
+    "SNDK",
+    "WDC",
+    "STX"
+   ],
+   "nonus": [
+    "285A.T"
+   ],
+   "rsi": 49,
+   "ret1w": -6.8,
+   "ret1m": 6.3,
+   "ret3m": 128.8,
+   "flowRatio": 23.4,
+   "flowB": 32954.6,
+   "quad": "轉弱",
+   "rs": 108.4,
+   "rsmom": 94.58,
+   "color": "#7F77DD",
+   "mtier": {
+    "SNDK": "大型",
+    "WDC": "大型",
+    "STX": "大型",
+    "285A.T": "大型"
+   },
+   "mregion": {
+    "SNDK": "🇺🇸",
+    "WDC": "🇺🇸",
+    "STX": "🇺🇸",
+    "285A.T": "🇯🇵"
+   }
+  },
+  {
+   "n": 22,
+   "cat": "C.記憶體儲存",
+   "sub": "C3 記憶體介面/控制晶片 Memory Interface",
+   "code": "C3",
+   "zh": "記憶體介面/控制晶片 Memory Interface",
+   "tier": "大型",
+   "members": [
+    "RMBS",
+    "SIMO",
+    "688008.SS"
+   ],
+   "us": [
+    "RMBS",
+    "SIMO"
+   ],
+   "nonus": [
+    "688008.SS"
+   ],
+   "rsi": 53,
+   "ret1w": 1.6,
+   "ret1m": 7.7,
+   "ret3m": 103.2,
+   "flowRatio": 25.1,
+   "flowB": 269.4,
+   "quad": "落後",
+   "rs": 96.31,
+   "rsmom": 90.43,
+   "color": "#1D9E75",
+   "mtier": {
+    "RMBS": "大型",
+    "SIMO": "大型",
+    "688008.SS": "大型"
+   },
+   "mregion": {
+    "RMBS": "🇺🇸",
+    "SIMO": "🇹🇼",
+    "688008.SS": "🇨🇳"
+   }
+  },
+  {
+   "n": 23,
+   "cat": "C.記憶體儲存",
+   "sub": "C4 儲存系統 Storage Systems",
+   "code": "C4",
+   "zh": "儲存系統 Storage Systems",
+   "tier": "大型",
+   "members": [
+    "NTAP"
+   ],
+   "us": [
+    "NTAP"
+   ],
+   "nonus": [],
+   "rsi": 65.6,
+   "ret1w": 7.8,
+   "ret1m": -1.1,
+   "ret3m": 69.4,
+   "flowRatio": 13.7,
+   "flowB": 3.7,
+   "quad": "轉弱",
+   "rs": 100.58,
+   "rsmom": 95.58,
+   "color": "#378ADD",
+   "mtier": {
+    "NTAP": "大型"
+   },
+   "mregion": {
+    "NTAP": "🇺🇸"
+   }
+  },
+  {
+   "n": 24,
+   "cat": "D.互連",
+   "sub": "D1 光模塊 Optical Module",
+   "code": "D1",
+   "zh": "光模塊 Optical Module",
+   "tier": "大型",
+   "members": [
+    "300308.SZ",
+    "300502.SZ",
+    "300394.SZ",
+    "002281.SZ",
+    "000988.SZ",
+    "688313.SH",
+    "688498.SH",
+    "COHR",
+    "LITE",
+    "MTSI",
+    "FN"
+   ],
+   "us": [
+    "COHR",
+    "LITE",
+    "MTSI",
+    "FN"
+   ],
+   "nonus": [
+    "300308.SZ",
+    "300502.SZ",
+    "300394.SZ",
+    "002281.SZ",
+    "000988.SZ",
+    "688313.SH",
+    "688498.SH"
+   ],
+   "rsi": 48,
+   "ret1w": 0.5,
+   "ret1m": -4.2,
+   "ret3m": 55.7,
+   "flowRatio": 13.7,
+   "flowB": 973.2,
+   "quad": "改善",
+   "rs": 96.02,
+   "rsmom": 102.03,
+   "color": "#888780",
+   "mtier": {
+    "300308.SZ": "大型",
+    "300502.SZ": "大型",
+    "300394.SZ": "大型",
+    "002281.SZ": "大型",
+    "000988.SZ": "大型",
+    "688313.SH": "大型",
+    "688498.SH": "大型",
+    "COHR": "大型",
+    "LITE": "大型",
+    "MTSI": "大型",
+    "FN": "大型"
+   },
+   "mregion": {
+    "300308.SZ": "🇨🇳",
+    "300502.SZ": "🇨🇳",
+    "300394.SZ": "🇨🇳",
+    "002281.SZ": "🇨🇳",
+    "000988.SZ": "🇨🇳",
+    "688313.SH": "🇨🇳",
+    "688498.SH": "🇨🇳",
+    "COHR": "🇺🇸",
+    "LITE": "🇺🇸",
+    "MTSI": "🇺🇸",
+    "FN": "🇺🇸"
+   }
+  },
+  {
+   "n": 25,
+   "cat": "D.互連",
+   "sub": "D2 矽光 / 光子 Silicon Photonics",
+   "code": "D2",
+   "zh": "矽光 / 光子 Silicon Photonics",
+   "tier": "大型",
+   "members": [
+    "TSEM",
+    "POET",
+    "LWLG"
+   ],
+   "us": [
+    "TSEM",
+    "POET",
+    "LWLG"
+   ],
+   "nonus": [],
+   "rsi": 40.8,
+   "ret1w": -8.8,
+   "ret1m": -21,
+   "ret3m": 13.7,
+   "flowRatio": 4.3,
+   "flowB": 3,
+   "quad": "落後",
+   "rs": 89.09,
+   "rsmom": 82.45,
+   "color": "#D4537E",
+   "mtier": {
+    "TSEM": "大型",
+    "POET": "小型",
+    "LWLG": "小型"
+   },
+   "mregion": {
+    "TSEM": "🇮🇱",
+    "POET": "🇨🇦",
+    "LWLG": "🇺🇸"
+   }
+  },
+  {
+   "n": 26,
+   "cat": "D.互連",
+   "sub": "D3 高速互連 / SerDes / AEC",
+   "code": "D3",
+   "zh": "高速互連 / SerDes / AEC",
+   "tier": "大型",
+   "members": [
+    "CRDO",
+    "ALAB",
+    "SMTC"
+   ],
+   "us": [
+    "CRDO",
+    "ALAB",
+    "SMTC"
+   ],
+   "nonus": [],
+   "rsi": 53,
+   "ret1w": -0.6,
+   "ret1m": 11.1,
+   "ret3m": 148.9,
+   "flowRatio": 19.1,
+   "flowB": 49,
+   "quad": "轉弱",
+   "rs": 104.77,
+   "rsmom": 93.88,
+   "color": "#639922",
+   "mtier": {
+    "CRDO": "大型",
+    "ALAB": "大型",
+    "SMTC": "大型"
+   },
+   "mregion": {
+    "CRDO": "🇺🇸",
+    "ALAB": "🇺🇸",
+    "SMTC": "🇺🇸"
+   }
+  },
+  {
+   "n": 27,
+   "cat": "D.互連",
+   "sub": "D4 網絡交換 Networking / Switch",
+   "code": "D4",
+   "zh": "網絡交換 Networking / Switch",
+   "tier": "大型",
+   "members": [
+    "301165.SZ",
+    "301191.SZ",
+    "000938.SZ",
+    "ANET",
+    "CIEN",
+    "CSCO"
+   ],
+   "us": [
+    "ANET",
+    "CIEN",
+    "CSCO"
+   ],
+   "nonus": [
+    "301165.SZ",
+    "301191.SZ",
+    "000938.SZ"
+   ],
+   "rsi": 61.6,
+   "ret1w": 13,
+   "ret1m": 28,
+   "ret3m": 34.4,
+   "flowRatio": 13.3,
+   "flowB": 109.5,
+   "quad": "改善",
+   "rs": 89.71,
+   "rsmom": 100.2,
+   "color": "#E24B4A",
+   "mtier": {
+    "301165.SZ": "大型",
+    "301191.SZ": "大型",
+    "000938.SZ": "大型",
+    "ANET": "大型",
+    "CIEN": "大型",
+    "CSCO": "大型"
+   },
+   "mregion": {
+    "301165.SZ": "🇨🇳",
+    "301191.SZ": "🇨🇳",
+    "000938.SZ": "🇨🇳",
+    "ANET": "🇺🇸",
+    "CIEN": "🇺🇸",
+    "CSCO": "🇺🇸"
+   }
+  },
+  {
+   "n": 28,
+   "cat": "D.互連",
+   "sub": "D5 連接器 / 線纜 Connector / Cable",
+   "code": "D5",
+   "zh": "連接器 / 線纜 Connector / Cable",
+   "tier": "大型",
+   "members": [
+    "002897.SZ",
+    "300843.SZ",
+    "APH",
+    "TEL",
+    "002475.SZ"
+   ],
+   "us": [
+    "APH",
+    "TEL"
+   ],
+   "nonus": [
+    "002897.SZ",
+    "300843.SZ",
+    "002475.SZ"
+   ],
+   "rsi": 53.6,
+   "ret1w": 1.8,
+   "ret1m": 15.6,
+   "ret3m": 49.3,
+   "flowRatio": 7.7,
+   "flowB": 85.3,
+   "quad": "領先",
+   "rs": 106.84,
+   "rsmom": 114.22,
+   "color": "#0F6E56",
+   "mtier": {
+    "002897.SZ": "大型",
+    "300843.SZ": "大型",
+    "APH": "大型",
+    "TEL": "大型",
+    "002475.SZ": "大型"
+   },
+   "mregion": {
+    "002897.SZ": "🇨🇳",
+    "300843.SZ": "🇨🇳",
+    "APH": "🇺🇸",
+    "TEL": "🇺🇸",
+    "002475.SZ": "🇨🇳"
+   }
+  },
+  {
+   "n": 29,
+   "cat": "D.互連",
+   "sub": "D6 光纖 Fiber Optic",
+   "code": "D6",
+   "zh": "光纖 Fiber Optic",
+   "tier": "大型",
+   "members": [
+    "600498.SH",
+    "300620.SZ",
+    "GLW",
+    "600522.SS",
+    "600487.SS",
+    "601869.SS"
+   ],
+   "us": [
+    "GLW"
+   ],
+   "nonus": [
+    "600498.SH",
+    "300620.SZ",
+    "600522.SS",
+    "600487.SS",
+    "601869.SS"
+   ],
+   "rsi": 44.1,
+   "ret1w": -8.7,
+   "ret1m": -7,
+   "ret3m": 32.6,
+   "flowRatio": 17.5,
+   "flowB": 530.2,
+   "quad": "領先",
+   "rs": 105.14,
+   "rsmom": 113.32,
+   "color": "#B0712A",
+   "mtier": {
+    "600498.SH": "大型",
+    "300620.SZ": "大型",
+    "GLW": "大型",
+    "600522.SS": "大型",
+    "600487.SS": "大型",
+    "601869.SS": "大型"
+   },
+   "mregion": {
+    "600498.SH": "🇨🇳",
+    "300620.SZ": "🇨🇳",
+    "GLW": "🇺🇸",
+    "600522.SS": "🇨🇳",
+    "600487.SS": "🇨🇳",
+    "601869.SS": "🇨🇳"
+   }
+  },
+  {
+   "n": 30,
+   "cat": "D.互連",
+   "sub": "D7 PCB 印刷電路板",
+   "code": "D7",
+   "zh": "PCB 印刷電路板",
+   "tier": "大型",
+   "members": [
+    "002463.SZ",
+    "300476.SZ"
+   ],
+   "us": [],
+   "nonus": [
+    "002463.SZ",
+    "300476.SZ"
+   ],
+   "rsi": 46.9,
+   "ret1w": 1.1,
+   "ret1m": -8,
+   "ret3m": 45.8,
+   "flowRatio": 12.2,
+   "flowB": 191.3,
+   "quad": "落後",
+   "rs": 92.62,
+   "rsmom": 98.16,
+   "color": "#5A86C9",
+   "mtier": {
+    "002463.SZ": "大型",
+    "300476.SZ": "大型"
+   },
+   "mregion": {
+    "002463.SZ": "🇨🇳",
+    "300476.SZ": "🇨🇳"
+   }
+  },
+  {
+   "n": 31,
+   "cat": "D.互連",
+   "sub": "D8 安全 / 防火牆 Security / Firewall",
+   "code": "D8",
+   "zh": "安全 / 防火牆 Security / Firewall",
+   "tier": "大型",
+   "members": [
+    "PANW",
+    "FTNT",
+    "CRWD"
+   ],
+   "us": [
+    "PANW",
+    "FTNT",
+    "CRWD"
+   ],
+   "nonus": [],
+   "rsi": 65.7,
+   "ret1w": -0.7,
+   "ret1m": 19,
+   "ret3m": 89.8,
+   "flowRatio": 29.4,
+   "flowB": 84.9,
+   "quad": "轉弱",
+   "rs": 108.01,
+   "rsmom": 99.05,
+   "color": "#9A5BB5",
+   "mtier": {
+    "PANW": "大型",
+    "FTNT": "大型",
+    "CRWD": "大型"
+   },
+   "mregion": {
+    "PANW": "🇺🇸",
+    "FTNT": "🇺🇸",
+    "CRWD": "🇺🇸"
+   }
+  },
+  {
+   "n": 32,
+   "cat": "D.互連",
+   "sub": "D9 光模塊上游 材料/雷射/測試 Optical Upstream",
+   "code": "D9",
+   "zh": "光模塊上游 材料/雷射/測試 Optical Upstream",
+   "tier": "中型",
+   "members": [
+    "AXTI",
+    "AMS",
+    "IPGP",
+    "LASR",
+    "VIAV",
+    "LPTH"
+   ],
+   "us": [
+    "AXTI",
+    "AMS",
+    "IPGP",
+    "LASR",
+    "VIAV",
+    "LPTH"
+   ],
+   "nonus": [],
+   "rsi": 47.4,
+   "ret1w": -4,
+   "ret1m": -5.1,
+   "ret3m": 10.3,
+   "flowRatio": 2.3,
+   "flowB": 2.1,
+   "quad": "落後",
+   "rs": 82.57,
+   "rsmom": 82.71,
+   "color": "#3F9C8E",
+   "mtier": {
+    "AXTI": "中型",
+    "AMS": "小型",
+    "IPGP": "中型",
+    "LASR": "中型",
+    "VIAV": "大型",
+    "LPTH": "小型"
+   },
+   "mregion": {
+    "AXTI": "🇺🇸",
+    "AMS": "🇦🇹",
+    "IPGP": "🇺🇸",
+    "LASR": "🇺🇸",
+    "VIAV": "🇺🇸",
+    "LPTH": "🇺🇸"
+   }
+  },
+  {
+   "n": 33,
+   "cat": "E.系統整合",
+   "sub": "E1 Server ODM/OEM 伺服器整合",
+   "code": "E1",
+   "zh": "Server ODM/OEM 伺服器整合",
+   "tier": "大型",
+   "members": [
+    "SMCI",
+    "DELL",
+    "HPE",
+    "2317.TW",
+    "2382.TW",
+    "3231.TW",
+    "6669.TW",
+    "2356.TW",
+    "601138.SS",
+    "000977.SZ"
+   ],
+   "us": [
+    "SMCI",
+    "DELL",
+    "HPE"
+   ],
+   "nonus": [
+    "2317.TW",
+    "2382.TW",
+    "3231.TW",
+    "6669.TW",
+    "2356.TW",
+    "601138.SS",
+    "000977.SZ"
+   ],
+   "rsi": 53,
+   "ret1w": 5.5,
+   "ret1m": -2.2,
+   "ret3m": 48.2,
+   "flowRatio": 17.7,
+   "flowB": 884.8,
+   "quad": "落後",
+   "rs": 98.75,
+   "rsmom": 98.21,
+   "color": "#C26A8D",
+   "mtier": {
+    "SMCI": "大型",
+    "DELL": "大型",
+    "HPE": "大型",
+    "2317.TW": "大型",
+    "2382.TW": "大型",
+    "3231.TW": "大型",
+    "6669.TW": "大型",
+    "2356.TW": "大型",
+    "601138.SS": "大型",
+    "000977.SZ": "大型"
+   },
+   "mregion": {
+    "SMCI": "🇺🇸",
+    "DELL": "🇺🇸",
+    "HPE": "🇺🇸",
+    "2317.TW": "🇹🇼",
+    "2382.TW": "🇹🇼",
+    "3231.TW": "🇹🇼",
+    "6669.TW": "🇹🇼",
+    "2356.TW": "🇹🇼",
+    "601138.SS": "🇨🇳",
+    "000977.SZ": "🇨🇳"
+   }
+  },
+  {
+   "n": 34,
+   "cat": "F.基礎設施",
+   "sub": "F1 電源 Power",
+   "code": "F1",
+   "zh": "電源 Power",
+   "tier": "大型",
+   "members": [
+    "002851.SZ",
+    "300870.SZ",
+    "002335.SZ",
+    "002533.SZ",
+    "002130.SZ",
+    "PWR",
+    "VRT",
+    "ETN",
+    "SBGSY",
+    "GEV",
+    "GNRC",
+    "CMI"
+   ],
+   "us": [
+    "PWR",
+    "VRT",
+    "ETN",
+    "SBGSY",
+    "GEV",
+    "GNRC",
+    "CMI"
+   ],
+   "nonus": [
+    "002851.SZ",
+    "300870.SZ",
+    "002335.SZ",
+    "002533.SZ",
+    "002130.SZ"
+   ],
+   "rsi": 46,
+   "ret1w": -1.2,
+   "ret1m": -1,
+   "ret3m": 14.2,
+   "flowRatio": 3.2,
+   "flowB": 32.4,
+   "quad": "改善",
+   "rs": 93.12,
+   "rsmom": 107.84,
+   "color": "#7A8B2E",
+   "mtier": {
+    "002851.SZ": "大型",
+    "300870.SZ": "大型",
+    "002335.SZ": "大型",
+    "002533.SZ": "中型",
+    "002130.SZ": "大型",
+    "PWR": "大型",
+    "VRT": "大型",
+    "ETN": "大型",
+    "SBGSY": "大型",
+    "GEV": "大型",
+    "GNRC": "大型",
+    "CMI": "—"
+   },
+   "mregion": {
+    "002851.SZ": "🇨🇳",
+    "300870.SZ": "🇨🇳",
+    "002335.SZ": "🇨🇳",
+    "002533.SZ": "🇨🇳",
+    "002130.SZ": "🇨🇳",
+    "PWR": "🇺🇸",
+    "VRT": "🇺🇸",
+    "ETN": "🇺🇸",
+    "SBGSY": "🇫🇷",
+    "GEV": "🇺🇸",
+    "GNRC": "🇺🇸",
+    "CMI": "🇺🇸"
+   }
+  },
+  {
+   "n": 35,
+   "cat": "F.基礎設施",
+   "sub": "F2 散熱液冷 Cooling",
+   "code": "F2",
+   "zh": "散熱液冷 Cooling",
+   "tier": "—",
+   "members": [
+    "301018.SZ",
+    "TT",
+    "MOD",
+    "BE",
+    "3017.TW",
+    "3653.TW",
+    "2308.TW",
+    "002837.SZ",
+    "300499.SZ"
+   ],
+   "us": [
+    "TT",
+    "MOD",
+    "BE"
+   ],
+   "nonus": [
+    "301018.SZ",
+    "3017.TW",
+    "3653.TW",
+    "2308.TW",
+    "002837.SZ",
+    "300499.SZ"
+   ],
+   "rsi": 46.8,
+   "ret1w": -0.9,
+   "ret1m": -1.9,
+   "ret3m": 23.6,
+   "flowRatio": -2.6,
+   "flowB": -84.7,
+   "quad": "改善",
+   "rs": 91.73,
+   "rsmom": 102.21,
+   "color": "#C25D2E",
+   "mtier": {
+    "301018.SZ": "—",
+    "TT": "—",
+    "MOD": "—",
+    "BE": "—",
+    "3017.TW": "—",
+    "3653.TW": "—",
+    "2308.TW": "—",
+    "002837.SZ": "—",
+    "300499.SZ": "—"
+   },
+   "mregion": {
+    "301018.SZ": "🇨🇳",
+    "TT": "🇺🇸",
+    "MOD": "🇺🇸",
+    "BE": "🇺🇸",
+    "3017.TW": "🇹🇼",
+    "3653.TW": "🇹🇼",
+    "2308.TW": "🇹🇼",
+    "002837.SZ": "🇨🇳",
+    "300499.SZ": "🇨🇳"
+   }
+  },
+  {
+   "n": 36,
+   "cat": "F.基礎設施",
+   "sub": "F3 能源 / 核電 Energy / Nuclear",
+   "code": "F3",
+   "zh": "能源 / 核電 Energy / Nuclear",
+   "tier": "—",
+   "members": [
+    "OKLO",
+    "NNE",
+    "LEU",
+    "BWXT",
+    "SMR",
+    "NRG",
+    "CEG",
+    "VST",
+    "TLN",
+    "CCJ"
+   ],
+   "us": [
+    "OKLO",
+    "NNE",
+    "LEU",
+    "BWXT",
+    "SMR",
+    "NRG",
+    "CEG",
+    "VST",
+    "TLN",
+    "CCJ"
+   ],
+   "nonus": [],
+   "rsi": 44.8,
+   "ret1w": -0.8,
+   "ret1m": -3.8,
+   "ret3m": -7.6,
+   "flowRatio": -3.6,
+   "flowB": -9.8,
+   "quad": "改善",
+   "rs": 89.27,
+   "rsmom": 107.19,
+   "color": "#4E7AB5",
+   "mtier": {
+    "OKLO": "—",
+    "NNE": "—",
+    "LEU": "—",
+    "BWXT": "—",
+    "SMR": "—",
+    "NRG": "—",
+    "CEG": "—",
+    "VST": "—",
+    "TLN": "—",
+    "CCJ": "—"
+   },
+   "mregion": {
+    "OKLO": "🇺🇸",
+    "NNE": "🇺🇸",
+    "LEU": "🇺🇸",
+    "BWXT": "🇺🇸",
+    "SMR": "🇺🇸",
+    "NRG": "🇺🇸",
+    "CEG": "🇺🇸",
+    "VST": "🇺🇸",
+    "TLN": "🇺🇸",
+    "CCJ": "🇨🇦"
+   }
+  },
+  {
+   "n": 37,
+   "cat": "G.雲端應用",
+   "sub": "G1 其他雲平台 / 自研晶片 Other Cloud",
+   "code": "G1",
+   "zh": "其他雲平台 / 自研晶片 Other Cloud",
+   "tier": "—",
+   "members": [
+    "META",
+    "ORCL"
+   ],
+   "us": [
+    "META",
+    "ORCL"
+   ],
+   "nonus": [],
+   "rsi": 44.2,
+   "ret1w": 0.5,
+   "ret1m": -14,
+   "ret3m": 0.1,
+   "flowRatio": -2.4,
+   "flowB": -22.9,
+   "quad": "落後",
+   "rs": 86.56,
+   "rsmom": 95.9,
+   "color": "#D85A30",
+   "mtier": {
+    "META": "—",
+    "ORCL": "—"
+   },
+   "mregion": {
+    "META": "🇺🇸",
+    "ORCL": "🇺🇸"
+   }
+  },
+  {
+   "n": 38,
+   "cat": "G.雲端應用",
+   "sub": "G2 數據中心 REIT + 中國算力",
+   "code": "G2",
+   "zh": "數據中心 REIT + 中國算力",
+   "tier": "—",
+   "members": [
+    "DLR",
+    "EQIX",
+    "603019.SS"
+   ],
+   "us": [
+    "DLR",
+    "EQIX"
+   ],
+   "nonus": [
+    "603019.SS"
+   ],
+   "rsi": 50.1,
+   "ret1w": 4.7,
+   "ret1m": 8.5,
+   "ret3m": 10.7,
+   "flowRatio": 8.9,
+   "flowB": 39.8,
+   "quad": "改善",
+   "rs": 92.33,
+   "rsmom": 110.27,
+   "color": "#BA7517",
+   "mtier": {
+    "DLR": "—",
+    "EQIX": "—",
+    "603019.SS": "—"
+   },
+   "mregion": {
+    "DLR": "🇺🇸",
+    "EQIX": "🇺🇸",
+    "603019.SS": "🇨🇳"
+   }
+  },
+  {
+   "n": 39,
+   "cat": "G.雲端應用",
+   "sub": "G3 AI 軟件 AI Software",
+   "code": "G3",
+   "zh": "AI 軟件 AI Software",
+   "tier": "—",
+   "members": [
+    "NET",
+    "DUOL",
+    "PLTR",
+    "SNOW",
+    "AI",
+    "ADBE",
+    "CRM",
+    "NOW",
+    "MDB",
+    "SOUN",
+    "UPST"
+   ],
+   "us": [
+    "NET",
+    "DUOL",
+    "PLTR",
+    "SNOW",
+    "AI",
+    "ADBE",
+    "CRM",
+    "NOW",
+    "MDB",
+    "SOUN",
+    "UPST"
+   ],
+   "nonus": [],
+   "rsi": 53.8,
+   "ret1w": 1.1,
+   "ret1m": -2,
+   "ret3m": 17.9,
+   "flowRatio": 8.8,
+   "flowB": 88.4,
+   "quad": "改善",
+   "rs": 92.2,
+   "rsmom": 105.6,
+   "color": "#7F77DD",
+   "mtier": {
+    "NET": "—",
+    "DUOL": "—",
+    "PLTR": "—",
+    "SNOW": "—",
+    "AI": "—",
+    "ADBE": "—",
+    "CRM": "—",
+    "NOW": "—",
+    "MDB": "—",
+    "SOUN": "—",
+    "UPST": "—"
+   },
+   "mregion": {
+    "NET": "🇺🇸",
+    "DUOL": "🇺🇸",
+    "PLTR": "🇺🇸",
+    "SNOW": "🇺🇸",
+    "AI": "🇺🇸",
+    "ADBE": "🇺🇸",
+    "CRM": "🇺🇸",
+    "NOW": "🇺🇸",
+    "MDB": "🇺🇸",
+    "SOUN": "🇺🇸",
+    "UPST": "🇺🇸"
+   }
+  },
+  {
+   "n": 40,
+   "cat": "G.雲端應用",
+   "sub": "G4 機器人 / 物理 AI Physical AI",
+   "code": "G4",
+   "zh": "機器人 / 物理 AI Physical AI",
+   "tier": "—",
+   "members": [
+    "TSLA",
+    "SYM",
+    "ISRG"
+   ],
+   "us": [
+    "TSLA",
+    "SYM",
+    "ISRG"
+   ],
+   "nonus": [],
+   "rsi": 47.2,
+   "ret1w": -3.4,
+   "ret1m": -3,
+   "ret3m": -5.9,
+   "flowRatio": 14.6,
+   "flowB": 197.8,
+   "quad": "改善",
+   "rs": 89.25,
+   "rsmom": 109.18,
+   "color": "#1D9E75",
+   "mtier": {
+    "TSLA": "—",
+    "SYM": "—",
+    "ISRG": "—"
+   },
+   "mregion": {
+    "TSLA": "🇺🇸",
+    "SYM": "🇺🇸",
+    "ISRG": "🇺🇸"
+   }
+  },
+  {
+   "n": 41,
+   "cat": "G.雲端應用",
+   "sub": "G5 IT 服務 / 顧問 / 管理式雲 IT Services",
+   "code": "G5",
+   "zh": "IT 服務 / 顧問 / 管理式雲 IT Services",
+   "tier": "—",
+   "members": [
+    "ACN",
+    "RXT"
+   ],
+   "us": [
+    "ACN",
+    "RXT"
+   ],
+   "nonus": [],
+   "rsi": 41.9,
+   "ret1w": -10.1,
+   "ret1m": -6.7,
+   "ret3m": 185,
+   "flowRatio": -9.1,
+   "flowB": -7.3,
+   "quad": "轉弱",
+   "rs": 102.02,
+   "rsmom": 85.97,
+   "color": "#378ADD",
+   "mtier": {
+    "ACN": "—",
+    "RXT": "—"
+   },
+   "mregion": {
+    "ACN": "🇺🇸",
+    "RXT": "🇺🇸"
+   }
+  }
+ ],
+ "asof_dash": "2026-07-09",
+ "coverage_dash": "224/236"
+}

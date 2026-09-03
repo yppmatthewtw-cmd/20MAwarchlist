@@ -1,0 +1,162 @@
+(function() {
+  // ---- theme: 自動（跟隨系統／檢視器）／淺色／深色，選擇存 localStorage ----
+  var root = document.documentElement, tbtns = document.querySelectorAll('#thm button');
+  var pref = 'auto';
+  try { pref = localStorage.getItem('subtheme') || 'auto'; } catch (e) {}
+  if (pref !== 'light' && pref !== 'dark') pref = 'auto';
+  var applying = false;
+  function applyTheme() {
+    applying = true;
+    if (pref === 'auto') root.removeAttribute('data-theme');
+    else if (root.getAttribute('data-theme') !== pref) root.setAttribute('data-theme', pref);
+    tbtns.forEach(function(b) {
+      var on = b.dataset.t === pref;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    applying = false;
+  }
+  tbtns.forEach(function(b) {
+    b.addEventListener('click', function() {
+      pref = b.dataset.t;
+      try { localStorage.setItem('subtheme', pref); } catch (e) {}
+      applyTheme();
+    });
+  });
+  applyTheme();
+  // the artifact viewer stamps data-theme on <html> for its own theme; an explicit
+  // in-page choice must survive that, so re-assert it whenever the attribute changes
+  new MutationObserver(function() {
+    if (!applying && pref !== 'auto' && root.getAttribute('data-theme') !== pref) applyTheme();
+  }).observe(root, {attributes: true, attributeFilter: ['data-theme']});
+
+  var gbtns = document.querySelectorAll('.nav button[data-g]');
+  var sbtns = document.querySelectorAll('.nav button.sortb');
+  var navEl = document.querySelector('.nav');
+  var g = '1';
+  function setNavH() { document.documentElement.style.setProperty('--navh', navEl.offsetHeight + 'px'); }
+  window.addEventListener('resize', setNavH);
+  var fix = document.createElement('div'); fix.className = 'fixhead';
+  var fixIn = document.createElement('div'); fix.appendChild(fixIn); document.body.appendChild(fix);
+  var fixFor = null;
+  function activeWrap() {
+    var sec = document.querySelector('section[id^="p"]:not([hidden])');
+    return sec ? sec.querySelector('.tblwrap') : null;
+  }
+  function buildFix(wrap) {
+    var tb = wrap.querySelector('table');
+    fixIn.innerHTML = '';
+    var t = document.createElement('table');
+    t.appendChild(tb.querySelector('colgroup').cloneNode(true));
+    var th = tb.querySelector('thead').cloneNode(true);
+    th.querySelectorAll('.rz').forEach(function(x) { x.remove(); });
+    t.appendChild(th); fixIn.appendChild(t);
+    th.querySelectorAll('th.srt').forEach(function(h, i) {
+      h.addEventListener('click', function() {
+        var real = tb.querySelectorAll('thead th.srt')[i]; if (real) real.click();
+      });
+    });
+    fixFor = wrap;
+  }
+  function updFix() {
+    var wrap = activeWrap();
+    if (!wrap) { fix.style.display = 'none'; return; }
+    if (fixFor !== wrap) buildFix(wrap);
+    var tb = wrap.querySelector('table'), thead = tb.querySelector('thead');
+    var navB = navEl.getBoundingClientRect().bottom;
+    var tr = tb.getBoundingClientRect(), hr = thead.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+    if (!(hr.top < navB && tr.bottom > navB + hr.height + 20)) { fix.style.display = 'none'; return; }
+    var ct = fixIn.querySelector('table');
+    var cols = tb.querySelectorAll('col'), ccols = ct.querySelectorAll('col');
+    cols.forEach(function(c, i) { if (ccols[i]) ccols[i].style.width = c.style.width; });
+    ct.style.width = tb.style.width || (tb.offsetWidth + 'px');
+    ct.querySelectorAll('th').forEach(function(h, i) {
+      var real = thead.querySelectorAll('th')[i];
+      if (real) h.className = real.className;
+    });
+    fix.style.left = wr.left + 'px'; fix.style.width = wr.width + 'px'; fix.style.top = navB + 'px';
+    fixIn.style.transform = 'translateX(' + (-wrap.scrollLeft) + 'px)';
+    fix.style.display = 'block';
+  }
+  window.addEventListener('scroll', updFix, {passive: true});
+  window.addEventListener('resize', updFix);
+  document.querySelectorAll('.tblwrap').forEach(function(w) { w.addEventListener('scroll', updFix, {passive: true}); });
+  var sortState = {};
+  function sortSec(pid, key, fromHeader) {
+    var st = sortState[pid] || {key: '', asc: false};
+    var asc = false;
+    if (fromHeader && key && st.key === key) asc = !st.asc;
+    sortState[pid] = {key: key, asc: asc};
+    var tb = document.querySelector('#p' + pid + ' tbody');
+    if (!tb) return;
+    var rows = Array.prototype.slice.call(tb.rows);
+    if (key) {
+      rows.sort(function(a, b) {
+        var d = (+b.dataset[key]) - (+a.dataset[key]);
+        if (asc) d = -d;
+        return d !== 0 ? d : (+a.dataset.rank) - (+b.dataset.rank);
+      });
+    } else {
+      rows.sort(function(a, b) { return (+a.dataset.rank) - (+b.dataset.rank); });
+    }
+    rows.forEach(function(r, i) {
+      var c0 = r.cells[0];
+      c0.textContent = i + 1;
+      if (key) {
+        var o = document.createElement('span'); o.className = 'orank';
+        o.textContent = '原#' + r.dataset.rank; c0.appendChild(o);
+      }
+      tb.appendChild(r);
+    });
+    syncSort();
+  }
+  function syncSort() {
+    var st = sortState[g] || {key: '', asc: false};
+    sbtns.forEach(function(b) { b.classList.toggle('on', b.dataset.sort === st.key); });
+    document.querySelectorAll('#p' + g + ' th.srt').forEach(function(h) {
+      h.classList.toggle('act', h.dataset.key === st.key && st.key !== '');
+      h.classList.toggle('asc', h.dataset.key === st.key && st.key !== '' && st.asc);
+    });
+    updFix();
+  }
+  function show() {
+    document.querySelectorAll('section[id^="p"]').forEach(function(s) { s.hidden = (s.id !== 'p' + g); });
+    gbtns.forEach(function(b) { b.classList.toggle('on', b.dataset.g === g); });
+    setNavH(); fixFor = null; syncSort();
+    try { localStorage.setItem('subnav', g); } catch (e) {}
+  }
+  gbtns.forEach(function(b) { b.addEventListener('click', function() { g = b.dataset.g; show(); }); });
+  sbtns.forEach(function(b) { b.addEventListener('click', function() { sortSec(g, b.dataset.sort); }); });
+  document.querySelectorAll('th.srt').forEach(function(h) {
+    h.addEventListener('click', function() { sortSec(h.closest('section').id.slice(1), h.dataset.key, true); });
+  });
+  document.querySelectorAll('.tblwrap table').forEach(function(tb) {
+    var cols = tb.querySelectorAll('col');
+    tb.querySelectorAll('th').forEach(function(th, i) {
+      var h = document.createElement('span'); h.className = 'rz'; th.appendChild(h);
+      h.addEventListener('click', function(e) { e.stopPropagation(); });
+      h.addEventListener('mousedown', function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var startX = e.pageX, col = cols[i];
+        var w0 = parseInt(col.style.width, 10) || col.offsetWidth;
+        function mv(ev) {
+          col.style.width = Math.max(40, w0 + ev.pageX - startX) + 'px';
+          var sum = 0;
+          cols.forEach(function(c2) { sum += parseInt(c2.style.width, 10) || 60; });
+          tb.style.width = sum + 'px'; updFix();
+        }
+        function up() {
+          document.removeEventListener('mousemove', mv);
+          document.removeEventListener('mouseup', up);
+        }
+        document.addEventListener('mousemove', mv);
+        document.addEventListener('mouseup', up);
+      });
+    });
+  });
+  try {
+    var sv = localStorage.getItem('subnav');
+    if (sv && document.getElementById('p' + sv)) g = sv;
+  } catch (e) {}
+  show();
+})();

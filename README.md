@@ -15,6 +15,7 @@
 | R6.01 | **數據更新至 2026-08-31 收盤**。改用真實日線 OHLCV 鏡像（[natezone/market-tracker](https://github.com/natezone/market-tracker)，收市後推送）取代 Nasdaq 快照重建；宇宙改為 **S&P 1500 綜合指數**（1,504 隻），分層改用 **指數成分**（S&P 500／400／600 = 大／中／小型股）；R6.01 起改為 **固定深色模式**（不再跟隨瀏覽器主題）|
 | R7.00 | **數據更新至 2026-09-01 收盤**。快照鏡像恢復運作，**回復全美掃描**（7,396 條序列／6,874 隻有 9/1 收盤／3,005 隻合資格，上榜 208 隻）；分層回復市值門檻；8/31 鏡像停擺日以日線鏡像補回 1,500 隻；抽取管道新增「收市後 commit」防護，自動剔除未完成的盤中 bar |
 
+| AI Sector R1.00 | **AI 產業鏈資金流向**：以附件 `Dashboard_R15.6_0828_hk16.15.html` 嘅 **41 個 AI 小群組**（8 大分類：運算核心／Neo Cloud／製造／記憶體儲存／互連／系統整合／基礎設施／雲端應用）為對象，沿用 SubSector R1.01 完全相同嘅計分引擎與版面。**只納入美股上市股票及 US ADR**（全球成分 224 隻中美股 111 隻，實際計分 96 隻）；成分股全屬中國A股／台股／日韓／歐洲掛牌嘅 9 個小群組列出但唔參與排名。四頁：總覽／每日矩陣／8 大分類匯總／**象限背離**（儀表板 8/27 RS 象限 vs 8/26–9/1 實測資金流）|
 | SubSector R1.01 | 加入**版面切換按鈕**（自動／☀淺色／🌙深色）：調色盤改為 token 制 —— `:root` 定義完整淺色，`@media (prefers-color-scheme:dark)`（以 `:root:not([data-theme="light"])` 保護）及 `:root[data-theme="dark"]` 覆寫深色，資金流向色階、熱度色、陰影、邊框全部跟住換色；選擇存 localStorage，並用 MutationObserver 令頁內選擇唔會被檢視器主題覆寫 |
 | SubSector R1.00 | **子板塊資金流向**（新產品線）：以附件工作簿 `US_Market_Sector_SubSector_HeatMap_R2_20260903.xlsx` 嘅 **111 個子板塊**為對象，用代表股籃子對 **2026-08-26 → 09-01 五個交易日**逐日打資金流向分 （方向 tanh(超額報酬/2%) ＋ Chaikin 收盤位置 ＋ 成交額量能放大，成交額加權、每日橫向百分位 0–100）；四頁：總覽／每日矩陣／GICS 板塊匯總／熱度背離。註：非真實基金流數據，屬價量代理指標 |
 
@@ -107,5 +108,20 @@ python3 scripts/verify_subsector_flow.py   # 獨立重算驗證（0 problems）
 - 工作簿列出但鏡像無數據嘅股票（外國 ADR 如 TSM/ASML/NVO，或已除牌如 K/X/CEIX）以人手核對嘅同業補充樣本頂替；
   工作簿無列 ticker 嘅 2 個子板塊用代理樣本。樣本數與品質標示喺報告「樣本」欄。
 - **限制**：環境內無法取得 ETF 申購贖回／13F／委託簿數據，「資金流向」全部由價格、成交量與收盤位置推算。
+
+## AI 產業鏈資金流向（AI Sector R1）
+
+```bash
+python3 scripts/ai_flow.py           # 41 AI 小群組 x 5 日資金流向 -> data/ai_flow.json
+python3 scripts/build_ai_report.py   # 產生 HTML 報告（CSS/JS 取自 SubSector 報告，兩份保持同一套系統）
+python3 scripts/verify_ai_flow.py    # 獨立重算驗證（0 problems）
+```
+
+- 分類、成分股、RS 象限、RSI 與 1週／1月／3月報酬全部取自附件儀表板（`data/ai_groups.json`，41 組）；
+  RS 象限為儀表板 **2026-08-27** 數值，資金流向計分視窗為 **2026-08-26 → 09-01**，兩者時點不同，正好用於背離分析。
+- **只計美股／US ADR**：儀表板本身已用 ADR 代號表示有 ADR 的外國公司（台積電＝TSM、ASML＝Nasdaq ADR）；
+  帶交易所後綴（.SS/.SH/.SZ/.TW/.T/.KS/.DE/.AS/.VI）的股票一律排除，不以其他股票代替。
+- 計分公式與 SubSector R1.01 完全一致（`ai_flow.py` 由 `subsector_flow.py` 轉換而成，只換籃子來源）。
+- **限制**：AI 供應鏈重心在亞洲，美股樣本偏薄（籃子中位數 2 隻，16 組僅 ≤2 隻），各行已標示美股數／全球數／覆蓋率。
 
 > 本項目只係篩選工具，唔係投資建議。
