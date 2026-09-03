@@ -1,0 +1,2045 @@
+[
+ {
+  "n": 1,
+  "sector": "資訊科技 Information Technology",
+  "zh": "AI加速晶片/GPU",
+  "en": "AI Accelerators & GPU",
+  "tickers": [
+   "NVDA",
+   "AMD",
+   "AVGO",
+   "MRVL"
+  ],
+  "nfirms": "~15",
+  "etf": "SMH / SOXX",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（狂熱後段·消化）",
+  "driver": "Hyperscaler capex 指引、NVDA 資料中心收入 QoQ、CoWoS 產能"
+ },
+ {
+  "n": 2,
+  "sector": "資訊科技 Information Technology",
+  "zh": "半導體設備",
+  "en": "Semiconductor Equipment",
+  "tickers": [
+   "AMAT",
+   "LRCX",
+   "KLAC",
+   "ASML",
+   "TER"
+  ],
+  "nfirms": "~25",
+  "etf": "SOXX",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第2→3階段",
+  "driver": "WFE 資本支出、台積/三星/美光 capex、日本設備出貨額"
+ },
+ {
+  "n": 3,
+  "sector": "資訊科技 Information Technology",
+  "zh": "記憶體/HBM",
+  "en": "Memory & HBM",
+  "tickers": [
+   "MU",
+   "WDC",
+   "SNDK",
+   "STX"
+  ],
+  "nfirms": "~8",
+  "etf": "SMH",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（供給緊）",
+  "driver": "DRAM/NAND 合約價、HBM 產能預售率、SK海力士月營收"
+ },
+ {
+  "n": 4,
+  "sector": "資訊科技 Information Technology",
+  "zh": "晶圓代工/IDM",
+  "en": "Foundry & IDM",
+  "tickers": [
+   "TSM",
+   "INTC",
+   "GFS",
+   "UMC"
+  ],
+  "nfirms": "~12",
+  "etf": "SOXX",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第2→3階段",
+  "driver": "台積月營收、先進製程稼動率、CHIPS 補貼落地"
+ },
+ {
+  "n": 5,
+  "sector": "資訊科技 Information Technology",
+  "zh": "類比/功率半導體",
+  "en": "Analog & Power Semiconductors",
+  "tickers": [
+   "TXN",
+   "ADI",
+   "ON",
+   "MPWR",
+   "NXPI"
+  ],
+  "nfirms": "~25",
+  "etf": "SOXX",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第1階段（庫存底部）",
+  "driver": "汽車/工業晶片庫存週數、book-to-bill"
+ },
+ {
+  "n": 6,
+  "sector": "資訊科技 Information Technology",
+  "zh": "EDA與半導體IP",
+  "en": "EDA & Semiconductor IP",
+  "tickers": [
+   "SNPS",
+   "CDNS",
+   "ARM"
+  ],
+  "nfirms": "~6",
+  "etf": "IGV",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第3階段",
+  "driver": "新增 design starts、中國出口管制清單"
+ },
+ {
+  "n": 7,
+  "sector": "資訊科技 Information Technology",
+  "zh": "光通訊/CPO",
+  "en": "Optical Networking & CPO",
+  "tickers": [
+   "COHR",
+   "LITE",
+   "AAOI",
+   "CRDO",
+   "POET"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（狂熱）",
+  "driver": "800G/1.6T 出貨量、CPO 導入時程、雷射二極體交期"
+ },
+ {
+  "n": 8,
+  "sector": "資訊科技 Information Technology",
+  "zh": "AI資料中心建設",
+  "en": "AI Data Center Buildout",
+  "tickers": [
+   "VRT",
+   "SMCI",
+   "ANET",
+   "MOD",
+   "CIEN"
+  ],
+  "nfirms": "~20",
+  "etf": "—",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（狂熱）",
+  "driver": "資料中心簽約 MW、變壓器/冷卻交期、電力併網排隊"
+ },
+ {
+  "n": 9,
+  "sector": "資訊科技 Information Technology",
+  "zh": "企業軟體/SaaS",
+  "en": "Enterprise Software & SaaS",
+  "tickers": [
+   "CRM",
+   "NOW",
+   "WDAY",
+   "ADBE",
+   "TEAM"
+  ],
+  "nfirms": "~180",
+  "etf": "IGV",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "技術革命 第3階段（被顛覆方）",
+  "driver": "seat-based 續約率、NRR、AI 取代 SaaS 敘事"
+ },
+ {
+  "n": 10,
+  "sector": "資訊科技 Information Technology",
+  "zh": "網絡安全",
+  "en": "Cybersecurity",
+  "tickers": [
+   "PANW",
+   "CRWD",
+   "ZS",
+   "FTNT",
+   "S"
+  ],
+  "nfirms": "~30",
+  "etf": "CIBR / HACK",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第2階段",
+  "driver": "重大資安事件、聯邦資安預算、billings 增速"
+ },
+ {
+  "n": 11,
+  "sector": "資訊科技 Information Technology",
+  "zh": "資料/分析平台",
+  "en": "Data & Analytics Platforms",
+  "tickers": [
+   "PLTR",
+   "SNOW",
+   "MDB",
+   "DDOG"
+  ],
+  "nfirms": "~25",
+  "etf": "—",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（狂熱）",
+  "driver": "美國政府/國防合約、AI agent 落地案例、RPO 成長"
+ },
+ {
+  "n": 12,
+  "sector": "資訊科技 Information Technology",
+  "zh": "雲端基建/IaaS/Neocloud",
+  "en": "Cloud Infrastructure & Neoclouds",
+  "tickers": [
+   "MSFT",
+   "AMZN",
+   "GOOGL",
+   "NBIS",
+   "CRWV"
+  ],
+  "nfirms": "~15",
+  "etf": "SKYY",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第3階段",
+  "driver": "雲端 backlog/RPO、GPU 租賃價格、折舊年限爭議"
+ },
+ {
+  "n": 13,
+  "sector": "資訊科技 Information Technology",
+  "zh": "IT服務與系統整合",
+  "en": "IT Services & Consulting",
+  "tickers": [
+   "ACN",
+   "IBM",
+   "INFY",
+   "CTSH",
+   "EPAM"
+  ],
+  "nfirms": "~40",
+  "etf": "—",
+  "heat_lbl": "冷 Cold",
+  "heat": 1,
+  "cycle": "技術革命 第3階段（被顛覆方）",
+  "driver": "人頭計費模式受 AI 侵蝕、bookings 轉負"
+ },
+ {
+  "n": 14,
+  "sector": "資訊科技 Information Technology",
+  "zh": "量子運算",
+  "en": "Quantum Computing",
+  "tickers": [
+   "IONQ",
+   "RGTI",
+   "QBTS",
+   "QUBT"
+  ],
+  "nfirms": "~8",
+  "etf": "QTUM",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第1→2階段（早期狂熱）",
+  "driver": "邏輯量子位元里程碑、Google/IBM 論文、政府補助"
+ },
+ {
+  "n": 15,
+  "sector": "資訊科技 Information Technology",
+  "zh": "電子硬件與EMS/連接器",
+  "en": "Electronic Hardware, EMS & Connectors",
+  "tickers": [
+   "AAPL",
+   "DELL",
+   "FLEX",
+   "JBL",
+   "APH",
+   "TEL"
+  ],
+  "nfirms": "~45",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段",
+  "driver": "AI 伺服器出貨量、連接器 ASP、換機週期"
+ },
+ {
+  "n": 16,
+  "sector": "通訊服務 Communication Services",
+  "zh": "大型網絡平台與數位廣告",
+  "en": "Mega-cap Internet & Digital Ads",
+  "tickers": [
+   "GOOGL",
+   "META"
+  ],
+  "nfirms": "~10",
+  "etf": "XLC",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第3階段",
+  "driver": "廣告主支出、AI 搜尋分流、capex/FCF 剪刀差"
+ },
+ {
+  "n": 17,
+  "sector": "通訊服務 Communication Services",
+  "zh": "串流影音",
+  "en": "Streaming Video",
+  "tickers": [
+   "NFLX",
+   "DIS",
+   "WBD",
+   "ROKU"
+  ],
+  "nfirms": "~12",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段",
+  "driver": "訂戶淨增、廣告層 ARPU、內容攤銷"
+ },
+ {
+  "n": 18,
+  "sector": "通訊服務 Communication Services",
+  "zh": "電信營運商",
+  "en": "Telecom Carriers",
+  "tickers": [
+   "T",
+   "VZ",
+   "TMUS"
+  ],
+  "nfirms": "~10",
+  "etf": "VOX",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段（債券代理）",
+  "driver": "10年期殖利率、後付費淨增、資本支出週期"
+ },
+ {
+  "n": 19,
+  "sector": "通訊服務 Communication Services",
+  "zh": "有線/寬頻/衛星",
+  "en": "Cable, Broadband & Satellite",
+  "tickers": [
+   "CMCSA",
+   "CHTR",
+   "ASTS"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "技術革命 第4階段（被取代）",
+  "driver": "寬頻用戶流失、FWA/衛星滲透率"
+ },
+ {
+  "n": 20,
+  "sector": "通訊服務 Communication Services",
+  "zh": "互動遊戲",
+  "en": "Interactive Gaming",
+  "tickers": [
+   "EA",
+   "TTWO",
+   "RBLX",
+   "PLTK"
+  ],
+  "nfirms": "~20",
+  "etf": "HERO / ESPO",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段",
+  "driver": "GTA VI 上市時點、遊戲時數、in-app 消費"
+ },
+ {
+  "n": 21,
+  "sector": "通訊服務 Communication Services",
+  "zh": "社交與線上社群",
+  "en": "Social & Community Platforms",
+  "tickers": [
+   "PINS",
+   "SNAP",
+   "RDDT",
+   "MTCH"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段",
+  "driver": "DAU 成長、廣告 CPM、AI 訓練數據授權金"
+ },
+ {
+  "n": 22,
+  "sector": "通訊服務 Communication Services",
+  "zh": "傳媒與娛樂內容",
+  "en": "Media & Entertainment Content",
+  "tickers": [
+   "LYV",
+   "FWONK",
+   "NWSA",
+   "PARA"
+  ],
+  "nfirms": "~25",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "政治週期 第2階段",
+  "driver": "票房/現場活動支出、體育轉播權標售"
+ },
+ {
+  "n": 23,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "電商平台",
+  "en": "E-commerce Platforms",
+  "tickers": [
+   "AMZN",
+   "SHOP",
+   "EBAY",
+   "CHWY",
+   "W"
+  ],
+  "nfirms": "~40",
+  "etf": "ONLN / IBUY",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "GMV 年增、運費成本、de minimis 關稅規則"
+ },
+ {
+  "n": 24,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "電動車與新能源車",
+  "en": "EV & New Energy Vehicles",
+  "tickers": [
+   "TSLA",
+   "RIVN",
+   "LCID"
+  ],
+  "nfirms": "~15",
+  "etf": "DRIV",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "技術革命 第3→4階段（補貼退場）",
+  "driver": "EV 稅務抵免存廢、交付量、電池成本/kWh"
+ },
+ {
+  "n": 25,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "傳統汽車與零部件",
+  "en": "Autos & Auto Parts",
+  "tickers": [
+   "GM",
+   "F",
+   "APTV",
+   "LEA",
+   "MGA"
+  ],
+  "nfirms": "~35",
+  "etf": "CARZ",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "SAAR 銷售年率、車貸違約率、關稅稅率"
+ },
+ {
+  "n": 26,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "餐飲連鎖",
+  "en": "Restaurants",
+  "tickers": [
+   "MCD",
+   "SBUX",
+   "CMG",
+   "YUM",
+   "DRI"
+  ],
+  "nfirms": "~45",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "同店銷售、客流量、食材與工資通脹"
+ },
+ {
+  "n": 27,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "酒店與郵輪",
+  "en": "Hotels & Cruise Lines",
+  "tickers": [
+   "MAR",
+   "HLT",
+   "RCL",
+   "CCL",
+   "NCLH"
+  ],
+  "nfirms": "~30",
+  "etf": "CRUZ",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "RevPAR、郵輪預訂曲線、燃油成本"
+ },
+ {
+  "n": 28,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "博彩與線上博彩",
+  "en": "Gaming & Online Betting",
+  "tickers": [
+   "LVS",
+   "MGM",
+   "DKNG",
+   "FLUT"
+  ],
+  "nfirms": "~25",
+  "etf": "BETZ",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "政治週期 第2階段（州立法）",
+  "driver": "澳門博彩收入、州別線上博彩開放、稅率調整"
+ },
+ {
+  "n": 29,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "專門零售",
+  "en": "Specialty Retail",
+  "tickers": [
+   "HD",
+   "LOW",
+   "TJX",
+   "ROST",
+   "BBY"
+  ],
+  "nfirms": "~70",
+  "etf": "XRT",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "消費者信心指數、信用卡循環餘額、庫存/銷售比"
+ },
+ {
+  "n": 30,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "服裝與奢侈品",
+  "en": "Apparel & Luxury Goods",
+  "tickers": [
+   "NKE",
+   "LULU",
+   "RL",
+   "DECK",
+   "ONON"
+  ],
+  "nfirms": "~50",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "中國奢侈品需求、折扣率、關稅成本轉嫁"
+ },
+ {
+  "n": 31,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "住宅建築商",
+  "en": "Homebuilders",
+  "tickers": [
+   "DHI",
+   "LEN",
+   "PHM",
+   "NVR",
+   "TOL"
+  ],
+  "nfirms": "~25",
+  "etf": "ITB / XHB",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段（等待降息）",
+  "driver": "30年房貸利率、新屋開工、建商折讓比例"
+ },
+ {
+  "n": 32,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "家居耐用與休閒用品",
+  "en": "Household Durables & Leisure Products",
+  "tickers": [
+   "WHR",
+   "MHK",
+   "POOL",
+   "BC"
+  ],
+  "nfirms": "~35",
+  "etf": "—",
+  "heat_lbl": "冷 Cold",
+  "heat": 1,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "成屋銷售連動、大額耐用品支出"
+ },
+ {
+  "n": 33,
+  "sector": "非必需消費 Consumer Discretionary",
+  "zh": "教育與消費服務",
+  "en": "Education & Consumer Services",
+  "tickers": [
+   "LRN",
+   "ATGE",
+   "HRB",
+   "SCI"
+  ],
+  "nfirms": "~30",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "政治週期 第2階段",
+  "driver": "學貸政策、招生人數、AI 對教培衝擊"
+ },
+ {
+  "n": 34,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "食品加工",
+  "en": "Packaged Food",
+  "tickers": [
+   "GIS",
+   "K",
+   "KHC",
+   "HSY",
+   "CAG"
+  ],
+  "nfirms": "~45",
+  "etf": "XLP",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "銷量 vs 價格拆分、GLP-1 對食量衝擊、可可/咖啡期貨"
+ },
+ {
+  "n": 35,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "非酒精飲品",
+  "en": "Beverages (Non-Alcoholic)",
+  "tickers": [
+   "KO",
+   "PEP",
+   "MNST",
+   "CELH",
+   "KDP"
+  ],
+  "nfirms": "~20",
+  "etf": "XLP",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "防禦性輪動",
+  "driver": "能量飲料掃描數據、糖價、國際匯兌"
+ },
+ {
+  "n": 36,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "酒精飲品",
+  "en": "Alcoholic Beverages",
+  "tickers": [
+   "STZ",
+   "BF.B",
+   "TAP",
+   "DEO"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "冷 Cold",
+  "heat": 1,
+  "cycle": "技術革命 第4階段（結構衰退）",
+  "driver": "年輕族群飲酒率、GLP-1 影響、關稅"
+ },
+ {
+  "n": 37,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "煙草與尼古丁",
+  "en": "Tobacco & Nicotine",
+  "tickers": [
+   "PM",
+   "MO",
+   "TPB"
+  ],
+  "nfirms": "~8",
+  "etf": "—",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "防禦性輪動（高息受惠）",
+  "driver": "無煙產品滲透率、FDA 監管、股息收益率"
+ },
+ {
+  "n": 38,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "大賣場與超巿",
+  "en": "Hypermarkets & Grocery",
+  "tickers": [
+   "WMT",
+   "COST",
+   "KR",
+   "BJ",
+   "ACI"
+  ],
+  "nfirms": "~25",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "同店銷售、電商佔比、食品 CPI"
+ },
+ {
+  "n": 39,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "家庭與個人護理",
+  "en": "Household & Personal Care",
+  "tickers": [
+   "PG",
+   "CL",
+   "KMB",
+   "CHD",
+   "EL"
+  ],
+  "nfirms": "~30",
+  "etf": "XLP",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "防禦性輪動",
+  "driver": "銷量增長、原物料成本、中國美妝需求"
+ },
+ {
+  "n": 40,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "農產品與農業投入",
+  "en": "Agricultural Products & Inputs",
+  "tickers": [
+   "ADM",
+   "BG",
+   "TSN",
+   "INGR",
+   "CTVA"
+  ],
+  "nfirms": "~30",
+  "etf": "MOO / DBA",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "黑天鵝 第2階段（糧食/貿易）",
+  "driver": "穀物庫存消費比、中國採購訂單、生質柴油政策"
+ },
+ {
+  "n": 41,
+  "sector": "必需消費 Consumer Staples",
+  "zh": "必需品分銷",
+  "en": "Staples Distribution",
+  "tickers": [
+   "SYY",
+   "USFD",
+   "PFGC",
+   "CHEF"
+  ],
+  "nfirms": "~12",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "餐飲外食支出、case volume 成長"
+ },
+ {
+  "n": 42,
+  "sector": "能源 Energy",
+  "zh": "綜合油氣巨頭",
+  "en": "Integrated Oil & Gas",
+  "tickers": [
+   "XOM",
+   "CVX"
+  ],
+  "nfirms": "~8",
+  "etf": "XLE",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "黑天鵝 第2→3階段（油價推升）",
+  "driver": "布蘭特油價、煉油裂解價差、資本紀律"
+ },
+ {
+  "n": 43,
+  "sector": "能源 Energy",
+  "zh": "頁岩E&P勘探生產",
+  "en": "Shale E&P",
+  "tickers": [
+   "COP",
+   "EOG",
+   "FANG",
+   "DVN",
+   "OXY"
+  ],
+  "nfirms": "~60",
+  "etf": "XOP",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "黑天鵝 第2→3階段",
+  "driver": "二疊紀鑽機數、盈虧平衡油價、DUC 庫存"
+ },
+ {
+  "n": 44,
+  "sector": "能源 Energy",
+  "zh": "油田服務",
+  "en": "Oilfield Services",
+  "tickers": [
+   "SLB",
+   "HAL",
+   "BKR",
+   "WFRD"
+  ],
+  "nfirms": "~35",
+  "etf": "OIH",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "黑天鵝 第2→3階段",
+  "driver": "北美壓裂車隊使用率、國際 offshore 訂單"
+ },
+ {
+  "n": 45,
+  "sector": "能源 Energy",
+  "zh": "海上鑽井與設備",
+  "en": "Offshore Drilling & Equipment",
+  "tickers": [
+   "RIG",
+   "VAL",
+   "NE",
+   "TDW"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "黑天鵝 第2階段",
+  "driver": "日費率 dayrate、深水 FID 數量"
+ },
+ {
+  "n": 46,
+  "sector": "能源 Energy",
+  "zh": "中游與管道",
+  "en": "Midstream & Pipelines",
+  "tickers": [
+   "KMI",
+   "WMB",
+   "ET",
+   "EPD",
+   "OKE"
+  ],
+  "nfirms": "~40",
+  "etf": "AMLP",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第2階段（AI 供氣）",
+  "driver": "天然氣管道新建 FID、資料中心供氣合約、分派成長"
+ },
+ {
+  "n": 47,
+  "sector": "能源 Energy",
+  "zh": "LNG液化天然氣",
+  "en": "LNG & Gas Export",
+  "tickers": [
+   "LNG",
+   "NFE",
+   "GLNG",
+   "VG"
+  ],
+  "nfirms": "~12",
+  "etf": "—",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "黑天鵝 第2階段（地緣）",
+  "driver": "歐洲 TTF 價差、出口許可審批、船運費率"
+ },
+ {
+  "n": 48,
+  "sector": "能源 Energy",
+  "zh": "煉油與成品油",
+  "en": "Refining & Marketing",
+  "tickers": [
+   "MPC",
+   "PSX",
+   "VLO",
+   "DINO"
+  ],
+  "nfirms": "~15",
+  "etf": "CRAK",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "黑天鵝 第2→3階段",
+  "driver": "裂解價差、庫存天數、產能關閉"
+ },
+ {
+  "n": 49,
+  "sector": "能源 Energy",
+  "zh": "鈾與核燃料",
+  "en": "Uranium & Nuclear Fuel",
+  "tickers": [
+   "CCJ",
+   "UEC",
+   "LEU",
+   "UUUU",
+   "DNN"
+  ],
+  "nfirms": "~25",
+  "etf": "URA / URNM",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（AI 電力）",
+  "driver": "鈾現貨價、俄羅斯濃縮鈾禁令、SMR 燃料合約"
+ },
+ {
+  "n": 50,
+  "sector": "能源 Energy",
+  "zh": "煤炭",
+  "en": "Coal",
+  "tickers": [
+   "BTU",
+   "AMR",
+   "HCC",
+   "CEIX"
+  ],
+  "nfirms": "~12",
+  "etf": "KOL",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "黑天鵝 第2階段",
+  "driver": "煉焦煤價格、電力煤庫存、資料中心延役燃煤"
+ },
+ {
+  "n": 51,
+  "sector": "原材料 Materials",
+  "zh": "黃金與貴金屬礦",
+  "en": "Gold & Precious Metals Miners",
+  "tickers": [
+   "NEM",
+   "GOLD",
+   "AEM",
+   "AU",
+   "KGC"
+  ],
+  "nfirms": "~60",
+  "etf": "GDX / GDXJ",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "宏觀流動性 第4階段（實質利率/去美元化）",
+  "driver": "實質利率、央行購金量、ETF 持倉、美元指數"
+ },
+ {
+  "n": 52,
+  "sector": "原材料 Materials",
+  "zh": "白銀礦",
+  "en": "Silver Miners",
+  "tickers": [
+   "PAAS",
+   "HL",
+   "AG",
+   "CDE"
+  ],
+  "nfirms": "~25",
+  "etf": "SIL / SILJ",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命+貨幣雙驅動",
+  "driver": "金銀比、太陽能銀漿需求、COMEX 庫存"
+ },
+ {
+  "n": 53,
+  "sector": "原材料 Materials",
+  "zh": "銅與基本金屬",
+  "en": "Copper & Base Metals",
+  "tickers": [
+   "FCX",
+   "SCCO",
+   "TECK",
+   "HBM"
+  ],
+  "nfirms": "~30",
+  "etf": "COPX",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第3階段（電網需求）",
+  "driver": "LME 銅庫存、TC/RC 加工費、電網資本支出"
+ },
+ {
+  "n": 54,
+  "sector": "原材料 Materials",
+  "zh": "稀土與關鍵礦產",
+  "en": "Rare Earths & Critical Minerals",
+  "tickers": [
+   "MP",
+   "USAR",
+   "UUUU",
+   "TMC"
+  ],
+  "nfirms": "~20",
+  "etf": "REMX",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "黑天鵝 第2階段（供應鏈武器化）",
+  "driver": "中國出口管制、國防部價格保底合約、磁材產能"
+ },
+ {
+  "n": 55,
+  "sector": "原材料 Materials",
+  "zh": "鋼鐵",
+  "en": "Steel",
+  "tickers": [
+   "NUE",
+   "STLD",
+   "CLF",
+   "X",
+   "RS"
+  ],
+  "nfirms": "~25",
+  "etf": "SLX",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "政治週期 第2階段（關稅）",
+  "driver": "232 條款關稅、HRC 熱軋價格、廢鋼價"
+ },
+ {
+  "n": 56,
+  "sector": "原材料 Materials",
+  "zh": "鋁業",
+  "en": "Aluminum",
+  "tickers": [
+   "AA",
+   "CENX",
+   "KALU"
+  ],
+  "nfirms": "~10",
+  "etf": "—",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "黑天鵝 第2階段",
+  "driver": "LME 鋁價、電力成本、氧化鋁供應"
+ },
+ {
+  "n": 57,
+  "sector": "原材料 Materials",
+  "zh": "特種化工",
+  "en": "Specialty Chemicals",
+  "tickers": [
+   "LIN",
+   "APD",
+   "SHW",
+   "ECL",
+   "ALB"
+  ],
+  "nfirms": "~45",
+  "etf": "XLB",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "工業產出指數、歐洲天然氣成本、鋰價"
+ },
+ {
+  "n": 58,
+  "sector": "原材料 Materials",
+  "zh": "基礎化工與化肥",
+  "en": "Commodity Chemicals & Fertilizers",
+  "tickers": [
+   "DOW",
+   "LYB",
+   "CF",
+   "MOS",
+   "NTR"
+  ],
+  "nfirms": "~40",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段（產能過剩）",
+  "driver": "乙烯價差、氨/尿素價格、中國產能出清"
+ },
+ {
+  "n": 59,
+  "sector": "原材料 Materials",
+  "zh": "包裝與建材",
+  "en": "Packaging & Construction Materials",
+  "tickers": [
+   "VMC",
+   "MLM",
+   "CRH",
+   "IP",
+   "PKG"
+  ],
+  "nfirms": "~45",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "政治週期 第2階段（基建）",
+  "driver": "公路法案撥款、骨材出貨量、瓦楞紙箱出貨"
+ },
+ {
+  "n": 60,
+  "sector": "工業 Industrials",
+  "zh": "航太與國防",
+  "en": "Aerospace & Defense",
+  "tickers": [
+   "LMT",
+   "RTX",
+   "NOC",
+   "GD",
+   "LHX",
+   "BA"
+  ],
+  "nfirms": "~50",
+  "etf": "ITA / XAR",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "黑天鵝 第2階段（軍備週期）",
+  "driver": "國防授權法案 NDAA、歐洲 GDP 佔比目標、book-to-bill"
+ },
+ {
+  "n": 61,
+  "sector": "工業 Industrials",
+  "zh": "國防科技與無人機",
+  "en": "Defense Tech & Drones",
+  "tickers": [
+   "AVAV",
+   "KTOS",
+   "RCAT",
+   "ONDS"
+  ],
+  "nfirms": "~20",
+  "etf": "SHLD",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "黑天鵝 第2階段（狂熱）",
+  "driver": "無人機採購案、烏克蘭/中東實戰驗證、非傳統承包商中標"
+ },
+ {
+  "n": 62,
+  "sector": "工業 Industrials",
+  "zh": "太空與衛星",
+  "en": "Space & Satellites",
+  "tickers": [
+   "RKLB",
+   "ASTS",
+   "LUNR",
+   "PL",
+   "RDW"
+  ],
+  "nfirms": "~20",
+  "etf": "ARKX / UFO",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第2→3階段",
+  "driver": "發射次數、SpaceX 估值外溢、直連手機商轉時點"
+ },
+ {
+  "n": 63,
+  "sector": "工業 Industrials",
+  "zh": "航空公司",
+  "en": "Airlines",
+  "tickers": [
+   "DAL",
+   "UAL",
+   "AAL",
+   "LUV"
+  ],
+  "nfirms": "~12",
+  "etf": "JETS",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "單位營收 RASM、燃油成本、商務客回流"
+ },
+ {
+  "n": 64,
+  "sector": "工業 Industrials",
+  "zh": "鐵路運輸",
+  "en": "Railroads",
+  "tickers": [
+   "UNP",
+   "CSX",
+   "NSC"
+  ],
+  "nfirms": "~6",
+  "etf": "IYT",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "政治週期 第2階段（併購審批）",
+  "driver": "車廂裝載量、UNP-NSC 合併審批、煤炭運量"
+ },
+ {
+  "n": 65,
+  "sector": "工業 Industrials",
+  "zh": "貨運與物流",
+  "en": "Freight & Logistics",
+  "tickers": [
+   "UPS",
+   "FDX",
+   "ODFL",
+   "JBHT",
+   "XPO"
+  ],
+  "nfirms": "~35",
+  "etf": "IYT",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "宏觀流動性 第1階段（貨運週期落底）",
+  "driver": "卡車現貨費率、ISM 新訂單、庫存補貨"
+ },
+ {
+  "n": 66,
+  "sector": "工業 Industrials",
+  "zh": "電氣設備與電網",
+  "en": "Electrical Equipment & Grid",
+  "tickers": [
+   "ETN",
+   "EMR",
+   "PWR",
+   "HUBB",
+   "GEV"
+  ],
+  "nfirms": "~30",
+  "etf": "GRID",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（AI 電力瓶頸）",
+  "driver": "變壓器/開關設備交期、電網資本支出、併網排隊 GW"
+ },
+ {
+  "n": 67,
+  "sector": "工業 Industrials",
+  "zh": "機械與重工",
+  "en": "Machinery & Heavy Equipment",
+  "tickers": [
+   "CAT",
+   "DE",
+   "CMI",
+   "PCAR",
+   "HON"
+  ],
+  "nfirms": "~60",
+  "etf": "XLI",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "政治週期 第2階段",
+  "driver": "經銷商庫存、農機訂單、資料中心備用發電機需求"
+ },
+ {
+  "n": 68,
+  "sector": "工業 Industrials",
+  "zh": "工程建設/EPC",
+  "en": "Engineering & Construction",
+  "tickers": [
+   "J",
+   "ACM",
+   "FLR",
+   "MTZ",
+   "PRIM",
+   "EME"
+  ],
+  "nfirms": "~30",
+  "etf": "PAVE",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段（AI 建廠）",
+  "driver": "在手訂單 backlog、資料中心/晶圓廠動土、勞工短缺"
+ },
+ {
+  "n": 69,
+  "sector": "工業 Industrials",
+  "zh": "工業自動化與機器人",
+  "en": "Industrial Automation & Robotics",
+  "tickers": [
+   "ROK",
+   "SYM",
+   "NDSN",
+   "TER"
+  ],
+  "nfirms": "~25",
+  "etf": "BOTZ / ROBO",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第2階段",
+  "driver": "人形機器人量產時程、製造業回流資本支出"
+ },
+ {
+  "n": 70,
+  "sector": "工業 Industrials",
+  "zh": "人力與商業服務",
+  "en": "Staffing & Business Services",
+  "tickers": [
+   "ADP",
+   "PAYX",
+   "MAN",
+   "RHI",
+   "CTAS"
+  ],
+  "nfirms": "~40",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "技術革命 第3階段（被 AI 顛覆）",
+  "driver": "職缺數 JOLTS、白領招聘量、初次請領失業金"
+ },
+ {
+  "n": 71,
+  "sector": "工業 Industrials",
+  "zh": "廢物管理與環境服務",
+  "en": "Waste & Environmental Services",
+  "tickers": [
+   "WM",
+   "RSG",
+   "WCN",
+   "CLH"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "防禦性輪動",
+  "driver": "定價年增率、工業廢棄物量、PFAS 修復需求"
+ },
+ {
+  "n": 72,
+  "sector": "工業 Industrials",
+  "zh": "樓宇產品與HVAC",
+  "en": "Building Products & HVAC",
+  "tickers": [
+   "CARR",
+   "TT",
+   "JCI",
+   "LII",
+   "AAON"
+  ],
+  "nfirms": "~30",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段（資料中心冷卻）",
+  "driver": "液冷訂單、非住宅建築開工、冷媒法規"
+ },
+ {
+  "n": 73,
+  "sector": "醫療保健 Health Care",
+  "zh": "大型藥廠",
+  "en": "Large-cap Pharma",
+  "tickers": [
+   "LLY",
+   "JNJ",
+   "PFE",
+   "MRK",
+   "ABBV",
+   "BMY"
+  ],
+  "nfirms": "~25",
+  "etf": "XLV / PPH",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "政治週期 第2階段（藥價談判）",
+  "driver": "IRA 藥價談判清單、專利懸崖、FDA 審批速度"
+ },
+ {
+  "n": 74,
+  "sector": "醫療保健 Health Care",
+  "zh": "GLP-1減重與代謝",
+  "en": "GLP-1 & Metabolic",
+  "tickers": [
+   "LLY",
+   "NVO",
+   "VKTX",
+   "ALT",
+   "TERN"
+  ],
+  "nfirms": "~20",
+  "etf": "—",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第3階段",
+  "driver": "口服 GLP-1 三期數據、保險給付範圍、產能爬坡"
+ },
+ {
+  "n": 75,
+  "sector": "醫療保健 Health Care",
+  "zh": "大型生物科技",
+  "en": "Large-cap Biotech",
+  "tickers": [
+   "AMGN",
+   "GILD",
+   "REGN",
+   "VRTX",
+   "BIIB"
+  ],
+  "nfirms": "~25",
+  "etf": "IBB",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "宏觀流動性 第4→1階段",
+  "driver": "M&A 溢價、專利到期、生物安全法案"
+ },
+ {
+  "n": 76,
+  "sector": "醫療保健 Health Care",
+  "zh": "臨床期中小型生技",
+  "en": "Clinical-stage SMID Biotech",
+  "tickers": [
+   "XBI 成分股為主"
+  ],
+  "nfirms": "~700",
+  "etf": "XBI",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第1階段（利率敏感）",
+  "driver": "IPO/再融資窗口、10年期殖利率、FDA 人事變動"
+ },
+ {
+  "n": 77,
+  "sector": "醫療保健 Health Care",
+  "zh": "腫瘤與細胞治療",
+  "en": "Oncology & Cell Therapy",
+  "tickers": [
+   "—（多為中小型）"
+  ],
+  "nfirms": "~150",
+  "etf": "CNCR",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段",
+  "driver": "ASCO/ESMO 數據、ADC 授權金、CAR-T 商業化"
+ },
+ {
+  "n": 78,
+  "sector": "醫療保健 Health Care",
+  "zh": "基因治療與基因編輯",
+  "en": "Gene Editing & Gene Therapy",
+  "tickers": [
+   "CRSP",
+   "NTLA",
+   "BEAM",
+   "VERV"
+  ],
+  "nfirms": "~40",
+  "etf": "ARKG",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第1→2階段",
+  "driver": "FDA 個人化療法路徑、給付定價、遞送技術突破"
+ },
+ {
+  "n": 79,
+  "sector": "醫療保健 Health Care",
+  "zh": "醫療器械",
+  "en": "Medical Devices",
+  "tickers": [
+   "ABT",
+   "MDT",
+   "SYK",
+   "BSX",
+   "ISRG"
+  ],
+  "nfirms": "~80",
+  "etf": "IHI",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "防禦性輪動",
+  "driver": "手術量、GLP-1 對骨科/減重手術影響、機器人手術裝機"
+ },
+ {
+  "n": 80,
+  "sector": "醫療保健 Health Care",
+  "zh": "診斷與生命科學工具",
+  "en": "Diagnostics & Life-Science Tools",
+  "tickers": [
+   "TMO",
+   "DHR",
+   "A",
+   "ILMN",
+   "EXAS"
+  ],
+  "nfirms": "~60",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第1階段（落底）",
+  "driver": "製藥研發支出、中國採購、NIH 預算"
+ },
+ {
+  "n": 81,
+  "sector": "醫療保健 Health Care",
+  "zh": "醫療保險與管理式醫療",
+  "en": "Managed Care & Health Insurers",
+  "tickers": [
+   "UNH",
+   "ELV",
+   "CI",
+   "HUM",
+   "CNC"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "政治週期 第2階段（監管壓力）",
+  "driver": "MLR 醫療損失率、Medicare Advantage 給付率、ACA 補貼存廢"
+ },
+ {
+  "n": 82,
+  "sector": "醫療保健 Health Care",
+  "zh": "醫院與醫療服務",
+  "en": "Hospitals & Providers",
+  "tickers": [
+   "HCA",
+   "THC",
+   "UHS",
+   "EHC"
+  ],
+  "nfirms": "~25",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "政治週期 第2階段",
+  "driver": "住院量、壞帳率、ACA 投保人數"
+ },
+ {
+  "n": 83,
+  "sector": "醫療保健 Health Care",
+  "zh": "藥品分銷與藥房",
+  "en": "Drug Distribution & Pharmacy",
+  "tickers": [
+   "MCK",
+   "COR",
+   "CAH",
+   "CVS"
+  ],
+  "nfirms": "~12",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "防禦性輪動",
+  "driver": "GLP-1 處方量、PBM 改革立法、鴉片類訴訟"
+ },
+ {
+  "n": 84,
+  "sector": "醫療保健 Health Care",
+  "zh": "數位醫療與遠距醫療",
+  "en": "Digital Health & Telehealth",
+  "tickers": [
+   "HIMS",
+   "TDOC",
+   "DOCS",
+   "OSCR"
+  ],
+  "nfirms": "~30",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段",
+  "driver": "複方藥監管、訂閱用戶數、AI 診斷審批"
+ },
+ {
+  "n": 85,
+  "sector": "金融 Financials",
+  "zh": "大型全能銀行",
+  "en": "Money-Center Banks",
+  "tickers": [
+   "JPM",
+   "BAC",
+   "C",
+   "WFC"
+  ],
+  "nfirms": "~6",
+  "etf": "XLF",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "淨利息收益 NII、CCAR 壓力測試、SLR 監管放寬"
+ },
+ {
+  "n": 86,
+  "sector": "金融 Financials",
+  "zh": "區域與社區銀行",
+  "en": "Regional Banks",
+  "tickers": [
+   "USB",
+   "PNC",
+   "TFC",
+   "MTB",
+   "ZION"
+  ],
+  "nfirms": "~350",
+  "etf": "KRE",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "商業地產 CRE 曝險、存款成本、併購鬆綁"
+ },
+ {
+  "n": 87,
+  "sector": "金融 Financials",
+  "zh": "投行與資本巿場",
+  "en": "Investment Banks & Capital Markets",
+  "tickers": [
+   "GS",
+   "MS",
+   "EVR",
+   "LAZ",
+   "JEF"
+  ],
+  "nfirms": "~30",
+  "etf": "IAI",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "政治週期 第2階段（反壟斷放鬆）",
+  "driver": "M&A 宣布金額、IPO 檔數、交易量"
+ },
+ {
+  "n": 88,
+  "sector": "金融 Financials",
+  "zh": "資產管理",
+  "en": "Asset Management",
+  "tickers": [
+   "BLK",
+   "TROW",
+   "BEN",
+   "AMG"
+  ],
+  "nfirms": "~40",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "技術革命 第4階段（費率壓縮）",
+  "driver": "淨流入、被動化比率、管理費率"
+ },
+ {
+  "n": 89,
+  "sector": "金融 Financials",
+  "zh": "另類資產與私募信貸",
+  "en": "Alternatives & Private Credit",
+  "tickers": [
+   "BX",
+   "KKR",
+   "APO",
+   "ARES",
+   "OWL"
+  ],
+  "nfirms": "~25",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段（信用風險）",
+  "driver": "私募信貸違約率、PIK 收入佔比、募資額"
+ },
+ {
+  "n": 90,
+  "sector": "金融 Financials",
+  "zh": "交易所與金融數據",
+  "en": "Exchanges & Market Data",
+  "tickers": [
+   "CME",
+   "ICE",
+   "NDAQ",
+   "CBOE",
+   "SPGI"
+  ],
+  "nfirms": "~15",
+  "etf": "—",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "波動率受惠",
+  "driver": "日均交易量 ADV、VIX 水準、數據訂閱成長"
+ },
+ {
+  "n": 91,
+  "sector": "金融 Financials",
+  "zh": "支付與收單",
+  "en": "Payments & Merchant Acquiring",
+  "tickers": [
+   "V",
+   "MA",
+   "PYPL",
+   "FI",
+   "GPN",
+   "TOST"
+  ],
+  "nfirms": "~35",
+  "etf": "IPAY",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "技術革命 第3階段（穩定幣威脅）",
+  "driver": "刷卡量、穩定幣支付立法、跨境交易增速"
+ },
+ {
+  "n": 92,
+  "sector": "金融 Financials",
+  "zh": "消費金融與BNPL",
+  "en": "Consumer Finance & BNPL",
+  "tickers": [
+   "AXP",
+   "COF",
+   "SYF",
+   "SOFI",
+   "AFRM"
+  ],
+  "nfirms": "~40",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "信用卡沖銷率、次級車貸違約、學貸還款恢復"
+ },
+ {
+  "n": 93,
+  "sector": "金融 Financials",
+  "zh": "產險與再保",
+  "en": "P&C Insurance & Reinsurance",
+  "tickers": [
+   "CB",
+   "TRV",
+   "PGR",
+   "AIG",
+   "RNR"
+  ],
+  "nfirms": "~60",
+  "etf": "KIE",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "黑天鵝 第2階段（巨災）",
+  "driver": "颶風季損失、費率變化 rate change、綜合成本率"
+ },
+ {
+  "n": 94,
+  "sector": "金融 Financials",
+  "zh": "壽險與年金",
+  "en": "Life Insurance & Annuities",
+  "tickers": [
+   "MET",
+   "PRU",
+   "AFL",
+   "LNC",
+   "EQH"
+  ],
+  "nfirms": "~30",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "長天期殖利率、年金銷售、私募信貸資產曝險"
+ },
+ {
+  "n": 95,
+  "sector": "金融 Financials",
+  "zh": "保險經紀",
+  "en": "Insurance Brokers",
+  "tickers": [
+   "MMC",
+   "AON",
+   "AJG",
+   "BRO",
+   "WTW"
+  ],
+  "nfirms": "~10",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "防禦性輪動",
+  "driver": "有機成長率、商業保險費率週期"
+ },
+ {
+  "n": 96,
+  "sector": "金融 Financials",
+  "zh": "數位資產金融與礦業轉HPC",
+  "en": "Digital Assets, Crypto Financials & BTC Miners→HPC",
+  "tickers": [
+   "COIN",
+   "HOOD",
+   "CRCL",
+   "MARA",
+   "RIOT",
+   "IREN"
+  ],
+  "nfirms": "~50",
+  "etf": "BLOK / WGMI",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第3→4階段（波動極大）",
+  "driver": "BTC 價格、ETF 淨流入、礦企 AI/HPC 簽約 MW、穩定幣法規"
+ },
+ {
+  "n": 97,
+  "sector": "房地產 Real Estate",
+  "zh": "資料中心REIT",
+  "en": "Data Center REITs",
+  "tickers": [
+   "EQIX",
+   "DLR"
+  ],
+  "nfirms": "~5",
+  "etf": "SRVR",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第3階段",
+  "driver": "租賃 MW 預定量、電力取得、折舊/資本化爭議"
+ },
+ {
+  "n": 98,
+  "sector": "房地產 Real Estate",
+  "zh": "通訊塔REIT",
+  "en": "Tower REITs",
+  "tickers": [
+   "AMT",
+   "CCI",
+   "SBAC"
+  ],
+  "nfirms": "~4",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "電信商資本支出、租約續約價格、利率"
+ },
+ {
+  "n": 99,
+  "sector": "房地產 Real Estate",
+  "zh": "工業與物流REIT",
+  "en": "Industrial & Logistics REITs",
+  "tickers": [
+   "PLD",
+   "EGP",
+   "FR",
+   "STAG"
+  ],
+  "nfirms": "~15",
+  "etf": "INDS",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第1階段",
+  "driver": "淨吸納量、空置率、租金價差 mark-to-market"
+ },
+ {
+  "n": 100,
+  "sector": "房地產 Real Estate",
+  "zh": "住宅公寓REIT",
+  "en": "Residential & Apartment REITs",
+  "tickers": [
+   "AVB",
+   "EQR",
+   "MAA",
+   "INVH",
+   "AMH"
+  ],
+  "nfirms": "~25",
+  "etf": "REZ",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "新供給交屋量、續租率、Sunbelt 租金"
+ },
+ {
+  "n": 101,
+  "sector": "房地產 Real Estate",
+  "zh": "零售與購物中心REIT",
+  "en": "Retail REITs",
+  "tickers": [
+   "SPG",
+   "O",
+   "KIM",
+   "REG",
+   "FRT"
+  ],
+  "nfirms": "~35",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "出租率、租戶倒閉、消費支出"
+ },
+ {
+  "n": 102,
+  "sector": "房地產 Real Estate",
+  "zh": "辦公樓REIT",
+  "en": "Office REITs",
+  "tickers": [
+   "BXP",
+   "VNO",
+   "SLG",
+   "HIW"
+  ],
+  "nfirms": "~25",
+  "etf": "—",
+  "heat_lbl": "冷 Cold",
+  "heat": 1,
+  "cycle": "技術革命 第4階段（結構性衰退）",
+  "driver": "返辦率、CMBS 拖欠率、再融資到期牆"
+ },
+ {
+  "n": 103,
+  "sector": "房地產 Real Estate",
+  "zh": "醫療與長者住宅REIT",
+  "en": "Health Care REITs",
+  "tickers": [
+   "WELL",
+   "VTR",
+   "OHI",
+   "DOC"
+  ],
+  "nfirms": "~18",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "人口結構長多",
+  "driver": "長者住宅入住率、勞工成本、80+ 人口成長"
+ },
+ {
+  "n": 104,
+  "sector": "房地產 Real Estate",
+  "zh": "特殊型REIT（自存倉/賭場/廣告牌）",
+  "en": "Specialty REITs",
+  "tickers": [
+   "PSA",
+   "EXR",
+   "VICI",
+   "GLPI",
+   "LAMR"
+  ],
+  "nfirms": "~30",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "搬家活動指數、租戶信用、房貸利率連動"
+ },
+ {
+  "n": 105,
+  "sector": "房地產 Real Estate",
+  "zh": "地產開發與服務",
+  "en": "Real Estate Services & Development",
+  "tickers": [
+   "CBRE",
+   "JLL",
+   "Z",
+   "COMP",
+   "OPEN"
+  ],
+  "nfirms": "~35",
+  "etf": "—",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "成屋成交量、佣金規則變化、資本巿場交易額"
+ },
+ {
+  "n": 106,
+  "sector": "公用事業 Utilities",
+  "zh": "受監管電力公用",
+  "en": "Regulated Electric Utilities",
+  "tickers": [
+   "DUK",
+   "SO",
+   "AEP",
+   "D",
+   "XEL"
+  ],
+  "nfirms": "~35",
+  "etf": "XLU",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "費率案裁決 rate case、負載成長預測、資本支出計劃"
+ },
+ {
+  "n": 107,
+  "sector": "公用事業 Utilities",
+  "zh": "IPP與電力交易商",
+  "en": "IPPs & Power Traders",
+  "tickers": [
+   "CEG",
+   "VST",
+   "NRG",
+   "TLN"
+  ],
+  "nfirms": "~10",
+  "etf": "—",
+  "heat_lbl": "熱 Hot",
+  "heat": 4,
+  "cycle": "技術革命 第3階段（AI 電力）",
+  "driver": "PJM 容量拍賣價、電廠併購價 $/kW、幕後 PPA 合約"
+ },
+ {
+  "n": 108,
+  "sector": "公用事業 Utilities",
+  "zh": "小型模組化核能SMR",
+  "en": "Small Modular Reactors",
+  "tickers": [
+   "OKLO",
+   "SMR",
+   "NNE",
+   "ASPI"
+  ],
+  "nfirms": "~10",
+  "etf": "NUKZ",
+  "heat_lbl": "極熱 Very Hot",
+  "heat": 5,
+  "cycle": "技術革命 第1→2階段（極度狂熱·未有盈利）",
+  "driver": "NRC 審批里程碑、超大規模廠商 PPA、DOE 撥款"
+ },
+ {
+  "n": 109,
+  "sector": "公用事業 Utilities",
+  "zh": "燃氣公用",
+  "en": "Gas Utilities",
+  "tickers": [
+   "ATO",
+   "NI",
+   "SR",
+   "NJR"
+  ],
+  "nfirms": "~20",
+  "etf": "—",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "技術革命 第2階段",
+  "driver": "接管戶成長、天然氣價格、電氣化禁令風險"
+ },
+ {
+  "n": 110,
+  "sector": "公用事業 Utilities",
+  "zh": "水務公用",
+  "en": "Water Utilities",
+  "tickers": [
+   "AWK",
+   "WTRG",
+   "CWT",
+   "SJW"
+  ],
+  "nfirms": "~12",
+  "etf": "PHO / FIW",
+  "heat_lbl": "偏冷 Cool",
+  "heat": 2,
+  "cycle": "宏觀流動性 第4階段",
+  "driver": "費率案、PFAS 合規成本、市政收購案"
+ },
+ {
+  "n": 111,
+  "sector": "公用事業 Utilities",
+  "zh": "再生能源與太陽能",
+  "en": "Renewables & Solar",
+  "tickers": [
+   "NEE",
+   "FSLR",
+   "ENPH",
+   "RUN",
+   "NXT"
+  ],
+  "nfirms": "~40",
+  "etf": "TAN / ICLN",
+  "heat_lbl": "中性 Neutral",
+  "heat": 3,
+  "cycle": "政治週期 第2階段（補貼退場）",
+  "driver": "ITC/PTC 稅收抵免存廢、模組價格、關稅裁定"
+ }
+]

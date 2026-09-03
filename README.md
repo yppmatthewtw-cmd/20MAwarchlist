@@ -15,6 +15,8 @@
 | R6.01 | **數據更新至 2026-08-31 收盤**。改用真實日線 OHLCV 鏡像（[natezone/market-tracker](https://github.com/natezone/market-tracker)，收市後推送）取代 Nasdaq 快照重建；宇宙改為 **S&P 1500 綜合指數**（1,504 隻），分層改用 **指數成分**（S&P 500／400／600 = 大／中／小型股）；R6.01 起改為 **固定深色模式**（不再跟隨瀏覽器主題）|
 | R7.00 | **數據更新至 2026-09-01 收盤**。快照鏡像恢復運作，**回復全美掃描**（7,396 條序列／6,874 隻有 9/1 收盤／3,005 隻合資格，上榜 208 隻）；分層回復市值門檻；8/31 鏡像停擺日以日線鏡像補回 1,500 隻；抽取管道新增「收市後 commit」防護，自動剔除未完成的盤中 bar |
 
+| SubSector R1.00 | **子板塊資金流向**（新產品線）：以附件工作簿 `US_Market_Sector_SubSector_HeatMap_R2_20260903.xlsx` 嘅 **111 個子板塊**為對象，用代表股籃子對 **2026-08-26 → 09-01 五個交易日**逐日打資金流向分 （方向 tanh(超額報酬/2%) ＋ Chaikin 收盤位置 ＋ 成交額量能放大，成交額加權、每日橫向百分位 0–100）；四頁：總覽／每日矩陣／GICS 板塊匯總／熱度背離。註：非真實基金流數據，屬價量代理指標 |
+
 報告為獨立 HTML，直接用瀏覽器開啟；頁面切換內建。R6.01 起版面固定深色（深色調色板直接定義在 `:root`，不設主題切換）。
 
 ## 篩選規則（R2）
@@ -89,5 +91,20 @@ python3 scripts/build_report.py     # 產生 HTML 報告
 ```
 
 `data/screen_results.json` 為本次（數據至 2026-08-28 收盤）的完整篩選輸出。
+
+## 子板塊資金流向（SubSector R1）
+
+```bash
+python3 scripts/subsector_flow.py          # 111 子板塊 x 5 日資金流向 -> data/subsector_flow.json
+python3 scripts/build_subsector_report.py  # 產生 HTML 報告
+python3 scripts/verify_subsector_flow.py   # 獨立重算驗證（0 problems）
+```
+
+- 子板塊定義、代表 Tickers、熱度分與 LEADING INDICATOR 取自附件工作簿（`data/subsectors.json`，111 列）。
+- 價量來源：natezone/market-tracker 真實日線 OHLCV 為主（有日內高低價，可算 Chaikin 收盤位置），
+  其餘以 Nasdaq 快照重建序列（`series8.pkl`）補足，只有收盤與成交量。
+- 工作簿列出但鏡像無數據嘅股票（外國 ADR 如 TSM/ASML/NVO，或已除牌如 K/X/CEIX）以人手核對嘅同業補充樣本頂替；
+  工作簿無列 ticker 嘅 2 個子板塊用代理樣本。樣本數與品質標示喺報告「樣本」欄。
+- **限制**：環境內無法取得 ETF 申購贖回／13F／委託簿數據，「資金流向」全部由價格、成交量與收盤位置推算。
 
 > 本項目只係篩選工具，唔係投資建議。
