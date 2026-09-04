@@ -15,6 +15,7 @@
 | R6.01 | **數據更新至 2026-08-31 收盤**。改用真實日線 OHLCV 鏡像（[natezone/market-tracker](https://github.com/natezone/market-tracker)，收市後推送）取代 Nasdaq 快照重建；宇宙改為 **S&P 1500 綜合指數**（1,504 隻），分層改用 **指數成分**（S&P 500／400／600 = 大／中／小型股）；R6.01 起改為 **固定深色模式**（不再跟隨瀏覽器主題）|
 | R7.00 | **數據更新至 2026-09-01 收盤**。快照鏡像恢復運作，**回復全美掃描**（7,396 條序列／6,874 隻有 9/1 收盤／3,005 隻合資格，上榜 208 隻）；分層回復市值門檻；8/31 鏡像停擺日以日線鏡像補回 1,500 隻；抽取管道新增「收市後 commit」防護，自動剔除未完成的盤中 bar |
 
+| AI Sector R2.00 | **數據推進至 2026-09-02 收盤**（視窗 08-27 → 09-02）。09-02 全宇宙收盤由 09-03 盤中快照的 `price − price_change` 取得，與日線鏡像 1,498 隻交叉核對中位偏差 0.0000%；該快照成交量屬 09-03 partial，故非日線鏡像覆蓋的股票 09-02 **量能項設為中性**並標示「量?」，不以估算量冒充。新增 **穩健分**（z×√(n/(n+2))，樣本細者向中性收斂）、**資金強度**（淨額/成交額，去規模）、**可信度**（美股樣本數）與**廣度**（籃子內超額報酬為正比例）；28 個小群組名次有變 |
 | AI Sector R1.00 | **AI 產業鏈資金流向**：以附件 `Dashboard_R15.6_0828_hk16.15.html` 嘅 **41 個 AI 小群組**（8 大分類：運算核心／Neo Cloud／製造／記憶體儲存／互連／系統整合／基礎設施／雲端應用）為對象，沿用 SubSector R1.01 完全相同嘅計分引擎與版面。**只納入美股上市股票及 US ADR**（全球成分 224 隻中美股 111 隻，實際計分 96 隻）；成分股全屬中國A股／台股／日韓／歐洲掛牌嘅 9 個小群組列出但唔參與排名。四頁：總覽／每日矩陣／8 大分類匯總／**象限背離**（儀表板 8/27 RS 象限 vs 8/26–9/1 實測資金流）|
 | SubSector R1.01 | 加入**版面切換按鈕**（自動／☀淺色／🌙深色）：調色盤改為 token 制 —— `:root` 定義完整淺色，`@media (prefers-color-scheme:dark)`（以 `:root:not([data-theme="light"])` 保護）及 `:root[data-theme="dark"]` 覆寫深色，資金流向色階、熱度色、陰影、邊框全部跟住換色；選擇存 localStorage，並用 MutationObserver 令頁內選擇唔會被檢視器主題覆寫 |
 | SubSector R1.00 | **子板塊資金流向**（新產品線）：以附件工作簿 `US_Market_Sector_SubSector_HeatMap_R2_20260903.xlsx` 嘅 **111 個子板塊**為對象，用代表股籃子對 **2026-08-26 → 09-01 五個交易日**逐日打資金流向分 （方向 tanh(超額報酬/2%) ＋ Chaikin 收盤位置 ＋ 成交額量能放大，成交額加權、每日橫向百分位 0–100）；四頁：總覽／每日矩陣／GICS 板塊匯總／熱度背離。註：非真實基金流數據，屬價量代理指標 |
@@ -112,9 +113,13 @@ python3 scripts/verify_subsector_flow.py   # 獨立重算驗證（0 problems）
 ## AI 產業鏈資金流向（AI Sector R1）
 
 ```bash
-python3 scripts/ai_flow.py           # 41 AI 小群組 x 5 日資金流向 -> data/ai_flow.json
-python3 scripts/build_ai_report.py   # 產生 HTML 報告（CSS/JS 取自 SubSector 報告，兩份保持同一套系統）
-python3 scripts/verify_ai_flow.py    # 獨立重算驗證（0 problems）
+python3 scripts/extend_series9.py    # 由 series8.pkl 延伸至 2026-09-02 -> data 用 series9.pkl
+python3 scripts/ai_flow2.py          # 41 AI 小群組 x 5 日資金流向（R2）-> data/ai_flow2.json
+python3 scripts/ai_flow.py           # R1 版本（視窗至 09-01）-> data/ai_flow.json
+python3 scripts/build_ai_report2.py  # 產生 R2 HTML 報告
+python3 scripts/build_ai_report.py   # R1 版本（CSS/JS 取自 SubSector 報告，兩份保持同一套系統）
+python3 scripts/verify_ai_flow2.py   # R2 獨立重算驗證（0 problems，另檢查穩健分/強度/廣度一致性）
+python3 scripts/verify_ai_flow.py    # R1 獨立重算驗證
 ```
 
 - 分類、成分股、RS 象限、RSI 與 1週／1月／3月報酬全部取自附件儀表板（`data/ai_groups.json`，41 組）；
