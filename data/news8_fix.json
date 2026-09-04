@@ -1,0 +1,297 @@
+{
+ "THC": {
+  "sym": "THC",
+  "decline_short": "HCA因ACA補貼到期下調指引拖累醫院板塊，兼憂Medicaid削支",
+  "recovery_short": "7/24 Q2經調EPS $6.12勝預期$4.23，上調全年至$20.3-21.7",
+  "hype": true,
+  "hype_zh": "EPS勝預期45%",
+  "confidence": "高",
+  "tags": [
+   "板塊利空拖累",
+   "業績超預期",
+   "上調指引",
+   "分析師上調"
+  ],
+  "src": "R4"
+ },
+ "MAN": {
+  "sym": "MAN",
+  "decline_short": "勞動力需求降溫、通脹及AI取代職位恐慌，疊加大市回調",
+  "recovery_short": "7/16 Q2業績大勝（收入$48.6億），空倉回補單日+34.8%",
+  "hype": true,
+  "hype_zh": "業績單日爆升35%",
+  "confidence": "高",
+  "tags": [
+   "就業數據勝預期",
+   "板塊輪動",
+   "AI題材",
+   "超賣反彈"
+  ],
+  "src": "R4"
+ },
+ "RCEL": {
+  "sym": "RCEL",
+  "decline_short": "無明確個股利空，小型醫療股波動兼隨大市7月中回調",
+  "recovery_short": "Q2收入$21.7M增18%並上調全年指引至$86-89M",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "業績勝預期",
+   "上調指引",
+   "再生醫療"
+  ],
+  "src": "news5_04.json"
+ },
+ "PESI": {
+  "sym": "PESI",
+  "decline_short": "Q1屬轉型期業績疲弱，5月增發263萬股攤薄，股價回落至10美元附近",
+  "recovery_short": "獲漢福德灌漿IDIQ分包（三家共享上限$44億）",
+  "hype": true,
+  "hype_zh": "漢福德IDIQ合約",
+  "confidence": "高",
+  "tags": [
+   "核廢料處理",
+   "漢福德合約",
+   "政府訂單",
+   "已查證"
+  ],
+  "src": "news5_17.json"
+ },
+ "ITGR": {
+  "sym": "ITGR",
+  "decline_short": "Q1後下調全年指引至18.2億美元，目標價削至77-88美元",
+  "recovery_short": "8/3 KKR宣布$127全現金收購，股價急升釘價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "收購",
+   "KKR",
+   "併購套利"
+  ],
+  "src": "news7_01.json"
+ },
+ "ICE": {
+  "sym": "ICE",
+  "decline_short": "Q2跌約22%隨交易所股齊跌，憂交易量見頂及永續期貨威脅",
+  "recovery_short": "7/30 宣布$167/股（約$60億）收購MarketAxess，Q2交易收入創新高",
+  "hype": true,
+  "hype_zh": "收購MarketAxess",
+  "confidence": "高",
+  "tags": [
+   "板塊性拋售",
+   "週期見頂憂慮",
+   "收購MarketAxess",
+   "分析師上調"
+  ],
+  "src": "R4"
+ },
+ "DBRG": {
+  "sym": "DBRG",
+  "decline_short": "股價被SoftBank $16收購錨定，僅套利價差隨大市窄幅波動",
+  "recovery_short": "股東批准SoftBank收購，Q2 EPS $0.09勝預期，貼近$16作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "收購",
+   "SoftBank",
+   "併購套利"
+  ],
+  "src": "R4"
+ },
+ "DCTH": {
+  "sym": "DCTH",
+  "decline_short": "無明確個股利空，7月底隨小型醫療股回調至$11.55",
+  "recovery_short": "8月6日單日抽22.5%，10日再彈10.3%，近三個月累升逾五成",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "低",
+  "tags": [
+   "單日抽升",
+   "無明確消息",
+   "小型醫療股"
+  ],
+  "src": "news5_11.json"
+ },
+ "SBET": {
+  "sym": "SBET",
+  "decline_short": "ETH自高位回落拖累幣庫股，隨科技股回調",
+  "recovery_short": "ETH反彈帶動（公司持有大量ETH作財資），未搵到其他個股消息",
+  "hype": true,
+  "hype_zh": "ETH幣價反彈",
+  "confidence": "中",
+  "tags": [
+   "加密貨幣",
+   "ETH財資",
+   "幣價驅動"
+  ],
+  "src": "news5_13.json"
+ },
+ "VREX": {
+  "sym": "VREX",
+  "decline_short": "關稅不確定、中國需求弱，曾因降指引單日瀉22%兼遭S&P降級",
+  "recovery_short": "Teledyne $18.90 全現金收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "關稅拖累",
+   "收購溢價",
+   "業績超預期",
+   "M&A",
+   "併購套利"
+  ],
+  "src": "R4"
+ },
+ "BWMN": {
+  "sym": "BWMN",
+  "decline_short": "無明確個股利淡，隨7月至8月初大市回調整固，估值偏低",
+  "recovery_short": "Bernhard $43 私有化，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "私有化收購",
+   "溢價58%",
+   "M&A",
+   "併購套利"
+  ],
+  "src": "R4"
+ },
+ "APGE": {
+  "sym": "APGE",
+  "decline_short": "無個股利空，AbbVie收購後併購套利價差隨大市輕微擺動",
+  "recovery_short": "AbbVie $135.11 全現金收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "被收購",
+   "併購套利",
+   "臨床數據利好"
+  ],
+  "src": "R4"
+ },
+ "OGN": {
+  "sym": "OGN",
+  "decline_short": "Q2調整EPS$0.85遜預期$0.87，股價貼近$14收購價窄幅上落",
+  "recovery_short": "Sun Pharma $14 全現金收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "被收購",
+   "併購套利",
+   "業績遜預期"
+  ],
+  "src": "news5_02.json"
+ },
+ "GBTG": {
+  "sym": "GBTG",
+  "decline_short": "股價貼近$9.50收購價窄幅波動，Q2經調EPS微遜",
+  "recovery_short": "Long Lake $9.50 全現金收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "被收購",
+   "私有化",
+   "併購套利",
+   "業績混合"
+  ],
+  "src": "news5_09.json"
+ },
+ "NATH": {
+  "sym": "NATH",
+  "decline_short": "獲$102全現金收購後貼價整固，交易延期令套利價差略擴",
+  "recovery_short": "Smithfield $102 全現金收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "併購套利",
+   "全現金收購",
+   "交易延期",
+   "低波幅"
+  ],
+  "src": "R4"
+ },
+ "SMTI": {
+  "sym": "SMTI",
+  "decline_short": "7月中隨大市回調，8月初遭兩行由買入降至持有",
+  "recovery_short": "MiMedx $33現金＋0.4735 MDXG 收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "大市回調",
+   "收入增長",
+   "評級下調",
+   "缺明確催化劑",
+   "併購套利"
+  ],
+  "src": "R4"
+ },
+ "BLFS": {
+  "sym": "BLFS",
+  "decline_short": "無明確個股利空，隨大市回調，Repligen收購消息前後整固",
+  "recovery_short": "Repligen $11.25現金＋0.1442 RGEN 收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "被收購",
+   "轉虧為盈",
+   "業績超預期",
+   "併購套利"
+  ],
+  "src": "R4"
+ },
+ "ROKU": {
+  "sym": "ROKU",
+  "decline_short": "6月中Fox宣布$220億收購後，7月初隨大市回吐",
+  "recovery_short": "Fox $96現金＋0.9693 FOXA 收購，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "被收購",
+   "業績超預期",
+   "串流廣告",
+   "併購套利"
+  ],
+  "src": "news5_09.json"
+ },
+ "CRBG": {
+  "sym": "CRBG",
+  "decline_short": "7月下旬隨大市回調，另類投資收益疲弱拖累盈利",
+  "recovery_short": "與Equitable全股份合併，股價釘住作價",
+  "hype": false,
+  "hype_zh": "",
+  "confidence": "高",
+  "tags": [
+   "合併",
+   "股份回購",
+   "壽險",
+   "併購套利"
+  ],
+  "src": "news7_01.json"
+ },
+ "WDAY": {
+  "sym": "WDAY",
+  "decline_short": "FY27訂閱指引僅增12-13%+AI顛覆SaaS憂慮，年內腰斬",
+  "recovery_short": "8/13傳Silver Lake洽收購單日+17.8%，Q2再勝預期",
+  "hype": true,
+  "hype_zh": "私有化傳聞+18%",
+  "confidence": "高",
+  "tags": [
+   "傳被收購",
+   "私募洽購",
+   "業績超預期",
+   "AI憂慮消退"
+  ],
+  "src": "news5_07.json"
+ }
+}

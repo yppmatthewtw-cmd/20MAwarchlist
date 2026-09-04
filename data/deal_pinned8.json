@@ -1,0 +1,93 @@
+{
+ "ITGR": {
+  "cls": "cash",
+  "acquirer": "KKR",
+  "deal_price": 127.0,
+  "terms_zh": "KKR $127 全現金收購（8/3 公布，預計 2026 年底完成）",
+  "expected": "YE2026"
+ },
+ "VREX": {
+  "cls": "cash",
+  "acquirer": "Teledyne",
+  "deal_price": 18.9,
+  "terms_zh": "Teledyne $18.90 全現金收購（8/10 公布，預計 2027 年初完成）",
+  "expected": "early 2027"
+ },
+ "BWMN": {
+  "cls": "cash",
+  "acquirer": "Bernhard Capital",
+  "deal_price": 43.0,
+  "terms_zh": "Bernhard Capital $43 全現金私有化（8/10 公布，go-shop 至 9/13）",
+  "expected": "Q4 2026–Q1 2027"
+ },
+ "APGE": {
+  "cls": "cash",
+  "acquirer": "AbbVie",
+  "deal_price": 135.11,
+  "terms_zh": "AbbVie $135.11 全現金收購（6/22 公布，預計 Q3 2026 完成）",
+  "expected": "Q3 2026"
+ },
+ "OGN": {
+  "cls": "cash",
+  "acquirer": "Sun Pharma",
+  "deal_price": 14.0,
+  "terms_zh": "Sun Pharma $14 全現金收購（股東 7/23 通過，最後期限 2027-01-26）",
+  "expected": "by 2027-01-26"
+ },
+ "DBRG": {
+  "cls": "cash",
+  "acquirer": "SoftBank",
+  "deal_price": 16.0,
+  "terms_zh": "SoftBank $16 全現金收購（股東 4/23 通過，預計 2026 下半年完成）",
+  "expected": "H2 2026"
+ },
+ "GBTG": {
+  "cls": "cash",
+  "acquirer": "Long Lake",
+  "deal_price": 9.5,
+  "terms_zh": "Long Lake $9.50 全現金收購（股東 8/3 通過）",
+  "expected": "2026"
+ },
+ "NATH": {
+  "cls": "cash",
+  "acquirer": "Smithfield",
+  "deal_price": 102.0,
+  "terms_zh": "Smithfield $102 全現金收購（待 CFIUS，預計 2026 下半年）",
+  "expected": "H2 2026 (CFIUS)"
+ },
+ "SMTI": {
+  "cls": "cash-heavy",
+  "acquirer": "MiMedx",
+  "deal_price": null,
+  "terms_zh": "MiMedx 收購：每股 $33 現金＋0.4735 股 MDXG（7/29 公布，現金佔約 94%）",
+  "expected": "YE2026"
+ },
+ "BLFS": {
+  "cls": "stock-heavy",
+  "acquirer": "Repligen",
+  "deal_price": null,
+  "terms_zh": "Repligen 收購：每股 $11.25 現金＋0.1442 股 RGEN（股份佔約 64%，價格跟隨 RGEN）",
+  "expected": "Q4 2026"
+ },
+ "ROKU": {
+  "cls": "mixed",
+  "acquirer": "Fox",
+  "deal_price": null,
+  "terms_zh": "Fox 收購：每股 $96 現金＋0.9693 股 FOXA（6/15 公布，價格跟隨 FOXA）",
+  "expected": "H1 2027"
+ },
+ "CRBG": {
+  "cls": "stock",
+  "acquirer": "Equitable",
+  "deal_price": null,
+  "terms_zh": "與 Equitable 全股份合併 1:1 換入 New Equitable（股東 7/30 通過，價格跟隨 EQH）",
+  "expected": "YE2026"
+ },
+ "PSNL": {
+  "cls": "stock",
+  "acquirer": "Tempus AI",
+  "deal_price": null,
+  "terms_zh": "Tempus AI 全股份收購（7/20 公布，作價 $16.25 折合，價格跟隨 TEM）",
+  "expected": "2026"
+ }
+}
