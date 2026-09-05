@@ -1,0 +1,535 @@
+#!/usr/bin/env python3
+"""AI Sector Watchlist — 41 AI 小群組 x 5 sessions of money-flow scores.
+
+Same framework as the Sub-Sector watchlist R1.01: identical scoring engine, identical
+palette / theme control / table interactions (CSS and JS are read from that build so the
+two reports stay one system). What differs is the domain: baskets come from the Dashboard
+R15.6 AI 小群組 classification, restricted to US listings and US ADRs, and the divergence
+page compares the dashboard's RS quadrant against the measured money flow.
+
+Pages: 總覽 / 每日矩陣 / 大分類匯總 / 象限背離.
+"""
+import json, datetime, html, os, statistics, collections
+
+SCRATCH = os.environ.get("WORK_DIR", "/tmp/claude-0/-home-user-20MAwarchlist/0f749aae-85b5-584c-9175-237303814dd9/scratchpad")
+F = json.load(open(f"{SCRATCH}/ai4/flow4.json"))
+B = json.load(open(f"{SCRATCH}/ai/flow3.json"))   # R3.00, for the change summary only
+OW = json.load(open(f"{SCRATCH}/ai4/flow4_oldwin.json"))   # R4 engine on the R3 window (cap + 08-31 fixes only)
+OWROW = {r["code"]: r for r in OW["rows"] if r.get("days")}
+BROW = {r["code"]: r for r in B["rows"] if r.get("days")}
+BDAYS = B["meta"]["days"]
+M = F["meta"]; ROWS = F["rows"]; DAYS = M["days"]
+CSS = open(f"{SCRATCH}/ai/_css.txt").read()
+JS = open(f"{SCRATCH}/ai/_js.txt").read()
+now_hkt = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)
+STAMP = now_hkt.strftime("%m.%d_%H%M")
+BUILD_TS = now_hkt.strftime("%Y-%m-%d %H:%M HKT")
+def md(d): return f"{int(d[5:7])}/{int(d[8:10])}"
+VER = "R4.00"
+OUTNAME = f"AI_Sector_watchlist_{VER}_claudefable51high_{STAMP}.html"
+WD = "一二三四五六日"
+
+def esc(s): return html.escape(str(s), quote=True)
+def dlab(d):
+    dt = datetime.date.fromisoformat(d)
+    return f"{dt.month}/{dt.day}<span class=\"wd\">週{WD[dt.weekday()]}</span>"
+
+GRADE_ZH = {3: "強力流入", 2: "流入", 1: "偏流入", 0: "中性", -1: "偏流出", -2: "流出", -3: "強力流出"}
+def gcls(g): return f"g{'p' if g > 0 else 'n' if g < 0 else '0'}{abs(g)}"
+
+def fmt_m(v):
+    a = abs(v) / 1e6
+    if a >= 1000: return f"{'+' if v > 0 else '-'}${a/1000:.1f}B"
+    return f"{'+' if v > 0 else '-'}${a:,.0f}M"
+
+def tv(t):
+    return f'https://www.tradingview.com/chart/Q1c5VWwD/?symbol={esc(t.lower())}'
+
+def meter(v, cls=""):
+    return (f'<div class="mc {cls}"><b class="nums">{v:.0f}</b>'
+            f'<span class="meter"><i style="width:{max(0, min(100, v)):.0f}%"></i></span></div>')
+
+live = [r for r in ROWS if r.get("days")]
+dead = [r for r in ROWS if not r.get("days")]
+CATS = sorted({r["cat"] for r in ROWS})
+CAT_IDX = {c: i for i, c in enumerate(CATS)}
+QUAD_CLS = {"領先": "qlead", "改善": "qimp", "轉弱": "qweak", "落後": "qlag"}
+
+def tf_cls(v):
+    """Per-ticker 5-day flow -> the same green/red scale the day cells use."""
+    return ("gp2" if v >= 0.20 else "gp1" if v >= 0.05 else
+            "g00" if v > -0.05 else "gn1" if v > -0.20 else "gn2")
+
+def ticks_cell(r):
+    """Basket tickers ranked by 5-day money flow: inflow first (green), outflow last (red)."""
+    out = []
+    for t in r.get("ticks") or []:
+        nv = (f"（{t['novol']} 日量能未知，B=0）" if t.get("novol") else "")
+        nb = "（08-28 起先有數據，無 20 日量能基準：只計方向）" if t.get("nobase") else ""
+        out.append(
+            f'<a class="tkf {tf_cls(t["tf5"])}{" nb" if t.get("nobase") else ""}" href="{tv(t["sym"])}" target="_blank" rel="noopener" '
+            f'title="{esc(t["sym"])} · 5日資金流向 {t["tf5"]:+.2f} · 淨額估算 {fmt_m(t["mfd5"])} · '
+            f'5日報酬 {t["ret5"]*100:+.2f}%{nv}{nb}">{esc(t["sym"])}<i>{t["tf5"]:+.2f}</i></a>')
+    return f'<div class="tkw">{"".join(out)}</div>'
+
+def basket_cell(r):
+    """Only what the ranked ticker column cannot carry: members left out of the basket."""
+    miss = [t for t in r["us"] if t not in r["basket"]]
+    mtag = (f'<span class="miss" title="所有可達鏡像視窗內都無數據（OTC ADR 不在快照宇宙），未計入">數據不足 {esc("、".join(miss))}</span>'
+            if miss else "")
+    non = r.get("nonus") or []
+    ntag = (f'<span class="miss nu" title="非美股上市、亦無 US ADR，按指示排除：{esc("、".join(non))}">'
+            f'排除非美股 {len(non)} 隻</span>' if non else "")
+    body = mtag + ntag or '<span class="allin">全部計入</span>'
+    return f'<div class="bk">{body}</div>'
+
+def cover_cell(r):
+    n, us, tot = r["n_basket"], len(r["us"]), len(r["members"])
+    cls = "qlo" if n <= 2 else ("qmid" if n <= 3 else "qok")
+    pct = n / tot * 100 if tot else 0
+    conf = "低" if n <= 2 else ("中" if n <= 3 else "高")
+    return (f'<div class="qc"><b class="{cls}">{n}</b>'
+            f'<span class="qt cf{conf}">可信度{conf}</span>'
+            f'<span class="qt">美股 {us}／全球 {tot}</span>'
+            f'<span class="qt">覆蓋 {pct:.0f}%</span></div>')
+
+def trend_cell(r):
+    s = r["slope"]
+    lab = "加速流入" if s >= 0.35 else "轉流入" if s >= 0.12 else "加速流出" if s <= -0.35 else "轉流出" if s <= -0.12 else "持平"
+    cls = "up" if s >= 0.12 else "dn" if s <= -0.12 else "fl"
+    return (f'<div class="tr {cls}"><b>{s:+.2f}</b><span>{lab}</span>'
+            f'<i>{r["pos"]}↑/{r["neg"]}↓ · 廣度 {r["breadth5"]*100:.0f}%</i></div>')
+
+def quad_cell(r):
+    q = r.get("quad") or "—"
+    rs, rm = r.get("rs"), r.get("rsmom")
+    sub = f'{rs:.1f} / {rm:.1f}' if rs is not None and rm is not None else "—"
+    return f'<td class="qd {QUAD_CLS.get(q, "")}">{esc(q)}<span class="hl">RS {esc(sub)}</span></td>'
+
+def dash_cell(r):
+    bits = []
+    for lab, key, suf in (("RSI", "rsi", ""), ("1週", "ret1w", "%"), ("1月", "ret1m", "%"), ("3月", "ret3m", "%")):
+        v = r.get(key)
+        if v is None: continue
+        cls = "" if key == "rsi" else (" pos" if v > 0 else " neg")
+        bits.append(f'<span class="dm"><i>{lab}</i><b class="{cls}">{v:+.1f}{suf}</b></span>'
+                    if key != "rsi" else f'<span class="dm"><i>{lab}</i><b>{v:.1f}</b></span>')
+    fr = r.get("flowRatio")
+    if fr is not None:
+        bits.append(f'<span class="dm"><i>資金比</i><b>{fr:.1f}</b></span>')
+    return f'<div class="dash">{"".join(bits)}</div>'
+
+def day_cell(r, d):
+    x = r["days"][d]
+    nv = (f'<span class="nvw" title="{x["novol"]}/{r["n_basket"]} 隻當日成交量未公布或只有內插值（或無量能基準），量能項 B 設為中性">量?</span>'
+          if x.get("novol") else "")
+    return (f'<td class="dcell {gcls(x["grade"])}" title="z {x["z"]:+.2f} · 籃子報酬 {x["ret"]*100:+.2f}% · '
+            f'量能 {x["rvol"]:.2f}x · 廣度 {x["up"]}/{r["n_basket"]}">'
+            f'{x["score"]:.0f}<span class="gz">{GRADE_ZH[x["grade"]]}</span>{nv}</td>')
+
+def row_attrs(r):
+    a = (f' data-z5="{r["z5"]:.4f}" data-score5="{r["score5"]:.2f}" data-mfd="{r["mfd5"]:.0f}"'
+         f' data-rs="{r.get("rs") or 0}" data-slope="{r["slope"]:.4f}" data-ret5="{r["ret5"]*100:.3f}"'
+         f' data-n="{r["n_basket"]}" data-rank="{r["rank"]}" data-r1m="{r.get("ret1m") or 0}"')
+    a += f' data-score5r="{r["score5r"]:.2f}" data-inten="{r["intensity"]:.3f}"'
+    for i, d in enumerate(DAYS, 1):
+        a += f' data-d{i}="{r["days"][d]["score"]:.2f}"'
+    return a
+
+def table_main():
+    head = ('<tr><th>#</th><th>AI 小群組 Sub-Group</th>'
+            '<th>成分股 · 按資金流向排序<span class="thn">綠＝流入 · 紅＝流出</span></th>'
+            '<th>大分類</th>'
+            '<th class="srt" data-key="score5">5日資金流向<span class="thn">綜合分 0-100 ↓</span></th>'
+              '<th class="srt" data-key="score5r">穩健分<span class="thn">樣本調整後 ↓</span></th>'
+            + "".join(f'<th class="srt d" data-key="d{i}">{dlab(d)}<span class="thn">日分 ↓</span></th>'
+                      for i, d in enumerate(DAYS, 1))
+            + '<th class="srt" data-key="mfd">淨額估算<span class="thn">5日合計 ↓</span></th>'
+              '<th class="srt" data-key="inten">資金強度<span class="thn">淨額/成交額 ↓</span></th>'
+              '<th class="srt" data-key="ret5">籃子報酬<span class="thn">5日 % ↓</span></th>'
+              '<th class="srt" data-key="slope">趨勢<span class="thn">日分斜率 ↓</span></th>'
+              '<th class="srt" data-key="rs">儀表板象限<span class="thn">RS / RS動能 ↓</span></th>'
+              '<th class="srt" data-key="r1m">儀表板指標<span class="thn">1月% ↓</span></th>'
+              '<th class="srt" data-key="n">樣本<span class="thn">美股數 ↓</span></th>'
+              '<th>未計入成分股<span class="thn">數據不足／非美股</span></th></tr>')
+    body = []
+    for r in live:
+        body.append(
+            f'<tr{row_attrs(r)} data-sym="s{r["n"]}"><td class="rk">{r["rank"]}</td>'
+            f'<td><div class="ss"><b><span class="code">{esc(r["code"])}</span>{esc(r["zh"])}</b>'
+            f'<em>{esc(r["tier"])}型 · 全球成分 {len(r["members"])} 隻</em></div></td>'
+            f'<td class="tkc">{ticks_cell(r)}</td>'
+            f'<td class="sec"><span class="sdot s{CAT_IDX[r["cat"]]%11}"></span>{esc(r["cat"])}</td>'
+            f'<td>{meter(r["score5"], "m5")}</td><td>{meter(r["score5r"], "m5")}</td>'
+            + "".join(day_cell(r, d) for d in DAYS)
+            + f'<td class="nums mf {"pos" if r["mfd5"] > 0 else "neg"}">{fmt_m(r["mfd5"])}</td>'
+              f'<td class="nums {"pos" if r["intensity"] > 0 else "neg"}">{r["intensity"]:+.1f}%</td>'
+              f'<td class="nums {"pos" if r["ret5"] > 0 else "neg"}">{r["ret5"]*100:+.2f}%</td>'
+              f'<td>{trend_cell(r)}</td>'
+            + quad_cell(r)
+            + f'<td>{dash_cell(r)}</td><td>{cover_cell(r)}</td><td>{basket_cell(r)}</td></tr>')
+    return head, "".join(body)
+
+def table_matrix():
+    head = ('<tr><th>#</th><th>AI 小群組</th><th>大分類</th>'
+            + "".join(f'<th class="srt d" data-key="d{i}">{dlab(d)}<span class="thn">日分 ↓</span></th>'
+                      for i, d in enumerate(DAYS, 1))
+            + '<th class="srt" data-key="score5">5日綜合<span class="thn">0-100 ↓</span></th>'
+              '<th class="srt" data-key="score5r">穩健分<span class="thn">樣本調整 ↓</span></th>'
+              '<th>逐日走勢</th>'
+              '<th class="srt" data-key="mfd">淨額估算<span class="thn">5日 ↓</span></th></tr>')
+    body = []
+    for r in live:
+        spark = ""
+        for d in DAYS:
+            x = r["days"][d]
+            h = max(4, min(38, abs(x["z"]) * 16))
+            spark += (f'<span class="bar {"bp" if x["z"] >= 0 else "bn"}" style="height:{h:.0f}px" '
+                      f'title="{esc(d)} z {x["z"]:+.2f}"></span>')
+        body.append(
+            f'<tr{row_attrs(r)} data-sym="m{r["n"]}"><td class="rk">{r["rank"]}</td>'
+            f'<td><div class="ss"><b><span class="code">{esc(r["code"])}</span>{esc(r["zh"])}</b></div></td>'
+            f'<td class="sec">{esc(r["cat"])}</td>'
+            + "".join(f'<td class="dcell big {gcls(r["days"][d]["grade"])}">{r["days"][d]["score"]:.0f}'
+                      f'<span class="gz">{r["days"][d]["z"]:+.1f}</span></td>' for d in DAYS)
+            + f'<td>{meter(r["score5"], "m5")}</td><td>{meter(r["score5r"], "m5")}</td>'
+              f'<td class="spk"><div class="spark">{spark}</div></td>'
+              f'<td class="nums mf {"pos" if r["mfd5"] > 0 else "neg"}">{fmt_m(r["mfd5"])}</td></tr>')
+    return head, "".join(body)
+
+def cat_agg():
+    by = collections.defaultdict(list)
+    for r in live: by[r["cat"]].append(r)
+    out = []
+    for cat, rs in by.items():
+        dv = sum(r["dv5"] for r in rs) or 1
+        z5 = sum(r["z5"] * r["dv5"] for r in rs) / dv
+        dayz = {d: sum(r["days"][d]["z"] * r["days"][d]["dv"] for r in rs) /
+                   (sum(r["days"][d]["dv"] for r in rs) or 1) for d in DAYS}
+        out.append({"cat": cat, "n": len(rs), "z5": z5, "mfd": sum(r["mfd5"] for r in rs),
+                    "dayz": dayz, "dv5": dv, "dead": sum(1 for x in dead if x["cat"] == cat),
+                    "top": sorted(rs, key=lambda r: -r["z5"])[:3],
+                    "bot": sorted(rs, key=lambda r: r["z5"])[:3],
+                    "npos": sum(1 for r in rs if r["z5"] >= 0.25),
+                    "nneg": sum(1 for r in rs if r["z5"] <= -0.25)})
+    out.sort(key=lambda x: -x["z5"])
+    return out
+
+def zc(z):
+    g = 3 if z >= 1.0 else 2 if z >= 0.5 else 1 if z >= 0.2 else 0 if z > -0.2 else -1 if z > -0.5 else -2 if z > -1.0 else -3
+    return f'<td class="dcell {gcls(g)}">{z:+.2f}</td>'
+
+def table_cat():
+    agg = cat_agg()
+    head = ('<tr><th>#</th><th>大分類 Category</th><th>可計算<span class="thn">／未能計算</span></th>'
+            '<th>5日資金流向<span class="thn">成交額加權 z</span></th>'
+            + "".join(f'<th class="d">{dlab(d)}</th>' for d in DAYS)
+            + '<th>淨額估算<span class="thn">5日合計</span></th><th>5日成交額</th>'
+              '<th>流入/流出群組</th><th>最強小群組</th><th>最弱小群組</th></tr>')
+    body = []
+    for i, a in enumerate(agg, 1):
+        body.append(
+            f'<tr><td class="rk">{i}</td><td><div class="ss"><b>{esc(a["cat"])}</b></div></td>'
+            f'<td class="nums">{a["n"]}<span class="mut"> / {a["dead"]}</span></td>{zc(a["z5"])}'
+            + "".join(zc(a["dayz"][d]) for d in DAYS)
+            + f'<td class="nums mf {"pos" if a["mfd"] > 0 else "neg"}">{fmt_m(a["mfd"])}</td>'
+              f'<td class="nums mut">${a["dv5"]/1e9:,.0f}B</td>'
+              f'<td class="nums"><span class="pos">{a["npos"]}↑</span> / <span class="neg">{a["nneg"]}↓</span></td>'
+              f'<td class="lst">' + "".join(f'<span class="pill pos">{esc(x["code"])} {x["z5"]:+.2f}</span>' for x in a["top"]) + '</td>'
+              f'<td class="lst">' + "".join(f'<span class="pill neg">{esc(x["code"])} {x["z5"]:+.2f}</span>' for x in a["bot"]) + '</td></tr>')
+    return head, "".join(body)
+
+def quadrants():
+    q = {"lead_out": [], "lag_in": [], "lead_in": [], "lag_out": []}
+    for r in live:
+        qd = r.get("quad")
+        strong = qd in ("領先", "改善")
+        weak = qd in ("落後", "轉弱")
+        if strong and r["z5"] <= -0.25: q["lead_out"].append(r)
+        elif weak and r["z5"] >= 0.25: q["lag_in"].append(r)
+        elif strong and r["z5"] >= 0.25: q["lead_in"].append(r)
+        elif weak and r["z5"] <= -0.25: q["lag_out"].append(r)
+    for k in q: q[k].sort(key=lambda r: -abs(r["z5"]))
+    return q
+
+def qbox(title, sub, rows, cls):
+    if not rows:
+        return f'<div class="qbox {cls}"><h3>{esc(title)}<span>{esc(sub)}</span></h3><p class="none">本次無</p></div>'
+    items = "".join(
+        f'<div class="qrow"><b><span class="code">{esc(r["code"])}</span>{esc(r["zh"][:16])}</b>'
+        f'<span class="qz">{r["z5"]:+.2f}</span>'
+        f'<span class="qh">{esc(r.get("quad") or "—")}</span>'
+        f'<span class="qm {"pos" if r["mfd5"] > 0 else "neg"}">{fmt_m(r["mfd5"])}</span>'
+        f'<i>{esc(r["cat"])}</i></div>' for r in rows[:14])
+    return (f'<div class="qbox {cls}"><h3>{esc(title)} <b class="cnt">{len(rows)}</b><span>{esc(sub)}</span></h3>'
+            f'{items}</div>')
+
+def dead_card():
+    if not dead: return ""
+    items = "".join(
+        f'<span class="dli"><b>{esc(r["code"])}</b> {esc(r["zh"][:28])} · 全球成分 {len(r["members"])} 隻'
+        f'（美股 {len(r["us"])}）· {esc(r["note"])}'
+        f'<span class="nu">{esc("、".join((r.get("nonus") or [])[:8]))}{"…" if len(r.get("nonus") or []) > 8 else ""}</span></span>'
+        for r in sorted(dead, key=lambda x: x["code"]))
+    return (f'<div class="dcard"><span class="dlab">⚠ 未能計算資金流向 <b>{len(dead)}</b> 個小群組</span>'
+            f'<span class="dnote">按指示只納入美股上市股票及 US ADR；以下小群組嘅成分股全部喺中國A股／台股／日韓／歐洲掛牌，'
+            f'本環境無該等市場嘅價量數據，故列出但唔參與排名</span>{items}</div>')
+
+top5 = live[:5]; bot5 = live[-5:][::-1]
+acc = sorted(live, key=lambda r: -r["slope"])[:5]
+dec = sorted(live, key=lambda r: r["slope"])[:5]
+last = DAYS[-1]
+today_top = sorted(live, key=lambda r: -r["days"][last]["z"])[:5]
+today_bot = sorted(live, key=lambda r: r["days"][last]["z"])[:5]
+mkt = M["mkt_med"]
+n_us = sum(len(r["us"]) for r in ROWS); n_glob = sum(len(r["members"]) for r in ROWS)
+
+COLW_MAIN = [40, 196, 252, 110, 90, 86] + [76] * len(DAYS) + [88, 78, 76, 90, 90, 172, 148]
+COLW_MTX = [40, 230, 118] + [88] * len(DAYS) + [92, 88, 92, 92]
+COLW_CAT = [40, 150, 76, 92] + [72] * len(DAYS) + [92, 88, 92, 220, 220]
+
+def colgroup(ws):
+    return "<colgroup>" + "".join(f'<col style="width:{w}px">' for w in ws) + "</colgroup>", sum(ws)
+
+EXTRA_CSS = """
+.tkf.nb{border-bottom:2px dotted var(--warn)}
+.ss .code{display:inline-block;font-size:10px;font-weight:700;color:var(--seq);border:1px solid var(--ring);
+ border-radius:6px;padding:0 5px;margin-right:6px;vertical-align:1px;background:var(--hl)}
+.qd{text-align:left;font-size:12px;font-weight:700}
+.qd .hl{display:block;font-weight:400;font-size:9.5px;color:var(--mut)}
+.qd.qlead{color:var(--pt)}.qd.qimp{color:var(--seq)}.qd.qweak{color:var(--warn)}.qd.qlag{color:var(--nt)}
+.dash{display:flex;flex-wrap:wrap;gap:3px 6px}
+.dm{font-size:10.5px;white-space:nowrap}
+.dm i{font-style:normal;color:var(--mut);margin-right:3px}
+.dm b{font-variant-numeric:tabular-nums}
+.miss.nu{color:var(--nt);border-color:var(--negbd)}
+.tkw{display:flex;flex-wrap:wrap;gap:3px}
+.tkf{display:inline-flex;align-items:baseline;gap:3px;font-size:10.5px;font-weight:700;text-decoration:none;
+ border-radius:6px;padding:2px 6px;border:1px solid transparent;font-variant-numeric:tabular-nums}
+.tkf i{font-style:normal;font-weight:400;font-size:9px;opacity:.85}
+.tkf.gp2{background:var(--p2);color:var(--p2t);border-color:var(--posbd)}
+.tkf.gp1{background:var(--p1);color:var(--p1t)}
+.tkf.g00{background:var(--z0);color:var(--z0t)}
+.tkf.gn1{background:var(--n1);color:var(--n1t)}
+.tkf.gn2{background:var(--n2);color:var(--n2t);border-color:var(--negbd)}
+.tkf:hover{outline:2px solid var(--seq);outline-offset:1px}
+.tkc{vertical-align:top;padding-top:8px}
+.allin{font-size:9.5px;color:var(--mut)}
+.qrow b .code{font-size:9.5px;margin-right:4px}
+.dcard{display:flex;flex-wrap:wrap;gap:5px 6px;align-items:center;border-radius:10px;padding:10px 12px;
+ margin-bottom:12px;background:var(--n1);border:1px solid var(--negbd)}
+.dlab{font-size:12px;font-weight:700;color:var(--nt);margin-right:4px}
+.dlab b{color:var(--ink)}
+.dnote{width:100%;font-size:11px;color:var(--ink2)}
+.dli{display:block;width:100%;font-size:11px;color:var(--ink2);background:var(--sf);border:1px solid var(--ring);
+ border-radius:8px;padding:3px 8px;line-height:1.5}
+.dli b{color:var(--ink);margin-right:5px}
+.dli .nu{display:block;font-size:9.5px;color:var(--mut)}
+.qbox.leadout{border-color:var(--negbd)}.qbox.lagin{border-color:var(--posbd)}
+.qt.cf低{color:var(--nt);border-color:var(--negbd)}
+.qt.cf中{color:var(--warn);border-style:solid}
+.qt.cf高{color:var(--pt);border-color:var(--posbd)}
+.nvw{display:block;font-size:8.5px;font-weight:400;opacity:.85}
+.chg{}
+.upd{background:var(--hl);border:1px solid var(--ring);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.upd h3{margin:0 0 8px;font-size:13px;color:var(--ink)}
+.upd ul{margin:0;padding-left:18px}
+.upd li{font-size:12.5px;color:var(--ink2);line-height:1.7;margin:2px 0}
+.upd li b{color:var(--ink)}
+"""
+
+cur = {r["code"]: r for r in live}
+moved = sorted(((c, BROW[c]["rank"], cur[c]["rank"]) for c in cur if c in BROW and BROW[c]["rank"] != cur[c]["rank"]),
+               key=lambda x: -abs(x[1] - x[2]))
+up3 = [f'{c} {a}→{b}' for c, a, b in moved if b < a][:5]
+dn3 = [f'{c} {a}→{b}' for c, a, b in moved if b > a][:5]
+NEWD = [d for d in DAYS if d not in BDAYS]; GONED = [d for d in BDAYS if d not in DAYS]
+nv = M.get("novol_note", {})
+grew = sorted(((c, BROW[c]["n_basket"], cur[c]["n_basket"]) for c in cur if c in BROW and BROW[c]["n_basket"] != cur[c]["n_basket"]), key=lambda x: -(x[2] - x[1]))
+grew_s = "、".join(f"{cur[c]['code']} {cur[c]['zh'].split(' ')[0]} {a}→{b}" for c, a, b in grew)
+newg = [cur[c] for c in cur if c not in BROW]
+d_eng = [abs(BROW[c]["rank"] - OWROW[c]["rank"]) for c in OWROW if c in BROW]
+nb_names = sorted({t["sym"] for r in live for t in (r.get("ticks") or []) if t.get("nobase")})
+nvd = M.get("novol_by_date", {})
+upd = f"""
+<div class="upd"><h3>本版更新（{VER} vs R3.00）—— 數據推進 + 對 R3.00 嘅 critical review 修正</h3><ul>
+<li><b>數據推進一個交易日</b>：計分視窗由 {BDAYS[0]} → {BDAYS[-1]} 改為 <b>{DAYS[0]} → {DAYS[-1]}</b>
+（新增 {esc("、".join(NEWD))}，移出 {esc("、".join(GONED))}）。{DAYS[-1]} 收盤：日線鏡像 1,502 隻有完整 OHLCV，其餘取 09-04 盤中快照嘅
+<code>price − price_change</code>（官方前收，與日線鏡像 1,497 隻交叉核對中位偏差 0.0000%）。<b>9月4日（週五）收盤未納入</b>：截至建置時（{BUILD_TS}）
+所有可達鏡像都未發佈 09-04 收盤價 —— 日線鏡像只推送咗成交量、Nasdaq 快照最新一筆係 09-04 10:24 ET 盤中價 —— 唔以盤中價冒充收盤。</li>
+<li><b>修正①：唔再剔除「缺 20 日量能基準」嘅成分股</b>。R3 因此丟走 {len(nb_names)} 隻其實五日都有收盤價嘅美股／ADR（快照 08-28 起先有數據：
+{esc("、".join(nb_names))}）—— 對 AI 產業鏈影響尤大，TSM／ASML／ARM／NBIS／CCJ／BABA／BIDU 全部缺席。本版以方向項計分、量能項 B 設 0，
+個股虛線底標示；08-27 前收由 08-28 收市後快照（17:03 ET）補回。計分美股由 {B["meta"]["n_tick"]} 隻增至 <b>{M["n_tick"]}</b> 隻，
+{len(grew)} 個小群組籃子改變：{esc(grew_s)}；<b>{esc("、".join(f"{r['code']} {r['zh'].split(' ')[0]}" for r in newg)) or "無"}</b> 由「數據不足」變為可計算（現可計算 {len(live)} 組）。
+未計入淨得 {esc("、".join(M["dropped"]))}（OTC ADR，唔在快照宇宙）。</li>
+<li><b>修正②：40% 單一股票上限實際上無生效</b>。R3 先截上限再重新歸一化，一隻佔籃子成交額 80% 嘅股票最終仍佔 66.7%；本版改為迭代 water-filling，
+實際權重嚴格 ≤40%（≥3 隻樣本嘅籃子；2 隻樣本上限不可達、改等權）。同一視窗下「上限＋08-31 量能」兩項修正令名次中位變動 {statistics.median(d_eng):.0f} 位、最大 {max(d_eng)} 位。</li>
+<li><b>修正③：08-31 內插成交量唔再當真</b>。08-31 快照序列嘅收盤係官方精確值，成交量卻係前後兩日平均；本版將該日成交量視為<b>未知</b>（B=0、標「量?」）。
+各日量能未知股票數（全宇宙口徑）：{esc("、".join(f"{md(d)} {nvd.get(d, 0)}" for d in DAYS if nvd.get(d)))}。</li>
+<li><b>修正④：頁面文字</b>。R3.00 嘅 H1 仍寫 R1.00、第 4 頁標題仍寫「8/26–9/1」、頁尾「數據終點」段係 R2 舊文並話 TSM／ASML／BABA「數據不足」—— 全部重寫；
+成分股欄嘅「9/2 成交量未公布」提示改為逐股顯示量能未知日數。</li>
+<li><b>市況</b>：{DAYS[-1]} 全巿中位 <b>{mkt[DAYS[-1]]*100:+.2f}%</b>，連同 {md(DAYS[-2])} 嘅 {mkt[DAYS[-2]]*100:+.2f}% 為連續第二日回升；
+{len(moved)} 個小群組名次有變。升幅最大 {esc("、".join(up3)) or "無"}；跌幅最大 {esc("、".join(dn3)) or "無"}。</li>
+</ul></div>"""
+
+rules = f"""
+<div class="card rules">
+<h2>打分方法（AI 小群組 · 資金流向 · 每日）</h2>
+① <b>分類來源</b>：直接採用附件 <b>Dashboard R15.6</b>（2026-08-27 收盤版）嘅 <b>41 個 AI 小群組</b>分類、
+大分類（A.運算核心／AA.AI Neo Cloud／B.製造／C.記憶體儲存／D.互連／E.系統整合／F.基礎設施／G.雲端應用）、
+成分股名單、RS 象限與 RSI／1週／1月／3月報酬。本表唔改分類，只新增資金流向計分。<br>
+② <b>只納入美股上市股票及 US ADR</b>（按指示）：全球成分股共 {n_glob} 隻，其中美股／ADR {n_us} 隻。
+儀表板本身已用 ADR 代號表示有 ADR 嘅外國公司（如台積電＝TSM、ASML＝Nasdaq ADR），
+其餘帶交易所後綴（.SS／.SZ／.TW／.T／.KS／.DE 等）嘅中國A股、台股、日韓及歐洲掛牌股票<b>一律排除</b>，
+唔以其他股票代替。因此有 <b>{len(dead)} 個小群組</b>（成分股全部非美股）無法計算，另列於下方紅框。<br>
+③ <b>逐日資金流向分</b>（每隻股票、每個交易日，與 Sub-Sector Watchlist R3.00 完全相同）：<br>
+　<code>A 方向 = tanh((個股報酬 − 當日全巿場中位報酬) / 2%)</code>；
+<code>B 量能 = log₂(當日成交額 / 前20日中位成交額) ÷ 2</code>，截於 ±1；
+<code>C 收位 = ((收−低)−(高−收))/(高−低)</code>（Chaikin 資金流乘數）；<br>
+　<code>f = (0.70×A + 0.30×C) × (1 + 0.50×B)</code> —— 放量上升＝真流入，放量下跌＝真流出，縮量打折。
+無日內高低價嘅股票只用 A 項。<br>
+④ <b>小群組分</b>：籃子內以<b>成交額加權</b>，單一股票<b>硬上限 40%</b>（迭代 water-filling；2 隻樣本嘅籃子上限不可達、改等權）。<b>0–100 分</b>＝每日將
+{len(live)} 個可計算小群組<b>橫向標準化</b>後取百分位，係「今日資金相對流向邊個 AI 環節」，唔係「升定跌」。
+<b>穩健分</b>＝5日 z ×√(n/(n+2)) 後取百分位（樣本細者向中性收斂）；<b>資金強度</b>＝淨額估算÷成交額（去規模）；
+<b>廣度</b>＝籃子內超額報酬為正嘅比例。
+等級：z≥1.5 強力流入 · ≥0.75 流入 · ≥0.25 偏流入 · ±0.25 中性 · ≤−0.25 偏流出 · ≤−0.75 流出 · ≤−1.5 強力流出。<br>
+⑤ <b>5 日綜合分</b>：五日 z 值按 <code>{esc(" / ".join(f"{w:g}" for w in M["weights"]))}</code> 加權（近日較重）後取百分位；
+<b>趨勢</b>＝五日 z 斜率；<b>↑/↓</b>＝五日內流入／流出日數。<br>
+⑥ <b>淨額估算</b>＝Σ(Chaikin 乘數 × 成交額)。<span class="cav">⚠ 呢個係價量推算嘅<b>代理指標</b>，
+唔係真實基金流數據，亦只計算籃子內嘅美股成分股，唔等於該 AI 環節嘅全球實際資金額。</span><br>
+⑦ <b>成交量缺口</b>：成交量<b>未公布</b>（8/31、9/2、9/3：非日線鏡像覆蓋嘅股票）、<b>只有內插值</b>（08-31）或<b>無 20 日基準</b>
+（08-28 起先有數據嘅外國發行人／ADR，如 TSM、ASML、ARM、BABA）嘅股票，該日量能項一律設為中性 0（格內標「量?」，個股虛線底），唔以估算量冒充。<br>
+⑧ <b>成分股欄（R3 新增）</b>：每個小群組嘅美股／ADR 成分股<b>按各自 5 日資金流向由強到弱排列</b> ——
+最前＝資金流入最多，最後＝流出最多。個股用同一條公式逐日計分，再以同一組近日較重嘅權重加權平均，
+數值顯示喺代號右邊。底色：<b>深綠 ≥+0.20</b> 強流入 · 淺綠 +0.05～+0.20 · 灰 ±0.05 中性 ·
+淺紅 −0.05～−0.20 · <b>深紅 ≤−0.20</b> 強流出。滑鼠停留睇該股淨額估算及 5 日報酬，點擊開 TradingView；
+右邊「未計入成分股」欄列出因數據不足或非美股而冇計入嘅成分股。<br>
+⑨ <b>儀表板象限</b>（領先／改善／轉弱／落後）同 RS、RS動能係<b>儀表板 8/27 收盤</b>嘅數值，
+本表資金流向係 <b>{DAYS[0]} → {DAYS[-1]}</b>（相差 {len(DAYS)} 個交易日），兩者時點唔同，正好用嚟睇背離 —— 見第 4 頁。
+</div>"""
+
+mkt_chips = "".join(f'<span>{dlab(d)} 全巿中位 <b class="{"pos" if mkt[d] > 0 else "neg"}">{mkt[d]*100:+.2f}%</b></span>' for d in DAYS)
+summary = f"""
+<div class="card">
+<h2>五日資金流向摘要（{DAYS[0]} → {DAYS[-1]}）</h2>
+<div class="sumgrid">
+<div class="sumbox"><h3>5 日最強流入</h3>{"".join(f'<div class="li"><b>{esc(r["code"])} {esc(r["zh"][:14])}</b><span class="pos">{r["z5"]:+.2f}</span><span class="mut">{fmt_m(r["mfd5"])}</span></div>' for r in top5)}</div>
+<div class="sumbox"><h3>5 日最強流出</h3>{"".join(f'<div class="li"><b>{esc(r["code"])} {esc(r["zh"][:14])}</b><span class="neg">{r["z5"]:+.2f}</span><span class="mut">{fmt_m(r["mfd5"])}</span></div>' for r in bot5)}</div>
+<div class="sumbox"><h3>最後一日（{DAYS[-1]}）流入</h3>{"".join(f'<div class="li"><b>{esc(r["code"])} {esc(r["zh"][:14])}</b><span class="pos">{r["days"][last]["z"]:+.2f}</span><span class="mut">分 {r["days"][last]["score"]:.0f}</span></div>' for r in today_top)}</div>
+<div class="sumbox"><h3>最後一日（{DAYS[-1]}）流出</h3>{"".join(f'<div class="li"><b>{esc(r["code"])} {esc(r["zh"][:14])}</b><span class="neg">{r["days"][last]["z"]:+.2f}</span><span class="mut">分 {r["days"][last]["score"]:.0f}</span></div>' for r in today_bot)}</div>
+<div class="sumbox"><h3>資金加速流入（斜率）</h3>{"".join(f'<div class="li"><b>{esc(r["code"])} {esc(r["zh"][:14])}</b><span class="pos">{r["slope"]:+.2f}</span><span class="mut">5日分 {r["score5"]:.0f}</span></div>' for r in acc)}</div>
+<div class="sumbox"><h3>資金加速流出（斜率）</h3>{"".join(f'<div class="li"><b>{esc(r["code"])} {esc(r["zh"][:14])}</b><span class="neg">{r["slope"]:+.2f}</span><span class="mut">5日分 {r["score5"]:.0f}</span></div>' for r in dec)}</div>
+</div>
+<div class="mkrow">{mkt_chips}</div>
+</div>"""
+
+secs = []
+head, body = table_main(); cg, tw = colgroup(COLW_MAIN)
+secs.append(f'''<section id="p1">
+<div class="pghead"><b>總覽 · {len(live)} 個可計算 AI 小群組 × 5 個交易日</b>
+<span class="tg">{DAYS[0]} → {DAYS[-1]}</span><span>排序 = 5 日資金流向綜合分</span>
+<span class="tg">分類取自 Dashboard R15.6（41 組）</span></div>
+{upd}{summary}{dead_card()}
+<div class="tblwrap"><table style="width:{tw}px">{cg}<thead>{head}</thead><tbody>{body}</tbody></table></div>
+<div class="legend"><span><i class="sw gp3"></i>強力流入 z≥1.5</span><span><i class="sw gp2"></i>流入 ≥0.75</span>
+<span><i class="sw gp1"></i>偏流入 ≥0.25</span><span><i class="sw g00"></i>中性</span>
+<span><i class="sw gn1"></i>偏流出</span><span><i class="sw gn2"></i>流出</span><span><i class="sw gn3"></i>強力流出</span>
+<span>格內數字＝當日 0–100 分（橫向百分位）· 滑鼠停留睇 z 值／籃子報酬／量能倍數</span></div>
+</section>''')
+
+head, body = table_matrix(); cg, tw = colgroup(COLW_MTX)
+secs.append(f'''<section id="p2" hidden>
+<div class="pghead"><b>每日矩陣 · AI 資金流向熱力圖</b><span>{len(live)} × 5 逐日分數與 z 值</span>
+<span class="tg">柱狀圖＝逐日 z 值（上綠下紅）</span></div>
+<div class="tblwrap"><table style="width:{tw}px">{cg}<thead>{head}</thead><tbody>{body}</tbody></table></div>
+</section>''')
+
+head, body = table_cat(); cg, tw = colgroup(COLW_CAT)
+secs.append(f'''<section id="p3" hidden>
+<div class="pghead"><b>AI 產業鏈 8 大分類匯總</b><span>小群組以成交額加權合成</span>
+<span class="tg">排序 = 5 日加權 z</span></div>
+<div class="tblwrap"><table style="width:{tw}px">{cg}<thead>{head}</thead><tbody>{body}</tbody></table></div>
+</section>''')
+
+q = quadrants()
+secs.append(f'''<section id="p4" hidden>
+<div class="pghead"><b>象限背離</b><span>儀表板 RS 象限（8/27）vs 本次實測資金流向（{md(DAYS[0])}–{md(DAYS[-1])}）</span></div>
+<div class="qgrid">
+{qbox("RS 領先/改善 但資金流出", "儀表板強、5 日 z ≤ −0.25：漲勢缺資金追捧，留意派發", q["lead_out"], "leadout")}
+{qbox("RS 落後/轉弱 但資金流入", "儀表板弱、5 日 z ≥ +0.25：資金先行，早期輪動候選", q["lag_in"], "lagin")}
+{qbox("RS 領先/改善 且資金流入", "儀表板強且 z ≥ +0.25：趨勢與資金一致", q["lead_in"], "")}
+{qbox("RS 落後/轉弱 且資金流出", "儀表板弱且 z ≤ −0.25：持續失血", q["lag_out"], "")}
+</div>
+</section>''')
+
+foot = f"""
+<div class="card foot">
+<h2>數據來源與限制</h2>
+① <b>AI 小群組分類</b>：附件 <b>Dashboard_R15.6_0828_hk16.15.html</b>（2026-08-27 收盤 · built 2026-08-28 16:15 HKT）
+嘅 A9.2 AI 小群組表：41 個小群組、8 個大分類、全球成分股 {n_glob} 隻（儀表板自報覆蓋 {esc(M.get("coverage_dash", "—"))}），
+連同 RS 象限、RSI 及 1週／1月／3月報酬。RS 象限與報酬為<b>儀表板 8/27 數值</b>，非本表重算。<br>
+② <b>價量數據</b>：natezone/market-tracker 真實日線 OHLCV 為主（有日內高低價，可算 Chaikin 收位），
+其餘以 Nasdaq 快照重建序列補足（只有收盤與成交量）。計分視窗 <b>{DAYS[0]} → {DAYS[-1]}</b> 共 5 個交易日，
+量能基準 {M["base"][0]} → {M["base"][1]}。實際計分 {M["n_tick"]} 隻美股。<br>
+③ <b>只計美股／ADR</b>：按指示排除所有非美股掛牌成分股（中國A股 .SS/.SH/.SZ、台股 .TW、日股 .T、韓股 .KS、
+歐股 .DE/.AS/.VI），亦無以其他股票代替；被排除嘅代號喺各行「排除非美股」標示，
+成分股全屬非美股嘅 {len(dead)} 個小群組列於總覽頂部紅框、唔參與排名。08-28 起先有數據嘅 ADR（TSM、ASML、ARM、BABA、BIDU 等 {len(nb_names)} 隻）
+照計方向、量能項設中性；只有 {esc("、".join(M["dropped"]))}（OTC ADR，唔在快照宇宙）因所有可達鏡像都無數據而未計入，於各行「數據不足」標示。<br>
+④ <b>數據終點 {DAYS[-1]}（美東週{WD[datetime.date.fromisoformat(DAYS[-1]).weekday()]}收盤）</b>：建置時（{BUILD_TS}）日線鏡像最新提交（09-05 00:11 UTC）
+對 09-04 只推送咗成交量、未有 OHLC；Nasdaq 快照最新一筆（09-04 14:24 UTC）係 10:24 ET 盤中價，其 price − price_change 只可還原 09-03 官方收盤
+（與日線鏡像 1,497 隻交叉核對中位偏差 0.0000%）。<span class="cav">9/4 收盤要等 9/5 快照（約 14:2x UTC）或日線鏡像下一次推送先齊；本表唔以盤中價冒充收盤。</span>
+視窗內 08-31 仍屬快照缺日：非日線鏡像覆蓋嘅股票收盤以 09-01 快照 price − price_change（官方前收）補回、屬精確值，成交量則視為未知（量能項中性）。<br>
+⑤ <b>本表唔係真實基金流</b>：環境內無法取得 ETF 申購贖回、13F 或委託簿數據，「資金流向」全部由價格、成交量
+與收盤位置推算，屬市場微觀結構代理指標。<br>
+⑥ <b>建置時間 {BUILD_TS}</b> · 點擊成分股開 TradingView chart · 版面可切淺色／深色（預設「自動」）·
+計分方法與 Sub-Sector Watchlist R3.00 完全一致 · 未有以紅字標示變動（依指示）· 本表只係研究工具，唔係投資建議。
+</div>"""
+
+html_doc = f"""<title>AI Sector 資金流向 Watchlist</title>
+<style>{CSS}{EXTRA_CSS}</style>
+<div class="wrap">
+<h1>AI Sector 資金流向 Watchlist {VER}（41 個 AI 小群組 × 5 個交易日逐日打分）</h1>
+<div class="sub">分類取自 <b>Dashboard R15.6</b>（8/27 收盤）· 資金流向資料至 <b>{DAYS[-1]}</b>
+（美東星期{WD[datetime.date.fromisoformat(DAYS[-1]).weekday()]}）收盤 · 只計美股上市及 US ADR
+（{n_us}/{n_glob} 隻，實際計分 {M["n_tick"]} 隻）· {len(live)} 組可計算、{len(dead)} 組成分全非美股 ·
+<b>淺色／深色版面可切換</b></div>
+{rules}
+<nav class="nav">
+<div class="nrow">
+<button data-g="1" class="on">總覽<span class="s">{len(live)} 個小群組主表</span></button>
+<button data-g="2">每日矩陣<span class="s">{len(live)} × 5 熱力圖</span></button>
+<button data-g="3">分類匯總<span class="s">AI 產業鏈 8 大分類</span></button>
+<button data-g="4">象限背離<span class="s">RS vs 資金</span></button>
+<span class="div"></span>
+<span class="lab">排序</span>
+<button class="sortb on" data-sort="">5日綜合</button>
+<button class="sortb" data-sort="d{len(DAYS)}">最後一日</button>
+<button class="sortb" data-sort="score5r">穩健分</button>
+<button class="sortb" data-sort="mfd">淨額估算</button>
+<button class="sortb" data-sort="inten">資金強度</button>
+<button class="sortb" data-sort="slope">趨勢</button>
+<button class="sortb" data-sort="ret5">籃子報酬</button>
+<button class="sortb" data-sort="rs">儀表板RS</button>
+<span class="div"></span>
+<span class="lab">版面</span>
+<div class="seg" id="thm" role="group" aria-label="淺色／深色版面">
+<button data-t="auto" title="跟隨系統或檢視器設定">自動</button>
+<button data-t="light" title="淺色版面">☀ 淺色</button>
+<button data-t="dark" title="深色版面">🌙 深色</button></div></div>
+</nav>
+{"".join(secs)}
+{foot}
+</div>
+<script>
+{JS}
+</script>
+"""
+
+standalone = ('<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
+              '<meta name="viewport" content="width=device-width,initial-scale=1">'
+              + html_doc.split("</title>", 1)[0] + "</title></head><body>"
+              + html_doc.split("</title>", 1)[1] + "</body></html>")
+out_path = f"{SCRATCH}/{OUTNAME}"
+open(out_path, "w", encoding="utf-8").write(standalone)
+open(f"{SCRATCH}/ai4/artifact_fragment.html", "w", encoding="utf-8").write(html_doc)
+print("wrote", out_path, f"{len(standalone)/1024:.0f} KB | scored {len(live)} | unscorable {len(dead)} | days {DAYS}")
