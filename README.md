@@ -15,10 +15,12 @@
 | R6.01 | **數據更新至 2026-08-31 收盤**。改用真實日線 OHLCV 鏡像（[natezone/market-tracker](https://github.com/natezone/market-tracker)，收市後推送）取代 Nasdaq 快照重建；宇宙改為 **S&P 1500 綜合指數**（1,504 隻），分層改用 **指數成分**（S&P 500／400／600 = 大／中／小型股）；R6.01 起改為 **固定深色模式**（不再跟隨瀏覽器主題）|
 | R7.00 | **數據更新至 2026-09-01 收盤**。快照鏡像恢復運作，**回復全美掃描**（7,396 條序列／6,874 隻有 9/1 收盤／3,005 隻合資格，上榜 208 隻）；分層回復市值門檻；8/31 鏡像停擺日以日線鏡像補回 1,500 隻；抽取管道新增「收市後 commit」防護，自動剔除未完成的盤中 bar |
 
+| AI Sector R5.00 | **數據推進至 2026-09-04 收盤 + Yahoo Finance 第二數據源**（與 SubSector R4.00 同一引擎與合併規則）。111 隻美股／ADR 全部有真實 OHLCV（合併 75、Yahoo 獨有 36），SBGSY／TCEHY 亦補齊、未計入清零；13 隻 ADR 由「只計方向」變為完整量能基準。**修正 R4.00 APH 2 拆 1 未調整**（D5 連接器 09-02 籃子報酬曾顯示 −26.9%）；QCOM 股息調整差異改用 Yahoo。交叉核對：快照 vs Yahoo 逐日中位 0.0000%；日線鏡像 vs Yahoo 299 個收盤中位 0.0000%。獨立重算 0 problems |
 | AI Sector R4.00 | **數據推進至 2026-09-03 收盤**（視窗 08-28 → 09-03；9/4 收盤所有可達鏡像尚未發佈，唔以盤中價冒充）。沿用 SubSector R3.00 嘅 critical review 修正：① 缺 20 日量能基準嘅成分股唔再剔除 —— ARM／ASML／ASX／BABA／BIDU／CAMT／CCJ／IREN／NBIS／POET／SIMO／TSEM／TSM 共 13 隻歸位（方向計分、量能中性、個股虛線底），計分美股 96 → **109**，8 個籃子改變（AA1 Neo Cloud 2→4、D2 矽光 1→3、B3 先進封裝 5→7…），**AA3 中國雲**由「數據不足」變為可計算（33 組）；② 40% 單一股票硬上限（迭代 water-filling）；③ 08-31 內插成交量視為未知；④ 頁面文字修正 —— R3.00 嘅 H1 仍寫 R1.00、第 4 頁標題仍寫「8/26–9/1」、頁尾「數據終點」係 R2 舊文並話 TSM／ASML／BABA「數據不足」。成分股欄提示改為逐股顯示量能未知日數；未計入淨得 SBGSY、TCEHY（OTC ADR）。無紅字標示（依指示）；獨立重算 0 problems |
 | AI Sector R3.00 | 在「AI 小群組」與「大分類」之間新增 **成分股 · 按資金流向排序**欄：每組的美股／ADR 成分股逐隻計算 5 日資金流向分（與群組同一條公式、同一組近日較重權重），**由流入最多排到流出最多**，**綠底＝資金流入、紅底＝資金流出**（深淺代表強度，灰＝中性），代號右側顯示該股流向分，滑鼠停留可見淨額估算與 5 日報酬。原「成分股（美股／ADR）」欄改為「未計入成分股」，只保留因數據不足或非美股而未計入的部分。資料與計分邏輯不變（08-27 → 09-02，32 組可計算／9 組不可） |
 | AI Sector R2.00 | **數據推進至 2026-09-02 收盤**（視窗 08-27 → 09-02）。09-02 全宇宙收盤由 09-03 盤中快照的 `price − price_change` 取得，與日線鏡像 1,498 隻交叉核對中位偏差 0.0000%；該快照成交量屬 09-03 partial，故非日線鏡像覆蓋的股票 09-02 **量能項設為中性**並標示「量?」，不以估算量冒充。新增 **穩健分**（z×√(n/(n+2))，樣本細者向中性收斂）、**資金強度**（淨額/成交額，去規模）、**可信度**（美股樣本數）與**廣度**（籃子內超額報酬為正比例）；28 個小群組名次有變 |
 | AI Sector R1.00 | **AI 產業鏈資金流向**：以附件 `Dashboard_R15.6_0828_hk16.15.html` 嘅 **41 個 AI 小群組**（8 大分類：運算核心／Neo Cloud／製造／記憶體儲存／互連／系統整合／基礎設施／雲端應用）為對象，沿用 SubSector R1.01 完全相同嘅計分引擎與版面。**只納入美股上市股票及 US ADR**（全球成分 224 隻中美股 111 隻，實際計分 96 隻）；成分股全屬中國A股／台股／日韓／歐洲掛牌嘅 9 個小群組列出但唔參與排名。四頁：總覽／每日矩陣／8 大分類匯總／**象限背離**（儀表板 8/27 RS 象限 vs 8/26–9/1 實測資金流）|
+| SubSector R4.00 | **數據推進至 2026-09-04 收盤**（視窗 08-31 → 09-04）+ **加入 Yahoo Finance 第二數據源**：兩個鏡像至建置時仍未發佈 09-04 收盤，改由 GitHub Actions runner（`.github/workflows/fetch_yahoo_eod.yml`，容器本身連唔到 Yahoo）以 yfinance 拉取 546 隻代表股未調整日線並提交 `data/yahoo/`，再連同 10MA-watchlist 倉庫同法拉取嘅 2,758 隻，合共 2,811 隻。每隻股票日線鏡像為主、Yahoo 補其未有嘅交易日，最近 15 個共同收盤中位偏差 ≤0.5% 先合併，否則整段改用 Yahoo（APH、BF.B 及 15 隻有股息調整差異嘅日線鏡像股）。**交叉核對**：快照序列 vs Yahoo 逐日中位偏差 0.0000%（09-02／09-03 反推收盤 100% 喺 0.5% 內）；日線鏡像 vs Yahoo 1,623 個收盤中位 0.0000%。**修正 R3.00 APH 2 拆 1（09-02）未調整**（快照序列 $163.18→$80.04 被當成跌 51%）。491 隻全部有真實 OHLCV（合併 375、Yahoo 獨有 116），「量?」「無量基準」「僅收盤」標記全部消失；全巿中位基準改為合併宇宙（~2,850 隻／日）。獨立重算（含 Yahoo 合併規則）0 problems |
 | SubSector R3.00 | **數據推進至 2026-09-03 收盤**（視窗 08-28 → 09-03）。9/4 收盤未納入：建置時（09-05 11:54 HKT）所有可達鏡像都未發佈 09-04 收盤價（日線鏡像只推送成交量；Nasdaq 快照最新一筆為 09-04 10:24 ET 盤中價）。**對 R2.00 嘅 critical review 修正 7 項**：① 40% 單一股票上限被重新歸一化抵銷（最大實際權重可達 66.7%）→ 迭代 water-filling，實際權重 ≤40%；② 缺 20 日量能基準嘅代表股唔再剔除（TSM／ASML／ARM／TEAM／SHOP／NVO／DEO／INFY／TECK／CCJ／AEM／KGC／UUUU／WCN 等 33 隻歸位，08-27 前收由 08-28 收市後快照補回），樣本 457 → **491**，25 個籃子改變（鈾與核燃料 1→5、晶圓代工 2→4、黃金 3→6…）；③ 08-31 內插成交量改視為未知（B=0、標「量?」），只有 13 隻真正內插收盤標「內插」；④ BF.B 對上日線檔 BF-B；⑤ 工作簿說明文字唔再當 ticker；⑥ 混合來源籃子新增 OHLC 覆蓋率；⑦ R2.00 title／H1 仍寫 R1.01、頁尾「數據終點」段係 R1.01 舊文 → 重寫。同一視窗下引擎修正令名次中位變動 1 位（最大 42）；新交易日本身令名次中位變動 15 位。無紅字標示（依指示）；獨立重算 0 problems |
 | SubSector R2.00 | **數據推進至 2026-09-02 收盤**（視窗 08-27 → 09-02，順帶移走 08-26 估算日）。9/3 未納入：日線鏡像當日只出到 1,003/1,503 隻、亦無全宇宙快照。09-02 全宇宙收盤由 09-03 盤中快照的 `price − price_change` 取得（與日線鏡像 1,498 隻交叉核對，中位偏差 0.0000%）；該快照成交量屬 09-03 partial，故非日線鏡像覆蓋的股票 09-02 **量能項設為中性**並標示「量?」（34 個子板塊受影響）。新增 **穩健分**、**資金強度**、**可信度**、**廣度**（與 AI Sector R2.00 同一套指標）；109 個子板塊名次有變 |
 | SubSector R1.01 | 加入**版面切換按鈕**（自動／☀淺色／🌙深色）：調色盤改為 token 制 —— `:root` 定義完整淺色，`@media (prefers-color-scheme:dark)`（以 `:root:not([data-theme="light"])` 保護）及 `:root[data-theme="dark"]` 覆寫深色，資金流向色階、熱度色、陰影、邊框全部跟住換色；選擇存 localStorage，並用 MutationObserver 令頁內選擇唔會被檢視器主題覆寫 |
@@ -121,6 +123,10 @@ python3 scripts/build_report.py     # 產生 HTML 報告
 
 ```bash
 python3 scripts/extend_series9.py          # 由 series8.pkl 延伸至 2026-09-02 -> series9.pkl
+# Yahoo 第二數據源：GitHub Actions → data/yahoo/eod_<start>_<end>.csv.gz（workflow_dispatch fetch_yahoo_eod.yml）
+python3 scripts/subsector_flow4.py         # R4 引擎：日線鏡像 ∪ Yahoo 合併、交叉核對、視窗至 09-04 -> data/subsector_flow4.json
+python3 scripts/build_subsector_report4.py # 產生 R4 HTML
+python3 scripts/verify_subsector_flow4.py  # R4 獨立重算（含 Yahoo 合併規則，0 problems）
 python3 scripts/extend_series10.py         # series10.pkl：補 2026-09-03 收盤 + 08-28 新增股票嘅 08-27 前收
 python3 scripts/subsector_flow3.py         # R3 引擎（硬 40% 上限、無基準股票 B=0、逐日量能未知）-> data/subsector_flow3.json
 python3 scripts/build_subsector_report3.py # 產生 R3 HTML 報告（由 make_build_subsector_report3.py 從 R2 builder 衍生）
@@ -144,6 +150,9 @@ python3 scripts/verify_subsector_flow.py   # R1 獨立重算驗證
 
 ```bash
 python3 scripts/extend_series9.py    # 由 series8.pkl 延伸至 2026-09-02 -> data 用 series9.pkl
+python3 scripts/ai_flow5.py          # R5：Yahoo 第二數據源、視窗至 09-04 -> data/ai_flow5.json
+python3 scripts/build_ai_report5.py  # 產生 R5 HTML
+python3 scripts/verify_ai_flow5.py   # R5 獨立重算（0 problems）
 python3 scripts/ai_flow4.py          # R4：SubSector R3 引擎修正（硬上限、無基準股票 B=0、逐日量能未知）-> data/ai_flow4.json
 python3 scripts/build_ai_report4.py  # 產生 R4 HTML 報告（由 make_build_ai_report4.py 從 R3 builder 衍生）
 python3 scripts/verify_ai_flow4.py   # R4 獨立重算驗證（0 problems；另檢查成分股欄排序與無基準標記）
