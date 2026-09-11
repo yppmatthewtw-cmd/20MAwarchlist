@@ -1,0 +1,40 @@
+name: Fetch Yahoo tail session
+
+# Yahoo's consolidated daily history does not carry the session that closed a few
+# hours ago, so the range pull in fetch_yahoo_eod.yml leaves the newest close with
+# a single source. This job asks Yahoo for that one session through the relative
+# period / hourly / quote routes instead, and commits it as data/yahoo/tail.csv.gz.
+on:
+  workflow_dispatch:
+    inputs:
+      since:
+        description: Last session the history pull already covers (YYYY-MM-DD, exclusive)
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  tail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet "yfinance>=0.2.50" pandas
+      - name: Download tail session
+        env:
+          SINCE: ${{ inputs.since }}
+          OUT: data/yahoo/tail.csv.gz
+        run: python3 scripts/fetch_yahoo_tail.py
+      - name: Commit tail
+        env:
+          SINCE: ${{ inputs.since }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/yahoo
+          git commit -m "data: Yahoo tail session after $SINCE" || { echo "nothing to commit"; exit 0; }
+          git pull --rebase --quiet origin "${GITHUB_REF_NAME}"
+          git push
