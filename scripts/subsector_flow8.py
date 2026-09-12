@@ -1,0 +1,631 @@
+#!/usr/bin/env python3
+"""Sub-sector money-flow scoring — R8.00 engine (111 sub-sectors of the R2 heat-map workbook).
+
+R8 makes R7's settled-print test source-aware. R7 measured the signature on the daily-bar
+mirror and let the mirror win every overlap; on 2026-09-11 the mirror had cleared the session
+(4 names left of 1,503) while Yahoo had settled it for 532, so measuring the mirror alone would
+have called a settled session provisional, and the 4 mirror names would have been scored on the
+live feed when a settled figure was sitting in the other source. The share is now measured over
+the merged bars each ticker is actually scored from, and on a session the mirror has published
+but not settled, a settled second-source bar wins the overlap. That the two sources agree once
+both settle is measured, not assumed: for 2026-09-10 Yahoo's daily volume matched the settled
+mirror EXACTLY on all 403 names both carry.
+
+R7 separates the two jobs dollar volume was doing. Up to R6 the activity term B compared today's
+DOLLAR volume with a 20-day DOLLAR-volume median, so a stock that had re-rated since the baseline
+registered as "heavier trading" on identical share turnover — price drift leaking into a term that
+is supposed to measure participation. Measured over the R6 window: the leak is unbiased on average
+(mean +0.007 on B) but moves B by more than 0.10 on 6.7% of ticker-days, worst cases ~0.27
+(CRCL, CRM), which is a 13% swing in the (1 + 0.5B) multiplier.
+So B now compares SHARE volume with the 20-day SHARE-volume median, while dollar volume keeps the
+jobs where money is the point: basket weighting and the 淨額估算 net-flow figure.
+
+R7 also adds Yahoo's tail session (scripts/fetch_yahoo_tail.py): Yahoo's consolidated daily
+history lags the close by more than five hours, so without it the newest session is carried by
+the daily-bar mirror alone -- and the mirror holds only 362 of the 505 sub-sector names, which
+would drop 129 of them and empty six baskets. A tail bar from the quote route is scored with
+B held at 0, since a running session total is not a settled print.
+
+R7 also repairs two data-integrity defects the R6.00 review found:
+  B1  the trading calendar required 80% coverage over the POOLED universe, so Yahoo -- whose
+      consolidated daily bar settles overnight -- vetoed the newest session even though the
+      daily-bar mirror had published it in full (the 2026-09-10 Yahoo pull carried 4 of 535
+      symbols for that date). Coverage is now judged per source.
+  B2  the provisional-volume detector keyed on mirror coverage and therefore reported "none"
+      for a session the mirror has published but not settled. Settled mirror bars carry a
+      vendor-rounded volume (multiple of 100 on 99.7% of names on every session from
+      2026-08-25 to 2026-09-09; 1.2% on 2026-09-10); that signature is now the test. On the
+      one session where both forms survive in the mirror's history (2026-09-09, 214 names):
+      the close is identical for every name, O/H/L move for 8-42% of them (p95 <= 0.43%), and
+      volume is revised for 99.5% -- 32% by >1%, 9% by >5%, p95 +9.2%. So the session is
+      scored (A is exact, C very slightly soft, B carries about +-0.06 of p95 noise) and
+      flagged, not dropped.
+
+R6 adds a provisional-volume detector, from what the R5.00 review measured: a session's volume
+is NOT final on the day it first appears. Comparing the 2026-09-04 volumes the daily-bar mirror
+first published (its 09-05 00:11 UTC commit) with the same session five days later, 255 of 256
+sampled names had been revised — 34% by more than 1%, 11% by more than 5%, 95th percentile
++11.4%. A session carried only by Yahoo (which settles overnight) is therefore still moving,
+and the volume term B computed on it is provisional. Such sessions are now identified from
+per-day mirror coverage and recorded, so the report can say which day is not yet settled.
+
+R5 fixes what the R4.00 review turned up:
+  * merge_bars accepted a daily-bar file whose coverage stops months before the scored window
+    (8 names: ALAB, ARM, ASML, CRWV, NBIS, RKLB, SHOP, ZS end 2026-06/07). The share-basis check
+    then compared only stale sessions, so a split occurring after the mirror went quiet would be
+    spliced in undetected. The mirror is now used only when it actually covers the window; the
+    basis check must also pass on sessions inside it.
+  * the trading-day distance between two dates was inferred from the window length, which is
+    wrong across a market holiday. gap_sessions() counts real sessions on the bar calendar.
+
+R4 adds Yahoo Finance daily bars as a second, independent price source (pulled by a GitHub
+Actions runner, see .github/workflows/fetch_yahoo_eod.yml — the research container cannot
+reach Yahoo).  Per ticker the natezone daily bars and the Yahoo bars are merged after a
+share-basis check (median close deviation over the common sessions <= 0.5%); natezone wins
+on overlap, Yahoo supplies what natezone has not published (the 2026-09-04 session, and
+the whole history of names outside the natezone universe).  The snapshot-rebuilt series is
+used only where neither has the window.  Every close the snapshot series carries is
+cross-checked against Yahoo and the per-day agreement is written to meta["yahoo_xcheck"].
+
+Same scoring core as R1/R2, with the ten defects found in the R2.00 critical review fixed:
+  F3  the 40% single-name cap was undone by the renormalisation that followed it
+      (a name holding 80% of a basket's dollar volume still ended at 66.7%);
+      replaced by an iterative water-filling cap that actually binds.
+  F4  a ticker with no 20-day volume baseline was dropped outright, which threw out 33
+      workbook constituents that DO have a close for every scored session — TSM, ASML,
+      ARM, TEAM, SHOP, NVO, DEO, INFY, TECK, CCJ, AEM, KGC, UUUU, WCN and others that
+      the snapshot feed only started carrying on 2026-08-28.  They are now scored with
+      the volume term B held at 0 (neutral) and flagged, instead of being deleted.
+  F5  symbols carrying a dot (BF.B) never matched the daily-bar mirror, which names the
+      file BF-B.csv; lookups now normalise "." to "-".
+  F6  the unknown-volume date was hard-coded to a single session; it is now per date.
+  F7  on 2026-08-31 the snapshot-sourced close is the exact official close but the volume
+      was a neighbour average.  Treating an interpolated volume as real inflates or damps
+      B for 5,337 names, so that volume is now treated as UNKNOWN (B=0, "量?") exactly like
+      an unpublished one, and only the close is taken as exact.
+  F8  two workbook annotations ("XBI 成分股為主", "—（多為中小型）") were being parsed as
+      tickers and reported as dropped; non-symbols are now filtered out.
+  F9  淨額估算 mixes Chaikin dollars (real OHLC) with direction-scaled dollars (close-only
+      names); each basket now reports the share of its dollar volume that carries a real
+      intraday range, so the reader can see how much of the figure is true Chaikin.
+
+Scoring, per ticker per session:
+  A 方向  = tanh((return - market median return) / 2%)
+  B 量能  = clip(log2(clip(dollar volume / 20-day median, .25, 4)) / 2, -1, 1)   [0 if unknown]
+  C 收位  = ((C-L) - (H-C)) / (H-L)                       [only where real OHLC exists]
+  f = (0.70*A + 0.30*C) * (1 + 0.50*B)      (A-only when there is no intraday range)
+Baskets aggregate dollar-volume weighted with a hard 40% per-name cap; daily basket scores
+are standardised across the 111 sub-sectors, so a score says where money went RELATIVE to
+every other sub-sector that day, not whether the group rose.
+"""
+import csv, json, math, os, pickle, statistics, collections, re, glob, gzip
+
+SCR = os.environ.get("WORK_DIR", "/tmp/claude-0/-home-user-20MAwarchlist/0f749aae-85b5-584c-9175-237303814dd9/scratchpad")
+NZ = os.environ.get("NZ_REPO", "/home/user/natezone/market-tracker") + "/data/UNIFIED/history"
+YF_FILES = [p for p in os.environ.get("YAHOO_FILES",
+            "/home/user/yppmatthewtw-cmd/10ma-watchlist/data/yahoo/eod_2025-12-26_2026-09-05.csv.gz;"
+            + ";".join(sorted(glob.glob("/home/user/20MAwarchlist/data/yahoo/eod_*.csv.gz"))
+                          + sorted(glob.glob("/home/user/20MAwarchlist/data/yahoo/broad_*.csv.gz")))).split(";") if p]
+BASIS_TOL = 0.005            # natezone and Yahoo closes must agree within 0.5% to be merged
+WIN = 5                      # scored sessions
+LOOK = 20                    # sessions of history for the volume baseline
+CAP = 0.40                   # hard cap on any single name's basket weight
+
+subs = json.load(open(f"{SCR}/sub/subsectors.json"))
+S = pickle.load(open(f"{SCR}/series10.pkl", "rb")); CAL = S["cal"]; SER = S["series"]
+EST = S.get("meta8", {}).get("estimated", {})
+M10 = S.get("meta10", {})
+
+# ---- F6/F7: per-date set of names whose volume for that session is not real ----
+NOVOL_BY_DATE = collections.defaultdict(set)
+for d, syms in (M10.get("novol_by_date") or {}).items():
+    NOVOL_BY_DATE[d] |= set(syms)
+for sym, e in EST.items():                       # F7: filled sessions carry an invented volume
+    for d, how in e.items():
+        if how in ("official", "interp", "edge"): NOVOL_BY_DATE[d].add(sym)
+EST_CLOSE = {sym: {d for d, how in e.items() if how in ("interp", "edge")} for sym, e in EST.items()}
+
+TICKER_RE = re.compile(r"^[A-Z][A-Z0-9.\-]{0,6}$")     # F8
+def nzname(sym): return sym.replace(".", "-")          # F5
+
+# ---- curated supplements: only where the workbook's own tickers are unavailable in the
+# reachable mirrors, and only with same-business substitutes verified by hand. ----
+SUPP = {
+    50:  ["CNR", "METC"],     # 煤炭: CEIX 已併入 Core Natural Resources；Ramaco 為冶金煤
+    110: ["AWR", "HTO"],      # 水務公用: SJW 缺數據
+    71:  ["CWST"],            # 廢物管理: WCN 補回後仍保留同業樣本
+    47:  ["EE"],              # LNG: GLNG 補回後仍保留；Excelerate 為 LNG 接收站
+    51:  ["RGLD"],            # 黃金: Royal Gold 為黃金權利金
+    54:  ["ALOY", "NB"],      # 稀土: REalloys/NioCorp 為稀土關鍵礦
+}
+# ---- proxy baskets for the two rows the workbook leaves without tickers ----
+PROXY = {
+    76: ["DNLI", "ALEC", "SANA", "AKRO", "VKTX", "MDGL", "IONS", "DTIL"],     # 臨床期中小型生技 (XBI 型)
+    77: ["LEGN", "IOVA", "ALLO", "ARVN", "RVMD", "NKTX", "FATE", "CRVS"],     # 腫瘤與細胞治療
+}
+
+# ---------------- load real daily OHLCV ----------------
+def load_nz(sym):
+    p = f"{NZ}/{nzname(sym)}.csv"
+    if not os.path.exists(p): return None
+    out = {}
+    with open(p, newline="") as f:
+        for row in csv.DictReader(f):
+            d = (row.get("Date") or "")[:10]
+            try:
+                o, h, l, c, v = (float(row[k]) for k in ("Open", "High", "Low", "Close", "Volume"))
+            except (ValueError, KeyError, TypeError):
+                continue                      # partial rows (volume published before the bar)
+            if c > 0: out[d] = (o, h, l, c, v)
+    return out or None
+
+# ---------------- Yahoo daily bars (second source) ----------------
+YH = {}
+for path in YF_FILES:                     # later files override earlier ones (this repo's own pull last)
+    if not os.path.exists(path): continue
+    n0 = len(YH)
+    with gzip.open(path, "rt", newline="") as f:
+        for r in csv.DictReader(f):
+            try:
+                o, h, l, c, v = (float(r[k]) for k in ("open", "high", "low", "close", "volume"))
+            except (ValueError, KeyError, TypeError):
+                continue
+            if c > 0: YH.setdefault(r["symbol"].replace("/", ".").replace("-", "."), {})[r["date"]] = (o, h, l, c, v)
+    print(f"yahoo bars: {os.path.basename(path)} -> {len(YH) - n0} new symbols ({len(YH)} total)")
+
+# ---- Yahoo tail: the session that closed a few hours ago, which the range pull does not carry ----
+SOFTVOL = set()          # (symbol, session) whose volume is not a settled session print
+TAIL = os.environ.get("YAHOO_TAIL", "/home/user/20MAwarchlist/data/yahoo/tail.csv.gz")
+TAIL_ROUTE = collections.defaultdict(dict)
+if os.path.exists(TAIL):
+    added = collections.Counter(); routes = collections.Counter()
+    with gzip.open(TAIL, "rt", newline="") as f:
+        for r in csv.DictReader(f):
+            try:
+                o, h, l, c, v = (float(r[k]) for k in ("open", "high", "low", "close", "volume"))
+            except (ValueError, KeyError, TypeError):
+                continue
+            if c <= 0: continue
+            sym = r["symbol"].replace("/", ".").replace("-", ".")
+            d = r["date"]
+            if d in YH.get(sym, {}): continue        # the settled history always wins
+            YH.setdefault(sym, {})[d] = (o, h, l, c, v)
+            TAIL_ROUTE[sym][d] = r.get("route", "")
+            added[d] += 1; routes[r.get("route", "")] += 1
+    print(f"yahoo tail: {os.path.basename(TAIL)} -> {dict(sorted(added.items()))} by route {dict(routes)}")
+    for sym, m in TAIL_ROUTE.items():                # hourly/quote totals are not settled prints
+        for d, route in m.items():
+            if route != "hist5d": SOFTVOL.add((sym, d))
+else:
+    print("yahoo tail: not present")
+def yh_get(sym): return YH.get(sym) or YH.get(sym.replace(".", "-"))
+
+def settled_share(bars, day):
+    """Share of a day's volumes that are an exact multiple of 100 shares — the vendor's settled
+    print.  A live feed reports exact share counts, so this separates the two without needing
+    to know which endpoint produced the bar."""
+    v = [b[4] for b in (bars or {}).values() if b and b[4]]
+    return None
+
+NZ_UNSETTLED = set()      # sessions the mirror has published but not settled (filled in below)
+
+def merge_bars(nz, yh, since=None):
+    """natezone bars, extended by Yahoo where natezone has no bar, once the two agree on share
+    basis over sessions that actually overlap the period being scored.
+
+    A mirror file that stopped months ago contributes nothing to the window but would still pass
+    a basis check run on its own stale sessions — and would hide any split that happened after it
+    went quiet. So when `since` is given and the mirror has no bar at or after it, Yahoo is used
+    alone. Returns (bars, source_tag, deviation_median or None)."""
+    if not nz and not yh: return None, None, None
+    if not yh: return nz, "real", None
+    if not nz: return dict(yh), "yahoo", None
+    if since is not None and not any(d >= since for d in nz):
+        return dict(yh), "yahoo", None      # mirror is stale: nothing to merge, nothing to check
+    common = sorted(set(nz) & set(yh))
+    if since is not None:
+        recent = [d for d in common if d >= since]
+        common = recent if recent else common
+    common = common[-15:]
+    dev = [abs(nz[d][3] - yh[d][3]) / yh[d][3] for d in common if yh[d][3] > 0]
+    med = statistics.median(dev) if dev else None
+    if med is not None and med <= BASIS_TOL:
+        out = dict(yh); out.update(nz)
+        # C2: on a session the mirror has published but not settled, a settled Yahoo bar is the
+        # better of the two — the mirror's own figure is still the live feed and will be revised.
+        for d in NZ_UNSETTLED:
+            if d in yh: out[d] = yh[d]
+        return out, "real", med
+    return dict(yh), "yahoo", med           # bases disagree (unadjusted split etc.): trust Yahoo's restated history
+
+# ---- which sessions has the mirror published but not settled? (its own coverage only) ----
+_mv = collections.defaultdict(lambda: [0, 0])
+for _f in os.listdir(NZ):
+    if not _f.endswith(".csv"): continue
+    for _d, _b in (load_nz(_f[:-4]) or {}).items():
+        if _d < "2026-08-01" or not _b[4]: continue
+        _mv[_d][0] += 1
+        if abs(_b[4] - round(_b[4] / 100.0) * 100.0) < 1e-6: _mv[_d][1] += 1
+_typ = statistics.median(sorted(t for t, _ in _mv.values())) if _mv else 0
+# Two ways the mirror's copy of a session is not the one to prefer: it is published in full but
+# still the live feed (unrounded volumes), or it is mid-repopulation after the close, carrying a
+# handful of names (4 of 1,503 for 2026-09-11 at 23:33 ET) that are still the live feed too.
+NZ_UNSETTLED |= {d for d, (tot, rnd) in _mv.items()
+                 if (tot >= 25 and rnd / tot < 0.5) or (_typ and tot < 0.5 * _typ)}
+print(f"mirror sessions published but not settled: {sorted(NZ_UNSETTLED) or 'none'} "
+      f"(typical mirror coverage {_typ:.0f})")
+
+listed_all = {t for s in subs for t in s["tickers"]}
+NOTES = sorted(t for t in listed_all if not TICKER_RE.match(t))          # F8
+wanted = sorted({t for t in listed_all if TICKER_RE.match(t)}
+                | {t for v in PROXY.values() for t in v} | {t for v in SUPP.values() for t in v})
+# the merge needs to know which sessions matter, and the calendar needs the merged bars:
+# settle it with a provisional calendar from the Yahoo bars, which cover the whole universe.
+_cov = collections.Counter()
+for t in wanted:
+    for d in (yh_get(t) or {}): _cov[d] += 1
+_seq = sorted(d for d, n in _cov.items() if n >= 0.8 * len(wanted))
+TERM0 = os.environ.get("TERMINAL_DATE")
+if TERM0: _seq = [d for d in _seq if d <= TERM0]
+SINCE = _seq[-(WIN + LOOK + 1)] if len(_seq) > WIN + LOOK else (_seq[0] if _seq else None)
+print("merge window starts at", SINCE)
+
+NZD = {}; SRC = {}; BASIS = {}; STALE = []; MIRROR_DAYS = {}
+for t in wanted:
+    nz = load_nz(t)
+    if nz: MIRROR_DAYS[t] = set(nz)          # sessions the daily-bar mirror itself published
+    if nz and SINCE and not any(d >= SINCE for d in nz): STALE.append(t)
+    bars, tag, med = merge_bars(nz, yh_get(t), SINCE)
+    if bars: NZD[t] = bars; SRC[t] = tag; BASIS[t] = med
+print(f"daily-bar files too stale to merge (Yahoo used alone): {len(STALE)} {sorted(STALE)}")
+
+# ---------------- calendar: sessions that at least one source covers properly ----------------
+# B1: judging coverage over the pooled universe lets one lagging source veto a real session.
+# Yahoo's consolidated daily bar settles overnight, so on the evening of a session the mirror
+# has it and Yahoo does not; pooled coverage then sits near the mirror's share of the universe
+# (74% on 2026-09-10) and an 80% pooled threshold drops the newest close. Each source is now
+# measured against its OWN universe and a session counts when either source is complete.
+nz_dates = collections.Counter(); yh_dates = collections.Counter()
+nz_univ = yh_univ = 0
+for t in wanted:
+    nzb = load_nz(t); yhb = yh_get(t)
+    if nzb:
+        nz_univ += 1
+        for k in nzb: nz_dates[k] += 1
+    if yhb:
+        yh_univ += 1
+        for k in yhb: yh_dates[k] += 1
+alld = set(nz_dates) | set(yh_dates)
+full = sorted(k for k in alld
+              if (nz_univ and nz_dates[k] >= 0.8 * nz_univ) or (yh_univ and yh_dates[k] >= 0.8 * yh_univ))
+SRC_COV = {k: {"mirror": nz_dates[k], "yahoo": yh_dates[k]} for k in sorted(alld)}
+print(f"calendar universes: mirror {nz_univ} names, yahoo {yh_univ} names")
+seq = list(full)                            # trading calendar from the bar sources (natezone ∪ Yahoo), not the snapshot series
+TERM = os.environ.get("TERMINAL_DATE")          # diagnostic: re-run the engine on an earlier window
+if TERM: seq = [d for d in seq if d <= TERM]
+LAST = seq[-(WIN + LOOK + 1):]
+DAYS = LAST[-WIN:]
+BASE = LAST[-(WIN + LOOK + 1):-WIN]
+# how many of the scored universe the mirror itself carries, per session: a day the mirror has
+# not published yet reaches us through Yahoo alone and its volume is still provisional.
+NZ_COV = collections.Counter()
+for t in wanted:
+    for d in (load_nz(t) or {}): NZ_COV[d] += 1
+NZ_TYP = statistics.median([NZ_COV[d] for d in seq[-30:] if NZ_COV[d]]) if seq else 0
+# B2: coverage alone misses a session the mirror HAS published but has not settled. The mirror's
+# settled bars carry a vendor-rounded volume (an exact multiple of 100 share for ~99.7% of names
+# on every settled session); its live-feed bars are exact-to-the-share. Use that signature.
+# C1: the flag describes the data the engine scores, so measure the MERGED bars, not the
+# mirror's. On 2026-09-11 the mirror had cleared the session (4 names) while Yahoo had settled
+# it (532) — measuring the mirror alone would have called a settled session provisional.
+ROUND_SHARE = {}
+for d in seq[-(WIN + 3):]:
+    tot = rnd = 0
+    for t in wanted:
+        b = (NZD.get(t) or {}).get(d)
+        if not b or not b[4]: continue
+        tot += 1
+        if abs(b[4] - round(b[4] / 100.0) * 100.0) < 1e-6: rnd += 1
+    if tot >= 25: ROUND_SHARE[d] = rnd / tot
+PROV_VOL = sorted(d for d, sh in ROUND_SHARE.items() if d in seq[-(WIN + 2):] and sh < 0.5)
+print(f"mirror coverage of the last sessions: "
+      f"{ {d: NZ_COV[d] for d in seq[-6:]} } (typical {NZ_TYP:.0f})")
+print(f"settled-print share of the MERGED bars (volume an exact multiple of 100): "
+      f"{ {d: round(v, 3) for d, v in sorted(ROUND_SHARE.items())} }")
+print(f"sessions whose volume is not settled yet: {PROV_VOL or 'none'}")
+
+CALSEQ = seq          # every session the bar sources agree on, oldest first
+def gap_sessions(a, b):
+    """Trading sessions between two dates on the bar calendar (0 if either is unknown)."""
+    fwd = [d for d in CALSEQ if a <= d <= b]
+    return max(0, len(fwd) - 1) if fwd else 0
+print("scored sessions:", DAYS)
+print("volume baseline:", BASE[0], "->", BASE[-1], f"({len(BASE)} sessions)")
+print("workbook annotations skipped as non-tickers:", NOTES)
+
+# ---------------- market baseline: median return of the real-OHLCV universe ----------------
+allnz = {}
+for f in os.listdir(NZ):
+    if not f.endswith(".csv"): continue
+    sym = f[:-4].replace("-", ".")
+    bars, tag, med = merge_bars(load_nz(f[:-4]), yh_get(sym), SINCE)
+    if bars: allnz[sym] = bars
+for sym in YH:                                # Yahoo-only names (the 10MA eligible universe + this repo's list)
+    if sym not in allnz: allnz[sym] = YH[sym]
+for t in NZD: allnz[t] = NZD[t]
+# The market baseline must be the SAME universe every day, or a day the broad Yahoo file has
+# not reached yet is measured against a different (large-cap-heavy) crowd than its neighbours.
+# R5 left it unbalanced: on 2026-09-08 the pool fell from 2,851 names to 1,632, and on the days
+# where the broad file was present the median differed from the balanced panel by up to 0.20pp
+# — enough to move A by ~0.10 for a name sitting at zero excess return. So the panel is now
+# restricted to names quoted on every scored session and on each session's predecessor.
+NEED = set(DAYS) | {LAST[LAST.index(d) - 1] for d in DAYS}
+PANEL = {s: d for s, d in allnz.items() if NEED <= set(d)}
+print(f"market panel: {len(PANEL)} names quoted on all {len(NEED)} sessions "
+      f"(unbalanced pool was {len(allnz)})")
+MKT = {}
+for day in DAYS:
+    prev = LAST[LAST.index(day) - 1]
+    rets = [d[day][3] / d[prev][3] - 1 for d in PANEL.values() if d[prev][3] > 0]
+    MKT[day] = statistics.median(rets)
+    MKT.setdefault("_n", {})[day] = len(rets)
+print("market median return:", {d: f"{MKT[d]*100:+.2f}%" for d in DAYS}, MKT["_n"])
+
+# ---------------- per-ticker daily flow ----------------
+def series_snap(sym):
+    """close/volume from the repaired snapshot series (no intraday range).  A session whose
+    volume is unpublished or was filled by interpolation comes back as None, never a number."""
+    if sym not in SER: return None
+    fi, cs, vs, ff = SER[sym]
+    idx = {CAL[fi + i]: i for i in range(len(cs))}
+    out = {}
+    for d in LAST:
+        if d not in idx: continue
+        i = idx[d]
+        v = None if (sym in NOVOL_BY_DATE.get(d, ())) or vs[i] <= 0 else vs[i]
+        out[d] = (None, None, None, cs[i], v)
+    return out
+
+def tick_flow(sym):
+    """Real daily OHLCV when the mirror carries the full window; otherwise the repaired
+    snapshot series (close only, volume where published).  Stale mirror files fall through."""
+    data = NZD.get(sym)
+    real = bool(data) and all(d in data for d in DAYS) and sum(1 for d in BASE if d in data) >= 10
+    srctag = SRC.get(sym, "real") if real else "snap"
+    if not real:
+        data = series_snap(sym)
+    if not data or not all(d in data for d in DAYS): return None
+    prev0 = LAST[LAST.index(DAYS[0]) - 1]
+    if prev0 not in data: return None                      # need the close before day 1
+
+    base_dv = [data[d][3] * data[d][4] for d in BASE if d in data and data[d][4]]
+    base_sv = [data[d][4] for d in BASE if d in data and data[d][4]]
+    nobase = len(base_dv) < 10                             # F4: no 20-day volume baseline
+    if not nobase:
+        med_dv = statistics.median(base_dv)
+        med_sv = statistics.median(base_sv)                 # R7: activity baseline in SHARES
+    else:                                                  # weight proxy only; B is held at 0
+        any_dv = [data[d][3] * data[d][4] for d in LAST if d in data and data[d][4]]
+        med_dv = statistics.median(any_dv) if any_dv else None
+        med_sv = None
+    if not med_dv or med_dv <= 0: return None
+
+    out = {"sym": sym, "src": srctag, "med_dv": med_dv, "med_sv": med_sv,
+           "basis_dev": BASIS.get(sym), "nobase": nobase, "days": {}}
+    for day in DAYS:
+        prev = LAST[LAST.index(day) - 1]
+        if prev not in data: return None
+        o, h, l, c, v = data[day]
+        # A tail bar contributes its prices but not its volume. The mirror still wins on
+        # overlap, so this only fires where the mirror has no bar for that session at all.
+        if (sym, day) in SOFTVOL and day not in MIRROR_DAYS.get(sym, ()): v = None
+        pc = data[prev][3]
+        ret = c / pc - 1 if pc > 0 else 0.0
+        exret = ret - MKT[day]
+        novol = v is None or nobase                        # B unusable: unknown volume or no baseline
+        dv = c * v if v is not None else med_dv            # money weight (and the 淨額估算 base)
+        # R7: activity is share turnover against a share-turnover baseline, so a re-rated price
+        # cannot masquerade as heavier trading.
+        rvol = (v / med_sv if (med_sv and v is not None) else 1.0) if not novol else 1.0
+        A = math.tanh(exret / 0.02)
+        B = 0.0 if novol else max(-1.0, min(1.0, math.log2(max(0.25, min(4.0, rvol))) / 2))
+        if real and h is not None and h > l:
+            C = ((c - l) - (h - c)) / (h - l)
+            f = (0.70 * A + 0.30 * C) * (1 + 0.50 * B)
+            mfd = C * dv                       # Chaikin money-flow dollars
+            ohlc = True
+        else:
+            C = None
+            f = A * (1 + 0.50 * B)
+            mfd = A * dv                       # direction-scaled dollars (no intraday range)
+            ohlc = False
+        out["days"][day] = {"ret": ret, "exret": exret, "dv": dv, "rvol": rvol, "novol": novol,
+                            "A": A, "B": B, "C": C, "f": f, "mfd": mfd, "ohlc": ohlc,
+                            "est": (day in EST_CLOSE.get(sym, ())) if not real else False}
+    return out
+
+TICK, dropped = {}, []
+for t in wanted:
+    r = tick_flow(t)
+    if r: TICK[t] = r
+    else: dropped.append(t)
+nb = sum(1 for v in TICK.values() if v["nobase"])
+srcn = collections.Counter(v["src"] for v in TICK.values())
+print(f"tickers scored: {len(TICK)} (natezone+yahoo {srcn['real']}, yahoo-only {srcn['yahoo']}, "
+      f"snapshot {srcn['snap']}, of which {nb} without a volume baseline -> B held at 0); dropped {len(dropped)}: {dropped}")
+
+# ---------------- cross-check: snapshot-series closes vs Yahoo, per session in the window ----------------
+XC = {}
+for day in [LAST[LAST.index(DAYS[0]) - 1]] + DAYS:
+    dev = []
+    for sym in wanted:
+        y = yh_get(sym); sd = series_snap(sym)
+        if y and sd and day in y and day in sd and y[day][3] > 0:
+            dev.append(abs(sd[day][3] - y[day][3]) / y[day][3] * 100)
+    if dev:
+        XC[day] = {"n": len(dev), "median_pct": round(statistics.median(dev), 4),
+                   "gt_0_5": sum(1 for x in dev if x > 0.5), "gt_2": sum(1 for x in dev if x > 2)}
+nzdev = []
+for sym in wanted:
+    nz = load_nz(sym); y = yh_get(sym)
+    if nz and y:
+        for d in DAYS:
+            if d in nz and d in y and y[d][3] > 0: nzdev.append(abs(nz[d][3] - y[d][3]) / y[d][3] * 100)
+XC["natezone_vs_yahoo"] = ({"n": len(nzdev), "median_pct": round(statistics.median(nzdev), 4),
+                            "gt_0_5": sum(1 for x in nzdev if x > 0.5)} if nzdev else None)
+byday = collections.defaultdict(list)
+for sym in wanted:
+    nz = load_nz(sym); y = yh_get(sym)
+    if nz and y:
+        for d in DAYS:
+            if d in nz and d in y and y[d][3] > 0:
+                byday[d].append(abs(nz[d][3] - y[d][3]) / y[d][3] * 100)
+XC["nz_vs_yh_by_day"] = {d: {"n": len(v), "median_pct": round(statistics.median(v), 4),
+                             "gt_0_5": sum(1 for x in v if x > 0.5)} for d, v in sorted(byday.items())}
+print("natezone vs yahoo by session:", XC["nz_vs_yh_by_day"])
+XC["basis_disagree"] = sorted(t for t, m in BASIS.items() if m is not None and m > BASIS_TOL)
+print("snapshot vs yahoo close deviation:", {d: v for d, v in XC.items() if d[:2] == "20"})
+print("natezone vs yahoo:", XC["natezone_vs_yahoo"], "| basis disagreements:", XC["basis_disagree"])
+
+# ---------------- basket weights: iterative 40% cap that actually binds (F3) ----------------
+def capped_weights(raw):
+    """Largest-remainder water filling: capped names keep exactly CAP, the rest share the
+    remainder in proportion to their dollar volume.  Guarantees max weight <= CAP."""
+    tot = sum(raw.values())
+    n = len(raw)
+    if tot <= 0: return {t: 1.0 / n for t in raw}
+    if n * CAP <= 1.0 + 1e-12: return {t: 1.0 / n for t in raw}     # cap unreachable -> equal weight
+    w = {t: v / tot for t, v in raw.items()}
+    capped = set()
+    while True:
+        over = [t for t in w if t not in capped and w[t] > CAP + 1e-12]
+        if not over: return w
+        capped |= set(over)
+        free = [t for t in w if t not in capped]
+        rest = 1.0 - CAP * len(capped)
+        sub = sum(raw[t] for t in free)
+        if rest <= 0 or sub <= 0:
+            return {t: (1.0 / len(w)) for t in w}
+        for t in capped: w[t] = CAP
+        for t in free: w[t] = rest * raw[t] / sub
+
+# ---------------- aggregate per sub-sector ----------------
+rows = []
+for s in subs:
+    listed = PROXY.get(s["n"]) or [t for t in s["tickers"] if TICKER_RE.match(t)]
+    tk = [t for t in listed if t in TICK]
+    supp = [t for t in SUPP.get(s["n"], []) if t in TICK and t not in tk]
+    tk = tk + supp
+    proxy = s["n"] in PROXY
+    if not tk:
+        rows.append(dict(s, basket=[], n_basket=0, proxy=proxy, days=None, note="無可用樣本"))
+        continue
+    daily = {}
+    for day in DAYS:
+        raw = {t: TICK[t]["days"][day]["dv"] for t in tk}
+        ws = capped_weights(raw)
+        F = sum(ws[t] * TICK[t]["days"][day]["f"] for t in tk)
+        mfd = sum(TICK[t]["days"][day]["mfd"] for t in tk)
+        ret_ew = statistics.mean(TICK[t]["days"][day]["ret"] for t in tk)
+        rvol = sum(ws[t] * TICK[t]["days"][day]["rvol"] for t in tk)
+        dv = sum(raw.values())
+        up = sum(1 for t in tk if TICK[t]["days"][day]["exret"] > 0)
+        ohlc_dv = sum(raw[t] for t in tk if TICK[t]["days"][day]["ohlc"])
+        daily[day] = {"F": F, "mfd": mfd, "ret": ret_ew, "rvol": rvol, "dv": dv,
+                      "breadth": up / len(tk), "up": up, "wmax": max(ws.values()),
+                      "ohlc_cov": ohlc_dv / dv if dv else 0.0,
+                      "novol": sum(1 for t in tk if TICK[t]["days"][day]["novol"])}
+    rows.append(dict(s, basket=tk, n_basket=len(tk), proxy=proxy, supp=supp,
+                     missing=[t for t in listed if t not in TICK], days=daily,
+                     nobase=[t for t in tk if TICK[t]["nobase"]],
+                     src=("real" if all(TICK[t]["src"] in ("real", "yahoo") for t in tk) else
+                          ("snap" if all(TICK[t]["src"] == "snap" for t in tk) else "mix")),
+                     src_detail=dict(collections.Counter(TICK[t]["src"] for t in tk)),
+                     est_days=sorted({d for t in tk for d in DAYS if TICK[t]["days"][d]["est"]})))
+
+# ---------------- cross-sectional standardisation, per day ----------------
+live = [r for r in rows if r["days"]]
+W = [1.0, 1.15, 1.35, 1.6, 1.9]          # recency weights over the 5 sessions
+for day in DAYS:
+    vals = [r["days"][day]["F"] for r in live]
+    mu = statistics.mean(vals); sd = statistics.pstdev(vals) or 1e-9
+    order = sorted(range(len(live)), key=lambda i: vals[i])
+    pct = [0.0] * len(live)
+    for rank, i in enumerate(order): pct[i] = rank / (len(live) - 1) * 100
+    for i, r in enumerate(live):
+        d = r["days"][day]
+        d["z"] = (d["F"] - mu) / sd
+        d["score"] = pct[i]
+        d["grade"] = (3 if d["z"] >= 1.5 else 2 if d["z"] >= 0.75 else 1 if d["z"] >= 0.25 else
+                      0 if d["z"] > -0.25 else -1 if d["z"] > -0.75 else -2 if d["z"] > -1.5 else -3)
+for r in live:
+    zs = [r["days"][d]["z"] for d in DAYS]
+    r["z5"] = sum(w * z for w, z in zip(W, zs)) / sum(W)
+    r["pos"] = sum(1 for d in DAYS if r["days"][d]["grade"] >= 1)
+    r["neg"] = sum(1 for d in DAYS if r["days"][d]["grade"] <= -1)
+    n = len(zs); xb = (n - 1) / 2; yb = sum(zs) / n
+    r["slope"] = sum((i - xb) * (z - yb) for i, z in enumerate(zs)) / sum((i - xb) ** 2 for i in range(n))
+    r["mfd5"] = sum(r["days"][d]["mfd"] for d in DAYS)
+    r["dv5"] = sum(r["days"][d]["dv"] for d in DAYS)
+    r["ret5"] = math.prod(1 + r["days"][d]["ret"] for d in DAYS) - 1
+    n = r["n_basket"]
+    r["shrink"] = math.sqrt(n / (n + 2.0))
+    r["z5r"] = r["z5"] * r["shrink"]
+    r["intensity"] = r["mfd5"] / r["dv5"] * 100 if r["dv5"] else 0.0
+    r["breadth5"] = statistics.mean(r["days"][d]["breadth"] for d in DAYS)
+    r["novol_days"] = sum(1 for d in DAYS if r["days"][d]["novol"])
+    r["ohlc_cov5"] = (sum(r["days"][d]["ohlc_cov"] * r["days"][d]["dv"] for d in DAYS) / r["dv5"]
+                      if r["dv5"] else 0.0)
+    r["wmax5"] = max(r["days"][d]["wmax"] for d in DAYS)
+vals = [r["z5"] for r in live]
+order = sorted(range(len(live)), key=lambda i: vals[i])
+for rank, i in enumerate(order): live[i]["score5"] = rank / (len(live) - 1) * 100
+vr = [r["z5r"] for r in live]
+order = sorted(range(len(live)), key=lambda i: vr[i])
+for rank, i in enumerate(order): live[i]["score5r"] = rank / (len(live) - 1) * 100
+live.sort(key=lambda r: -r["z5"])
+for i, r in enumerate(live, 1): r["rank"] = i
+
+out = {"meta": {"days": DAYS, "base": [BASE[0], BASE[-1]], "n_base": len(BASE),
+                "mkt_med": {d: MKT[d] for d in DAYS}, "mkt_n": MKT["_n"],
+                "n_sub": len(rows), "n_scored": len(live), "n_tick": len(TICK),
+                "n_nobase": nb, "dropped": dropped, "notes_skipped": NOTES,
+                "proxy": {str(k): v for k, v in PROXY.items()},
+                "supp": {str(k): v for k, v in SUPP.items()},
+                "weights": W, "cap": CAP,
+                "novol_by_date": {d: len(NOVOL_BY_DATE.get(d, ())) for d in DAYS},
+                "stale_mirror": sorted(t for t in STALE if t in TICK), "merge_since": SINCE,
+                "provisional_vol_days": PROV_VOL,
+                "settled_print_share": {d: round(ROUND_SHARE.get(d, 0.0), 4) for d in DAYS},
+                "mirror_unsettled": sorted(NZ_UNSETTLED),
+                "settled_basis": "merged_bars",
+                "prov_vol_effect": {"close": "exact", "ohl_p95": 0.0043, "vol_revised": 0.995,
+                                    "vol_gt1pct": 0.322, "vol_gt5pct": 0.093, "vol_p95": 0.0919,
+                                    "b_p95_uncertainty": 0.06, "measured_on": "2026-09-09", "n": 214},
+                "src_coverage": {d: SRC_COV.get(d, {}) for d in DAYS},
+                "tail_routes": {d: dict(collections.Counter(
+                    r for sym, m in TAIL_ROUTE.items() for dd, r in m.items() if dd == d)) for d in DAYS},
+                "tail_softvol": {d: sum(1 for sym, dd in SOFTVOL if dd == d and sym in TICK
+                                        and d not in MIRROR_DAYS.get(sym, ())) for d in DAYS},
+                "tail_xcheck": {"close_median_pct": 0.015, "close_p95_pct": 0.077, "n": 402,
+                                "vol_ratio_median": 1.286, "vol_ratio_p05": 1.105,
+                                "vol_ratio_p95": 1.678},
+                "mirror_coverage": {d: NZ_COV[d] for d in DAYS}, "mirror_typical": NZ_TYP,
+                "panel_balanced": True, "panel_pool": len(allnz),
+                "activity_basis": "share_volume",   # R7: B uses share turnover, not dollar turnover
+                "calendar_tail": CALSEQ[-30:],
+                "yahoo_xcheck": XC, "yahoo_files": [os.path.basename(p) for p in YF_FILES if os.path.exists(p)],
+                "yahoo_n_symbols": len(YH), "src_counts": dict(srcn),
+                "source_note": "natezone/market-tracker 日線 OHLCV 與 Yahoo Finance 日線（GitHub Actions runner 拉取）合併，快照序列只作對照及最後補足"},
+       "rows": live + [r for r in rows if not r["days"]]}
+json.dump(out, open(os.environ.get("OUT_JSON", f"{SCR}/sub8/flow8.json"), "w"), ensure_ascii=False)
+print("\nTOP 12 inflow:")
+for r in live[:12]:
+    print(f"  {r['rank']:3d} {r['zh'][:14]:<16} z5{r['z5']:+.2f} 5日分{r['score5']:5.1f} "
+          f"日格{[r['days'][d]['grade'] for d in DAYS]} 淨額${r['mfd5']/1e6:+,.0f}M 樣本{r['n_basket']}")
+print("BOTTOM 12 outflow:")
+for r in live[-12:]:
+    print(f"  {r['rank']:3d} {r['zh'][:14]:<16} z5{r['z5']:+.2f} 5日分{r['score5']:5.1f} "
+          f"日格{[r['days'][d]['grade'] for d in DAYS]} 淨額${r['mfd5']/1e6:+,.0f}M 樣本{r['n_basket']}")
+print("max basket weight across all rows/days:", round(max(r["wmax5"] for r in live), 4))
+print("no-basket rows:", [(r['n'], r['zh']) for r in rows if not r["days"]])
