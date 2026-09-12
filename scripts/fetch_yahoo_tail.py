@@ -16,9 +16,16 @@ dated after --since:
   2. history(period="1d", interval="1h") aggregated into a daily bar
   3. fast_info                       -- open/day_high/day_low/last_price/last_volume
 
-Route 3 has no volume guarantee (last_volume can be the running session total), so
-each row records which route produced it and the engine treats routes 2/3 volume as
-unsettled.  Prices are unadjusted, matching fetch_yahoo.py.
+Each row records which route produced it, so the engine can decide what to trust.
+
+The hourly route sums regular-session hourly prints and therefore MISSES the closing
+auction: measured against the daily-bar mirror on 402 names for 2026-09-10, its volume
+runs a median 1.286x low with a wide spread (p05 1.105, p95 1.678).  The quote endpoint
+reports regularMarketVolume, which is the exchange's running session total and does
+include the auction once the session has closed.  So every row also carries the quote's
+volume and price in separate columns (quote_volume / quote_price), letting the engine --
+and the verifier -- check the quote total against the hourly sum before relying on it.
+Prices are unadjusted, matching fetch_yahoo.py.
 """
 import csv, gzip, os, sys, time
 from concurrent.futures import ThreadPoolExecutor
@@ -36,6 +43,17 @@ if not SINCE:
 symbols = [s.strip() for s in open(LIST) if s.strip()]
 ysym = {s: s.replace(".", "-").replace("/", "-") for s in symbols}
 print(f"{len(symbols)} symbols, want sessions after {SINCE}")
+
+
+def quote_fields(t):
+    """regularMarketVolume / last price from the quote endpoint, or (None, None)."""
+    try:
+        fi = t.fast_info
+        v = fi.get("last_volume")
+        c = fi.get("last_price")
+        return (float(v) if v else None), (float(c) if c else None)
+    except Exception:
+        return None, None
 
 
 def rows_from_frame(sub, sym, route):
@@ -61,11 +79,16 @@ def rows_from_frame(sub, sym, route):
 def one(sym):
     y = ysym[sym]
     t = yf.Ticker(y)
+    qv, qc = quote_fields(t)                        # session total incl. the closing auction
+    def tag(rows):
+        for r in rows:                              # only the newest row is "today" for the quote
+            r += [qv if r is rows[-1] else None, qc if r is rows[-1] else None]
+        return rows
     try:                                            # 1. relative-period daily history
         got = rows_from_frame(t.history(period="5d", interval="1d", auto_adjust=False,
                                         actions=False), sym, "hist5d")
         if got:
-            return got
+            return tag(got)
     except Exception:
         pass
     try:                                            # 2. hourly bars folded into a daily bar
@@ -80,7 +103,7 @@ def one(sym):
                 got = [[sym, last, float(sl["Open"].iloc[0]), float(sl["High"].max()),
                         float(sl["Low"].min()), float(sl["Close"].iloc[-1]),
                         float(sl["Close"].iloc[-1]), float(sl["Volume"].sum()), "hourly"]]
-                return got
+                return tag(got)
     except Exception:
         pass
     try:                                            # 3. quote snapshot
@@ -88,8 +111,8 @@ def one(sym):
         c = float(fi["last_price"])
         d = pd.Timestamp.utcnow().tz_localize("UTC").tz_convert("America/New_York").strftime("%Y-%m-%d")
         if c > 0 and d > SINCE:
-            return [[sym, d, float(fi.get("open") or c), float(fi.get("day_high") or c),
-                     float(fi.get("day_low") or c), c, c, float(fi.get("last_volume") or 0), "quote"]]
+            return tag([[sym, d, float(fi.get("open") or c), float(fi.get("day_high") or c),
+                         float(fi.get("day_low") or c), c, c, float(fi.get("last_volume") or 0), "quote"]])
     except Exception:
         pass
     return []
@@ -113,9 +136,11 @@ for r in rows:
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 with gzip.open(OUT, "wt", newline="") as f:
     w = csv.writer(f)
-    w.writerow(["symbol", "date", "open", "high", "low", "close", "adj_close", "volume", "route"])
+    w.writerow(["symbol", "date", "open", "high", "low", "close", "adj_close", "volume",
+                "route", "quote_volume", "quote_price"])
     for r in sorted(rows, key=lambda x: (x[0], x[1])):
-        w.writerow(r[:2] + [f"{x:.4f}" for x in r[2:8]] + [r[8]])
+        w.writerow(r[:2] + [f"{x:.4f}" for x in r[2:8]] + [r[8]]
+                   + ["" if r[9] is None else f"{r[9]:.4f}", "" if r[10] is None else f"{r[10]:.4f}"])
 print(f"wrote {OUT}: {len(rows)} bars, {len({r[0] for r in rows})} symbols")
 print("by route:", by_route)
 print("by date:", dict(sorted(dates.items())))
