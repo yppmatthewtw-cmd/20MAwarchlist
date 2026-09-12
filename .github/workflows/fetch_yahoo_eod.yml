@@ -15,6 +15,14 @@ on:
       end:
         description: Day after the last trading day wanted (YYYY-MM-DD, exclusive)
         required: true
+      list:
+        description: Ticker list to pull (data/yahoo/tickers.txt or tickers_broad.txt)
+        required: false
+        default: data/yahoo/tickers.txt
+      out:
+        description: Output path (defaults to data/yahoo/eod_<start>_<end>.csv.gz)
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -32,7 +40,11 @@ jobs:
         env:
           START: ${{ inputs.start }}
           END: ${{ inputs.end }}
-        run: python3 scripts/fetch_yahoo.py
+          LIST: ${{ inputs.list }}
+          OUT: ${{ inputs.out }}
+        run: |
+          [ -n "$OUT" ] || export OUT="data/yahoo/eod_${START}_${END}.csv.gz"
+          python3 scripts/fetch_yahoo.py
       - name: Commit bars
         env:
           START: ${{ inputs.start }}
