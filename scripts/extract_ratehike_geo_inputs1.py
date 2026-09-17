@@ -13,6 +13,7 @@ BROAD = 'data/yahoo/broad_2026-09-18.csv.gz'
 FLOW  = 'data/subsector_flow11.json'
 PX_OUT  = 'data/ratehike_geo_px.json'
 SEC_OUT = 'data/ratehike_geo_sec.json'
+IDX_OUT = 'data/ratehike_geo_idx.json'   # every distinct ticker in the workbook
 D16   = '2026-09-16'
 LOOKBACK = 20          # sessions behind D16 used for the volume baseline
 BACK5    = 5           # sessions behind D16 for the 5-day return
@@ -61,3 +62,27 @@ json.dump(dict(rows=rows, mkt=F['meta']['mkt_med'], days=F['meta']['days'],
                mktn=F['meta']['mkt_n'], prov=F['meta'].get('provisional_vol_days')),
           open(SEC_OUT, 'w'))
 print(f"{SEC_OUT}: {len(rows)} sub-sectors, provisional-volume days {F['meta'].get('provisional_vol_days')}")
+
+# Every ticker that appears anywhere in the workbook -- the two lists plus all 111
+# baskets -- so the 代號索引 sheet can give each one its own row, link and move.
+universe = set(px)
+for r in rows:
+    universe |= set(r['tick'].split(','))
+S2 = collections.defaultdict(dict)
+with gzip.open(BROAD, 'rt') as f:
+    for r in csv.DictReader(f):
+        if r['symbol'] in universe:
+            S2[r['symbol']][r['date']] = (float(r['close']), float(r['volume']))
+idx, thin = {}, []
+for s in sorted(universe):
+    b = S2.get(s)
+    if not b or D16 not in b:
+        thin.append(s); continue
+    ds = sorted(b); i = ds.index(D16)
+    if i < LOOKBACK + 1:
+        thin.append(s); continue
+    vols = [b[d][1] for d in ds[i - LOOKBACK:i] if b[d][1]]
+    idx[s] = dict(c16=b[D16][0], c15=b[ds[i - 1]][0], c09=b[ds[i - BACK5]][0],
+                  v16=b[D16][1], vmed=statistics.median(vols))
+json.dump(idx, open(IDX_OUT, 'w'))
+print(f"{IDX_OUT}: {len(idx)} tickers" + (f", {len(thin)} without enough history: {thin}" if thin else ""))

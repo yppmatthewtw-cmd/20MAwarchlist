@@ -11,10 +11,14 @@ from openpyxl.utils import get_column_letter
 
 PX  = json.load(open('data/ratehike_geo_px.json'))
 SEC = json.load(open('data/ratehike_geo_sec.json'))
+IDX = json.load(open('data/ratehike_geo_idx.json'))
 
 ASOF   = "2026-09-16 美東收市"
-BUILT  = "2026-09-17 12:47 HKT"
-REV    = "R1.00"
+BUILT  = "2026-09-17 15:16 HKT"
+REV    = "R1.01"
+
+MAX_BASKET = 8            # widest basket among the 111 sub-sectors
+NOTE_COL   = 14 + MAX_BASKET + 1
 
 F   = "Arial"
 NAVY= "1F3864"; SLATE="2E5A88"; BAND="F2F5F9"
@@ -24,6 +28,7 @@ BLUE= Font(name=F, size=10, color="0000FF")          # hardcoded input
 GRN = Font(name=F, size=10, color="008000")          # cross-sheet link
 RED = Font(name=F, size=10, color="C00000", bold=True)
 MUT = Font(name=F, size=9,  color="595959")
+LINK= Font(name=F, size=10, bold=True, color="0563C1", underline="single")
 HDR = Font(name=F, size=10, bold=True, color="FFFFFF")
 T1  = Font(name=F, size=16, bold=True, color=NAVY)
 T2  = Font(name=F, size=11, bold=True, color=SLATE)
@@ -53,6 +58,15 @@ def sheet(name, widths, freeze=None, tab=None):
     if freeze: ws.freeze_panes = freeze
     if tab: ws.sheet_properties.tabColor = tab
     return ws
+
+def tv(t):
+    """Same TradingView chart layout the HTML reports link their tickers to."""
+    return f"https://www.tradingview.com/chart/Q1c5VWwD/?symbol={t.lower()}"
+
+def putlink(ws, r, c, t):
+    cell = put(ws, r, c, t, LINK, align=CTR)
+    cell.hyperlink = tv(t)
+    return cell
 
 def title(ws, t, sub, span):
     ws["A1"] = t;   ws["A1"].font = T1
@@ -176,7 +190,7 @@ ws = sheet("3日受惠清單 Watchlist",
            [9, 17, 8, 20, 10, 10, 10, 10, 10, 13, 13, 8, 7, 7, 7, 7, 9, 50, 22, 22, 34],
            freeze="E9", tab="2E7D32")
 title(ws, "3 日受惠股清單　Rate-Hike & Geopolitical 3-Day Watchlist " + REV,
-      f"基準 {ASOF}　·　H/I/L/Q 欄為公式，黑字＝公式、藍字＝輸入值、黃底＝可調整假設　·　綜合分 0–100", 21)
+      f"基準 {ASOF}　·　H/I/L/Q 欄為公式，黑字＝公式、藍字＝輸入值、黃底＝可調整假設　·　代號可點擊開 TradingView 圖表", 21)
 
 put(ws, 4, 13, "綜合分權重（黃底＝可調整輸入，改動後 Q 欄即時重算）", T2)
 ws.merge_cells(start_row=4, start_column=13, end_row=4, end_column=17)
@@ -300,7 +314,7 @@ for (tier, theme, tk, comp, mech, flow, fresh, bd, mtxt, sa, sb, inval) in W:
     p = PX[tk]
     put(ws, r, 1, tier, BOLD, align=CTR)
     put(ws, r, 2, theme, INK, align=WRAP)
-    put(ws, r, 3, tk, BOLD, align=CTR)
+    putlink(ws, r, 3, tk)
     put(ws, r, 4, comp, INK, align=WRAP)
     put(ws, r, 5, p['c16'],  BLUE, '#,##0.00')
     put(ws, r, 6, p['c15'],  BLUE, '#,##0.00')
@@ -340,7 +354,7 @@ ws = sheet("迴避清單 Avoid",
            [20, 8, 24, 10, 10, 10, 10, 10, 13, 13, 8, 56, 34],
            freeze="D9", tab="B71C1C")
 title(ws, "3 日迴避清單　Avoid List " + REV,
-      f"基準 {ASOF}　·　G/H/K 欄為公式　·　列出「有具體理由」的迴避標的，非泛泛看淡", 13)
+      f"基準 {ASOF}　·　G/H/K 欄為公式　·　代號可點擊開 TradingView 圖表　·　列出「有具體理由」的迴避標的，非泛泛看淡", 13)
 header(ws, 8, ["類別", "代號", "公司", "收市\n09-16", "前收\n09-15", "5日前收\n09-09",
                "09-16\n漲跌%", "5日\n漲跌%", "09-16\n成交量", "20日\n中位量", "相對量",
                "迴避理由", "何時反手做多"])
@@ -377,7 +391,7 @@ r = 9
 for cat, tk, comp, why, back in A:
     p = PX[tk]
     put(ws, r, 1, cat, BOLD, align=WRAP)
-    put(ws, r, 2, tk, BOLD, align=CTR)
+    putlink(ws, r, 2, tk)
     put(ws, r, 3, comp, INK, align=WRAP)
     put(ws, r, 4, p['c16'], BLUE, '#,##0.00')
     put(ws, r, 5, p['c15'], BLUE, '#,##0.00')
@@ -406,13 +420,14 @@ ws.row_dimensions[r].height = 30
 
 # ─────────────────────── 4. 板塊資金流證據 ───────────────────────
 ws = sheet("板塊資金流證據 Evidence",
-           [7, 22, 32, 14, 9, 9, 10, 10, 9, 9, 9, 8, 13, 13, 40, 30],
+           [7, 22, 32, 14, 9, 9, 10, 10, 9, 9, 9, 8, 13, 13] + [9] * MAX_BASKET + [30],
            freeze="D9", tab=SLATE)
 title(ws, "111 個子板塊資金流證據（可追溯全表）",
-      f"來源：SubSector 資金流向 Watchlist R11.00　·　視窗 2026-09-10 → 2026-09-16　·　按 5 日綜合分排序　·　※ 淨額含 9/16 未結算成交量，屬臨時值", 16)
+      f"來源：SubSector 資金流向 Watchlist R11.00　·　視窗 2026-09-10 → 2026-09-16　·　按 5 日綜合分排序　·　成分股可點擊　·　※ 淨額含 9/16 未結算成交量，屬臨時值", NOTE_COL)
 header(ws, 8, ["5日\n排名", "子板塊", "English", "大板塊", "5日\n分數", "09-16\n分數",
                "09-16\n漲跌%", "5日\n漲跌%", "09-16\n廣度", "5日\n廣度", "09-16\n相對量",
-               "斜率", "09-16 淨額※\n(US$ 百萬)", "5日 淨額※\n(US$ 百萬)", "成分股", "備註"])
+               "斜率", "09-16 淨額※\n(US$ 百萬)", "5日 淨額※\n(US$ 百萬)"]
+             + [f"成分股\n{i}" for i in range(1, MAX_BASKET + 1)] + ["備註"])
 NOTE = {
  "煉油與成品油": "★ 本清單第①組：9/16 能源板塊中唯一上升，與頁岩 E&P 同日相差 7.4 個百分點",
  "醫院與醫療服務": "★ 第②組：9/16 廣度 1.00，5 日僅 +1.47% ＝ 未伸展",
@@ -455,59 +470,117 @@ for i, s in enumerate(SEC['rows'], 1):
     put(ws, r, 12, s['slope'], INK, '+0.00;-0.00;0.00', None, CTR)
     put(ws, r, 13, (s['mfd16'] or 0)/1e6, INK, USD)
     put(ws, r, 14, (s['mfd5']  or 0)/1e6, INK, USD)
-    put(ws, r, 15, s['tick'], MUT, align=WRAP)
+    bask = s['tick'].split(',')
+    assert len(bask) <= MAX_BASKET, f"{s['zh']} basket of {len(bask)} exceeds MAX_BASKET"
+    for j, t in enumerate(bask):
+        putlink(ws, r, 15 + j, t)
     note = NOTE.get(s['zh'], "")
-    put(ws, r, 16, note, (RED if note.startswith("⚠") else INK), align=WRAP)
-    if note.startswith("★"):
-        for c in range(1, 17): ws.cell(row=r, column=c).fill = FILL_G
-    elif note.startswith("✕"):
-        for c in range(1, 17): ws.cell(row=r, column=c).fill = FILL_R
-    elif note.startswith("⚠"):
-        for c in range(1, 17): ws.cell(row=r, column=c).fill = FILL_A
+    put(ws, r, NOTE_COL, note, (RED if note.startswith("⚠") else INK), align=WRAP)
+    band = FILL_G if note.startswith("★") else FILL_R if note.startswith("✕") else FILL_A if note.startswith("⚠") else None
+    if band:
+        for c in range(1, NOTE_COL + 1): ws.cell(row=r, column=c).fill = band
     r += 1
 r += 1
 put(ws, r, 2, "9/16 全市中位漲跌", BOLD)
 put(ws, r, 7, SEC['mkt']['2026-09-16'], BLUE, PCT)
-put(ws, r, 15, f"市場面板檔數 {SEC['mktn']['2026-09-16']:,}（平衡面板：僅計每個計分日及其前一日均有報價的股票）", MUT)
+put(ws, r, 9, f"市場面板檔數 {SEC['mktn']['2026-09-16']:,}（平衡面板：僅計每個計分日及其前一日均有報價的股票）", MUT)
+ws.merge_cells(start_row=r, start_column=9, end_row=r, end_column=NOTE_COL)
 
-# ───────────────────────── 5. 催化劑日程 ─────────────────────────
-ws = sheet("催化劑日程 Catalysts", [13, 10, 30, 13, 52, 34, 20], freeze="A9", tab="7B4F9D")
-title(ws, "未來 3 個交易日催化劑日程", f"基準 {ASOF}　·　時間為美東時間", 7)
-header(ws, 8, ["日期", "星期", "事件", "時間 (ET)", "為何重要", "衝擊哪些清單項目", "方向偏好"])
+# ───────────────────────── 5. 代號索引 ─────────────────────────
+# Every distinct ticker in the workbook gets its own linked row, so a name that only
+# ever appears inside a 111-row basket is still one click from its chart.
+ws = sheet("代號索引 Ticker Index",
+           [9, 14, 20, 38, 11, 10, 10, 10, 10, 10, 13, 13, 9],
+           freeze="B9", tab="0563C1")
+title(ws, "代號索引　Ticker Index",
+      f"基準 {ASOF}　·　工作簿內全部 {len(IDX)} 個代號，每個都可點擊開 TradingView 圖表　·　"
+      "I/J/M 欄為公式　·　表頭可篩選排序", 13)
+header(ws, 8, ["代號", "受惠清單", "迴避清單", "所屬子板塊（可多於一個）", "子板塊\n最佳5日排名",
+               "收市\n09-16", "前收\n09-15", "5日前收\n09-09", "09-16\n漲跌%", "5日\n漲跌%",
+               "09-16\n成交量", "20日\n中位量", "相對量"])
+
+IN_W = {w[2]: w[0] for w in W}
+IN_A = {}
+for _cat, _tk, *_ in A:
+    IN_A.setdefault(_tk, _cat)
+SUB = {}
+for _i, _s in enumerate(SEC['rows'], 1):
+    for _t in _s['tick'].split(','):
+        SUB.setdefault(_t, []).append((_i, _s['zh']))
+
+r = 9
+for tk in sorted(IDX):
+    p = IDX[tk]
+    subs = sorted(SUB.get(tk, []))
+    putlink(ws, r, 1, tk)
+    put(ws, r, 2, IN_W.get(tk, "—"), (BOLD if tk in IN_W else MUT), align=CTR)
+    put(ws, r, 3, IN_A.get(tk, "—"), (BOLD if tk in IN_A else MUT), align=CTR)
+    put(ws, r, 4, "、".join(z for _, z in subs) or "—", INK, align=WRAP)
+    put(ws, r, 5, (subs[0][0] if subs else None), INK, NUM, None, CTR)
+    put(ws, r, 6, p['c16'], BLUE, '#,##0.00')
+    put(ws, r, 7, p['c15'], BLUE, '#,##0.00')
+    put(ws, r, 8, p['c09'], BLUE, '#,##0.00')
+    put(ws, r, 9,  f"=F{r}/G{r}-1", INK, PCT)
+    put(ws, r, 10, f"=F{r}/H{r}-1", INK, PCT)
+    put(ws, r, 11, p['v16'],  BLUE, NUM)
+    put(ws, r, 12, p['vmed'], BLUE, NUM)
+    put(ws, r, 13, f"=K{r}/L{r}", INK, MUL)
+    if tk in IN_W:
+        for c in range(1, 14): ws.cell(row=r, column=c).fill = FILL_G
+    elif tk in IN_A:
+        for c in range(1, 14): ws.cell(row=r, column=c).fill = FILL_R
+    r += 1
+ws.auto_filter.ref = f"A8:M{r - 1}"
+put(ws, r + 1, 1,
+    f"綠底＝在「3日受惠清單」內（{len(IN_W)} 檔）　紅底＝在「迴避清單」內（{len(IN_A)} 檔）　"
+    f"其餘為 111 個子板塊籃子的成分股。子板塊排名為該代號所屬板塊中 5 日綜合分最高者的名次（1 = 最強）。", MUT, align=WRAP)
+ws.merge_cells(start_row=r + 1, start_column=1, end_row=r + 1, end_column=13)
+
+# ───────────────────────── 6. 催化劑日程 ─────────────────────────
+MAX_CAT_TK = 7        # widest 相關代號 row below
+ws = sheet("催化劑日程 Catalysts", [13, 10, 30, 13, 52, 34, 20] + [9] * MAX_CAT_TK,
+           freeze="A9", tab="7B4F9D")
+title(ws, "未來 3 個交易日催化劑日程",
+      f"基準 {ASOF}　·　時間為美東時間　·　「相關代號」欄的代號可點擊開 TradingView 圖表", 7 + MAX_CAT_TK)
+header(ws, 8, ["日期", "星期", "事件", "時間 (ET)", "為何重要", "衝擊哪些清單項目", "方向偏好"]
+             + [f"相關代號\n{i}" for i in range(1, MAX_CAT_TK + 1)])
 CAT = [
 ("2026-09-17","四","8 月新屋開工 + 營建許可","08:30",
- "10Y 在 5% ＝ 30 年按揭跟升。這是本週唯一直接針對利率敏感板塊的數據","迴避：DHI、LEN（已在 2.0–2.5x 量能下跌）","利空建商"),
+ "10Y 在 5% ＝ 30 年按揭跟升。這是本週唯一直接針對利率敏感板塊的數據","迴避：DHI、LEN（已在 2.0–2.5x 量能下跌）","利空建商",["DHI","LEN"]),
 ("2026-09-17","四","初領失業救濟金","08:30",
- "Warsh 稱經濟「正在走強」並以就業數據佐證。強數據 ＝ 再加息機率上升 ＝ 孳息再上","受惠：TRV、RNR、AIG、CB（息差）／迴避：OKLO、CCJ、MP","強數據利好保險、利空長久期"),
+ "Warsh 稱經濟「正在走強」並以就業數據佐證。強數據 ＝ 再加息機率上升 ＝ 孳息再上","受惠：TRV、RNR、AIG、CB（息差）／迴避：OKLO、CCJ、MP","強數據利好保險、利空長久期",["TRV","RNR","AIG","CB","OKLO","CCJ","MP"]),
 ("2026-09-17","四","FOMC 靜默期結束，官員開始發言","全日",
- "點陣圖顯示 16/18 預期年內再加一次——官員措辭將決定市場如何定價「下一次」","全表；尤其第④組保險與所有迴避項目","偏鷹 → 強化本清單配置"),
+ "點陣圖顯示 16/18 預期年內再加一次——官員措辭將決定市場如何定價「下一次」","全表；尤其第④組保險與所有迴避項目","偏鷹 → 強化本清單配置",[]),
 ("2026-09-17","四","沙特 East–West 輸油管修復進展／衛星影像","不定",
- "★ 本清單最大單一變數。能源部長稱「數日」vs 業界估計 5–6 週，兩者矛盾","全表：決定狀態 A 或狀態 B","見「情境矩陣」頁"),
+ "★ 本清單最大單一變數。能源部長稱「數日」vs 業界估計 5–6 週，兩者矛盾","全表：決定狀態 A 或狀態 B","見「情境矩陣」頁",[]),
 ("2026-09-18","五","日本央行議息","日本時間上午，美股盤前",
- "美 10Y 在 5% 之際若 BOJ 轉鷹 → 日圓套息平倉 → 全球久期衝擊","第③組 GEV／ETN、第⑤組 AI 半導體（高 beta 最先被拋）","風險事件，非方向事件"),
+ "美 10Y 在 5% 之際若 BOJ 轉鷹 → 日圓套息平倉 → 全球久期衝擊","第③組 GEV／ETN、第⑤組 AI 半導體（高 beta 最先被拋）","風險事件，非方向事件",["GEV","ETN"]),
 ("2026-09-18","五","四巫日（季度期權期指同時到期）+ 標普季度再平衡","收市",
- "9 月第三個週五。巨額 gamma 到期 → 當日走勢多由倉位而非基本面決定","第⑤組 AI 半導體（單日彈 5–9% 最易被打回）；低 beta 高廣度項目相對安全","波動放大；宜避免追高"),
+ "9 月第三個週五。巨額 gamma 到期 → 當日走勢多由倉位而非基本面決定","第⑤組 AI 半導體（單日彈 5–9% 最易被打回）；低 beta 高廣度項目相對安全","波動放大；宜避免追高",["COHR","LITE","CRDO","SNPS","CDNS"]),
 ("2026-09-18","五","8 月工業生產、經濟諮商局領先指標","09:15 / 10:00",
- "若領先指標走弱而 Fed 仍鷹 → 滯脹定價，利好防守性醫療","第②組 THC、UHS、HCA、EHC","弱數據利好醫療服務"),
+ "若領先指標走弱而 Fed 仍鷹 → 滯脹定價，利好防守性醫療","第②組 THC、UHS、HCA、EHC","弱數據利好醫療服務",["THC","UHS","HCA","EHC"]),
 ("2026-09-21","一","到期後倉位重置","開市",
- "四巫日後的第一個交易日，被 gamma 壓抑的走勢通常於此釋放","全表","趨勢確認日"),
+ "四巫日後的第一個交易日，被 gamma 壓抑的走勢通常於此釋放","全表","趨勢確認日",[]),
 ("2026-09-21","一","Hormuz 航運事件／戰爭險費率更新","不定",
- "自上週六起已有至少兩艘船隻在 Hormuz 遇襲。費率已由船體價值 0.25% 升至 7.5–10%","第④組 RNR（戰爭再保）／第①組煉油","再有襲擊 → 狀態 B"),
+ "自上週六起已有至少兩艘船隻在 Hormuz 遇襲。費率已由船體價值 0.25% 升至 7.5–10%","第④組 RNR（戰爭再保）／第①組煉油","再有襲擊 → 狀態 B",["RNR","VLO","MPC","PBF","DINO","PSX"]),
 ("2026-09-30","（參考）","俄羅斯柴油出口禁令到期日","—",
- "禁令已延長至 9/30。俄佔全球柴油約 10%，8 月煉油量 380 萬桶/日為二十年最低","第①組全部：若不續期，柴油裂解可能回落","本清單 3 日窗口外，但屬第①組主要失效條件"),
+ "禁令已延長至 9/30。俄佔全球柴油約 10%，8 月煉油量 380 萬桶/日為二十年最低","第①組全部：若不續期，柴油裂解可能回落","本清單 3 日窗口外，但屬第①組主要失效條件",["VLO","MPC","PBF","DINO","PSX"]),
 ]
 r = 9
-for d, wd, ev, tm, why, hit, bias in CAT:
+for d, wd, ev, tm, why, hit, bias, tks in CAT:
+    assert len(tks) <= MAX_CAT_TK, f"{ev} names {len(tks)} tickers"
     put(ws, r, 1, d, BOLD); put(ws, r, 2, wd, INK, None, None, CTR)
     put(ws, r, 3, ev, BOLD, align=WRAP); put(ws, r, 4, tm, INK, None, None, CTR)
     put(ws, r, 5, why, INK, align=WRAP); put(ws, r, 6, hit, INK, align=WRAP)
     put(ws, r, 7, bias, INK, align=WRAP)
+    for j, t in enumerate(tks):
+        putlink(ws, r, 8 + j, t)
     if ev.startswith("★") or "輸油管" in ev:
-        for c in range(1, 8): ws.cell(row=r, column=c).fill = FILL_A
+        for c in range(1, 8 + MAX_CAT_TK): ws.cell(row=r, column=c).fill = FILL_A
     ws.row_dimensions[r].height = 44
     r += 1
 
-# ───────────────────────── 6. 情境矩陣 ─────────────────────────
+# ───────────────────────── 7. 情境矩陣 ─────────────────────────
 ws = sheet("情境矩陣 Scenarios", [6, 20, 46, 11, 11, 13, 46], tab="B8860B")
 title(ws, "兩態情境矩陣　Scenario Matrix",
       "狀態機率為可調整輸入（黃底藍字）；期望值 ＝ P(A)×A 報酬 + P(B)×B 報酬，報酬分 −2 至 +2", 7)
@@ -574,7 +647,7 @@ put(ws, r, 1, "讀法：只有第①組與第②組在兩態下都是 +2 ——�
 ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=7)
 ws.row_dimensions[r].height = 42
 
-# ─────────────────── 7. 數據來源與限制 ───────────────────
+# ─────────────────── 8. 數據來源與限制 ───────────────────
 ws = sheet("數據來源與限制 Sources", [22, 46, 66, 34], tab="595959")
 title(ws, "數據來源、方法與已知限制",
       f"{REV}　·　生成 {BUILT}　·　模型 claude-opus-5（high effort）", 4)
@@ -586,6 +659,10 @@ for a, b, c, d in [
   "本環境的出口代理封鎖所有財經網站，直接抓取不可行；故於 runner 上執行後將資料提交回 repo","data/yahoo/broad_2026-09-18.csv.gz"),
  ("基準日","2026-09-16（美東週三，FOMC 決議日）收市","前收＝2026-09-15；5 日前收＝2026-09-09（5 個交易日）","清單頁 E/F/G 欄"),
  ("成交量基準","該股自身前 20 個交易日的成交量中位數","相對量 ＝ 9/16 成交量 ÷ 該中位數。1.0 ＝ 正常","清單頁 K/L 欄"),
+ ("代號連結","工作簿內每一個代號都連結到 TradingView 圖表版面 chart/Q1c5VWwD，與本項目的 HTML 報告同一個版面",
+  "共 1,073 個可點擊儲存格：受惠清單 25、迴避清單 26、板塊成分股 498、代號索引 493、催化劑日程 31。"
+  "「催化劑日程」的敘述欄仍以文字提及代號（Excel 每格只容許一個連結），該行右側的「相關代號」欄提供可點擊版本",
+  "全部工作表"),
  ("9/16 結算狀態","9/16 由 Yahoo 收市後日線提供；日線鏡像當日 14:15 ET（收市前）提交，經跨來源裁決剔除",
   "9/16 成交量尚未結算（結算印記佔比 1.8%）。實測：收盤價誤差中位/p95 皆為 0.0000%；成交量 p95 約 15%","影響淨額，不影響收盤價"),
 ]:
@@ -688,6 +765,6 @@ for _row in _su.iter_rows():
                         .replace("Avoid'!G9:G100",     f"Avoid'!G9:G{AV_LAST}"))
 
 wb.calculation.fullCalcOnLoad = True   # Excel recalculates every formula on open
-OUT = "reports/RateHike_Geopolitical_3Day_Watchlist_R1.00_claudeopus5high_09.17_1247.xlsx"
+OUT = "reports/RateHike_Geopolitical_3Day_Watchlist_R1.01_claudeopus5high_09.17_1516.xlsx"
 wb.save(OUT)
 print("saved", OUT)
