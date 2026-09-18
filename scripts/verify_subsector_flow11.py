@@ -4,7 +4,7 @@ Re-implements the documented formulas without importing flow3.py; reports PROBLE
 import csv, json, math, os, pickle, statistics, collections, re, gzip, glob
 SCR = os.environ.get("WORK_DIR", "/tmp/claude-0/-home-user-20MAwarchlist/0f749aae-85b5-584c-9175-237303814dd9/scratchpad")
 NZ = os.environ.get("NZ_REPO", "/home/user/natezone/market-tracker") + "/data/UNIFIED/history"
-F = json.load(open(f"{SCR}/sub11/flow11.json")); M = F["meta"]; DAYS = M["days"]; live = [r for r in F["rows"] if r.get("days")]
+F = json.load(open(os.environ.get("FLOW_JSON", f"{SCR}/sub11/flow11.json"))); M = F["meta"]; DAYS = M["days"]; live = [r for r in F["rows"] if r.get("days")]
 S = pickle.load(open(f"{SCR}/series10.pkl", "rb")); CAL = S["cal"]; SER = S["series"]
 EST = S["meta8"]["estimated"]; M10 = S["meta10"]
 P = []

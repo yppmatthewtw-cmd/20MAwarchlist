@@ -10,6 +10,14 @@ on:
       since:
         description: Last session the history pull already covers (YYYY-MM-DD, exclusive)
         required: true
+      list:
+        description: Ticker list to pull (data/yahoo/tickers.txt or tickers_broad.txt)
+        required: false
+        default: data/yahoo/tickers.txt
+      out:
+        description: Output path (defaults to data/yahoo/tail.csv.gz)
+        required: false
+        default: data/yahoo/tail.csv.gz
 
 permissions:
   contents: write
@@ -26,8 +34,12 @@ jobs:
       - name: Download tail session
         env:
           SINCE: ${{ inputs.since }}
-          OUT: data/yahoo/tail.csv.gz
-        run: python3 scripts/fetch_yahoo_tail.py
+          LIST: ${{ inputs.list }}
+          OUT: ${{ inputs.out }}
+        run: |
+          [ -n "$LIST" ] || export LIST=data/yahoo/tickers.txt
+          [ -n "$OUT" ] || export OUT=data/yahoo/tail.csv.gz
+          python3 scripts/fetch_yahoo_tail.py
       - name: Commit tail
         env:
           SINCE: ${{ inputs.since }}
