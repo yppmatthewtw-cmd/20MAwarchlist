@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Derive verify_subsector_flow12.py from verify_subsector_flow11.py.
+"""Derive verify_ai_flow13.py from verify_ai_flow12.py.
+
+Applies exactly the patch set make_verify_subsector_flow12.py applies to the sub-sector
+verifier. Deriving the AI verifier from the previous AI verifier is what let R8 ship a
+verifier a revision behind its engine, so the two are generated from one patch set.
+
+ORIGINAL NOTE ---
 
 The verifier is an independent reimplementation, so it has to take the same inputs the
 engine takes or its market panel differs and every F disagrees. R12's G2 lets the engine
 read every data/yahoo/tail*.csv.gz; the verifier follows, and additionally re-derives the
 G1 price-less-mirror counter from the raw CSVs and asserts the engine's figure.
 """
-src = open("scripts/verify_subsector_flow11.py").read()
+src = open("scripts/verify_ai_flow12.py").read()
 
 def rep(a, b):
     global src
@@ -107,6 +113,6 @@ rep("""mine = sorted(d for d in DAYS if (rounded_share(d) or 1.0) < 0.5)""",
     return 1.0 if sh is None else sh        # None = too few names to judge, not "zero"
 mine = sorted(d for d in DAYS if _share_or_settled(d) < 0.5)""")
 
-src = src.replace('f"{SCR}/sub11/flow11.json"', 'f"{SCR}/sub12/flow12.json"', 1)
-open("scripts/verify_subsector_flow12.py", "w").write(src)
-print("wrote scripts/verify_subsector_flow12.py")
+src = src.replace('f"{SCR}/ai12/flow12.json"', 'f"{SCR}/ai13/flow13.json"', 1)
+open("scripts/verify_ai_flow13.py", "w").write(src)
+print("wrote scripts/verify_ai_flow13.py")

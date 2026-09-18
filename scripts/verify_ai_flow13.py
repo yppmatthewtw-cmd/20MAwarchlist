@@ -4,7 +4,7 @@ Re-implements the documented formulas without importing flow3.py; reports PROBLE
 import csv, json, math, os, pickle, statistics, collections, re, gzip, glob
 SCR = os.environ.get("WORK_DIR", "/tmp/claude-0/-home-user-20MAwarchlist/0f749aae-85b5-584c-9175-237303814dd9/scratchpad")
 NZ = os.environ.get("NZ_REPO", "/home/user/natezone/market-tracker") + "/data/UNIFIED/history"
-F = json.load(open(os.environ.get("FLOW_JSON", f"{SCR}/sub12/flow12.json"))); M = F["meta"]; DAYS = M["days"]; live = [r for r in F["rows"] if r.get("days")]
+F = json.load(open(f"{SCR}/ai13/flow13.json")); M = F["meta"]; DAYS = M["days"]; live = [r for r in F["rows"] if r.get("days")]
 S = pickle.load(open(f"{SCR}/series10.pkl", "rb")); CAL = S["cal"]; SER = S["series"]
 EST = S["meta8"]["estimated"]; M10 = S["meta10"]
 P = []
@@ -295,26 +295,26 @@ for r in live:
         if t not in TK:
             TK[t] = tick(t)
             if TK[t] is None: bad(f"{t} in basket but unscorable")
-    if any(t in M["dropped"] for t in r["basket"]): bad(f"{r['zh']} contains a dropped ticker")
-    if r["n_basket"] != len(r["basket"]): bad(f"{r['zh']} n_basket")
+    if any(t in M["dropped"] for t in r["basket"]): bad(f"{r['code']} contains a dropped ticker")
+    if r["n_basket"] != len(r["basket"]): bad(f"{r['code']} n_basket")
     nb = [t for t in r["basket"] if TK[t] and TK[t]["nobase"]]
-    if sorted(nb) != sorted(r.get("nobase") or []): bad(f"{r['zh']} nobase list {nb} vs {r.get('nobase')}")
+    if sorted(nb) != sorted(r.get("nobase") or []): bad(f"{r['code']} nobase list {nb} vs {r.get('nobase')}")
     for d in DAYS:
         raw = {t: TK[t]["days"][d]["dv"] for t in r["basket"]}
         w = weights(raw)
-        if len(raw) >= 3 and max(w.values()) > 0.4 + 1e-9: bad(f"{r['zh']} {d} weight cap broken {max(w.values())}")
-        if abs(sum(w.values()) - 1) > 1e-9: bad(f"{r['zh']} {d} weights sum")
+        if len(raw) >= 3 and max(w.values()) > 0.4 + 1e-9: bad(f"{r['code']} {d} weight cap broken {max(w.values())}")
+        if abs(sum(w.values()) - 1) > 1e-9: bad(f"{r['code']} {d} weights sum")
         Fv = sum(w[t] * TK[t]["days"][d]["f"] for t in raw)
         x = r["days"][d]
-        if abs(Fv - x["F"]) > 1e-9: bad(f"{r['zh']} {d} F {Fv} vs {x['F']}")
-        if abs(sum(TK[t]["days"][d]["mfd"] for t in raw) - x["mfd"]) > 1e-3: bad(f"{r['zh']} {d} mfd")
-        if abs(sum(raw.values()) - x["dv"]) > 1e-3: bad(f"{r['zh']} {d} dv")
-        if sum(1 for t in raw if TK[t]["days"][d]["novol"]) != x["novol"]: bad(f"{r['zh']} {d} novol count")
-        if abs(max(w.values()) - x["wmax"]) > 1e-9: bad(f"{r['zh']} {d} wmax")
+        if abs(Fv - x["F"]) > 1e-9: bad(f"{r['code']} {d} F {Fv} vs {x['F']}")
+        if abs(sum(TK[t]["days"][d]["mfd"] for t in raw) - x["mfd"]) > 1e-3: bad(f"{r['code']} {d} mfd")
+        if abs(sum(raw.values()) - x["dv"]) > 1e-3: bad(f"{r['code']} {d} dv")
+        if sum(1 for t in raw if TK[t]["days"][d]["novol"]) != x["novol"]: bad(f"{r['code']} {d} novol count")
+        if abs(max(w.values()) - x["wmax"]) > 1e-9: bad(f"{r['code']} {d} wmax")
         cov = sum(raw[t] for t in raw if TK[t]["days"][d]["ohlc"]) / sum(raw.values())
-        if abs(cov - x["ohlc_cov"]) > 1e-9: bad(f"{r['zh']} {d} ohlc_cov")
+        if abs(cov - x["ohlc_cov"]) > 1e-9: bad(f"{r['code']} {d} ohlc_cov")
         up = sum(1 for t in raw if TK[t]["days"][d]["ex"] > 0)
-        if up != x["up"] or abs(up / len(raw) - x["breadth"]) > 1e-9: bad(f"{r['zh']} {d} breadth")
+        if up != x["up"] or abs(up / len(raw) - x["breadth"]) > 1e-9: bad(f"{r['code']} {d} breadth")
         Fday[d][r["zh"]] = Fv
         for t in raw:
             if TK[t]["days"][d]["novol"] and abs(TK[t]["days"][d]["B"]) > 0: bad(f"{t} {d} B nonzero while novol")
@@ -326,30 +326,42 @@ for d in DAYS:
     order = sorted(live, key=lambda r: Fday[d][r["zh"]])
     for rank, r in enumerate(order):
         z = (Fday[d][r["zh"]] - mu) / sd; x = r["days"][d]
-        if abs(z - x["z"]) > 1e-9: bad(f"{r['zh']} {d} z")
-        if abs(rank / (len(live) - 1) * 100 - x["score"]) > 1e-9: bad(f"{r['zh']} {d} score")
+        if abs(z - x["z"]) > 1e-9: bad(f"{r['code']} {d} z")
+        if abs(rank / (len(live) - 1) * 100 - x["score"]) > 1e-9: bad(f"{r['code']} {d} score")
         g = 3 if z >= 1.5 else 2 if z >= .75 else 1 if z >= .25 else 0 if z > -.25 else -1 if z > -.75 else -2 if z > -1.5 else -3
-        if g != x["grade"]: bad(f"{r['zh']} {d} grade")
+        if g != x["grade"]: bad(f"{r['code']} {d} grade")
         Z.setdefault(r["zh"], []).append(z)
 z5 = {}
 for r in live:
     zs = Z[r["zh"]]; v = sum(w * z for w, z in zip(W, zs)) / sum(W); z5[r["zh"]] = v
-    if abs(v - r["z5"]) > 1e-9: bad(f"{r['zh']} z5")
+    if abs(v - r["z5"]) > 1e-9: bad(f"{r['code']} z5")
     n = r["n_basket"]
-    if abs(v * math.sqrt(n / (n + 2)) - r["z5r"]) > 1e-9: bad(f"{r['zh']} z5r")
+    if abs(v * math.sqrt(n / (n + 2)) - r["z5r"]) > 1e-9: bad(f"{r['code']} z5r")
     mfd5 = sum(r["days"][d]["mfd"] for d in DAYS); dv5 = sum(r["days"][d]["dv"] for d in DAYS)
-    if abs(mfd5 / dv5 * 100 - r["intensity"]) > 1e-6: bad(f"{r['zh']} intensity")
+    if abs(mfd5 / dv5 * 100 - r["intensity"]) > 1e-6: bad(f"{r['code']} intensity")
     xb = 2; yb = sum(zs) / 5
     slope = sum((i - xb) * (z - yb) for i, z in enumerate(zs)) / 10
-    if abs(slope - r["slope"]) > 1e-9: bad(f"{r['zh']} slope")
-    if abs(statistics.mean(r["days"][d]["breadth"] for d in DAYS) - r["breadth5"]) > 1e-9: bad(f"{r['zh']} breadth5")
-    if sum(1 for d in DAYS if r["days"][d]["grade"] >= 1) != r["pos"] or sum(1 for d in DAYS if r["days"][d]["grade"] <= -1) != r["neg"]: bad(f"{r['zh']} pos/neg")
+    if abs(slope - r["slope"]) > 1e-9: bad(f"{r['code']} slope")
+    if abs(statistics.mean(r["days"][d]["breadth"] for d in DAYS) - r["breadth5"]) > 1e-9: bad(f"{r['code']} breadth5")
+    if sum(1 for d in DAYS if r["days"][d]["grade"] >= 1) != r["pos"] or sum(1 for d in DAYS if r["days"][d]["grade"] <= -1) != r["neg"]: bad(f"{r['code']} pos/neg")
 order = sorted(live, key=lambda r: z5[r["zh"]])
 for rank, r in enumerate(order):
-    if abs(rank / (len(live) - 1) * 100 - r["score5"]) > 1e-9: bad(f"{r['zh']} score5")
+    if abs(rank / (len(live) - 1) * 100 - r["score5"]) > 1e-9: bad(f"{r['code']} score5")
 ranks = [r["rank"] for r in sorted(live, key=lambda r: -z5[r["zh"]])]
 if ranks != list(range(1, len(live) + 1)): bad("rank order")
-if len(live) != 111 or M["n_scored"] != 111: bad("not 111 live rows")
+if len(F["rows"]) != 41 or M["n_scored"] != len(live): bad("row counts")
+for r in F["rows"]:
+    if not r.get("days") and r["us"] and r["note"] != "美股成分股數據不足": bad(f"{r['code']} note")
+    if not r.get("days") and not r["us"] and r["note"] != "成分股全部非美股上市／無 US ADR": bad(f"{r['code']} note")
+# per-ticker column: tf5 recomputed, sorted desc
+for r in live:
+    tf = {t: sum(w * TK[t]["days"][d]["f"] for w, d in zip(W, DAYS)) / sum(W) for t in r["basket"]}
+    syms = [x["sym"] for x in r["ticks"]]
+    if sorted(syms) != sorted(r["basket"]): bad(f"{r['code']} ticks membership")
+    if syms != sorted(syms, key=lambda t: -tf[t]) and any(abs(tf[a]-tf[b])>1e-6 for a,b in zip(syms,syms[1:]) if tf[a]<tf[b]): bad(f"{r['code']} ticks order")
+    for x in r["ticks"]:
+        if abs(x["tf5"] - tf[x["sym"]]) > 6e-5: bad(f"{r['code']} {x['sym']} tf5")
+        if x["nobase"] != TK[x["sym"]]["nobase"]: bad(f"{x['sym']} tick nobase")
 if M["n_tick"] != len(TK): bad(f"n_tick {M['n_tick']} vs {len(TK)}")
 if M["n_nobase"] != sum(1 for t in TK.values() if t and t["nobase"]): bad("n_nobase")
 # every dropped ticker really has no bars in the window
@@ -366,7 +378,7 @@ for t in sorted({t for r in live for t in r["basket"]} | set(M["dropped"])):
                 if d in a and d in b and b[d][3] > 0: nzd.append(abs(a[d][3] - b[d][3]) / b[d][3] * 100)
 xn = M["yahoo_xcheck"]["natezone_vs_yahoo"]
 if xn and (xn["n"] != len(nzd) or abs(xn["median_pct"] - round(statistics.median(nzd), 4)) > 1e-9): bad(f"natezone_vs_yahoo stats {xn} vs n={len(nzd)}")
-if set(M["notes_skipped"]) != {"XBI 成分股為主", "—（多為中小型）"}: bad("notes skipped")
+if M["notes_skipped"]: bad("notes skipped")
 # every dropped ticker really has no usable data
 # (dropped tickers are checked against the merged bars above)
 # terminal date is the newest session with a close in either source
@@ -386,7 +398,7 @@ for t in sorted({x for r in live for x in r["basket"]}):
 typ = statistics.median([nzc[d] for d in sorted(nzc)[-30:] if nzc[d]]) if nzc else 0
 prov = [d for d in DAYS if nzc[d] < 0.5 * typ]      # coverage test only: kept as a diagnostic,
 # superseded below by the settled-print test, which is what the engine now claims
-print(f"mirror-coverage diagnostic (not the verdict): {prov or 'none'} (coverage {[nzc[d] for d in DAYS]}, typical {typ:.0f})")
+print(f"provisional-volume sessions: {prov or 'none'} (mirror coverage {[nzc[d] for d in DAYS]}, typical {typ:.0f})")
 # ---- R7 data-integrity claims, re-measured here ----
 def rounded_share(day):
     """C1: measured on the bars actually scored, not on the mirror's copy."""

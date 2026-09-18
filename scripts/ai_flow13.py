@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Sub-sector money-flow scoring — R12.00 engine (111 sub-sectors of the R2 heat-map workbook).
+"""AI money-flow scoring — R13.00 engine (41 AI 小群組 of the Dashboard R15.6 classification).
+
+Identical scoring math to the Sub-Sector watchlist R12.00 engine (Yahoo second source); only
+the baskets differ.  Per the brief, baskets hold US-listed shares and US ADRs only — members
+carrying a foreign-exchange suffix are excluded and reported, not substituted.
 
 R11 separates which published figures an unsettled session actually moves. Three revisions have
 now scored a newest session on volume the mirror had not settled, and each time the settled data
@@ -141,7 +145,8 @@ WIN = 5                      # scored sessions
 LOOK = 20                    # sessions of history for the volume baseline
 CAP = 0.40                   # hard cap on any single name's basket weight
 
-subs = json.load(open(f"{SCR}/sub/subsectors.json"))
+AI = json.load(open(f"{SCR}/ai/aigroups.json"))
+subs = AI["groups"]
 S = pickle.load(open(f"{SCR}/series10.pkl", "rb")); CAL = S["cal"]; SER = S["series"]
 EST = S.get("meta8", {}).get("estimated", {})
 M10 = S.get("meta10", {})
@@ -158,21 +163,8 @@ EST_CLOSE = {sym: {d for d, how in e.items() if how in ("interp", "edge")} for s
 TICKER_RE = re.compile(r"^[A-Z][A-Z0-9.\-]{0,6}$")     # F8
 def nzname(sym): return sym.replace(".", "-")          # F5
 
-# ---- curated supplements: only where the workbook's own tickers are unavailable in the
-# reachable mirrors, and only with same-business substitutes verified by hand. ----
-SUPP = {
-    50:  ["CNR", "METC"],     # 煤炭: CEIX 已併入 Core Natural Resources；Ramaco 為冶金煤
-    110: ["AWR", "HTO"],      # 水務公用: SJW 缺數據
-    71:  ["CWST"],            # 廢物管理: WCN 補回後仍保留同業樣本
-    47:  ["EE"],              # LNG: GLNG 補回後仍保留；Excelerate 為 LNG 接收站
-    51:  ["RGLD"],            # 黃金: Royal Gold 為黃金權利金
-    54:  ["ALOY", "NB"],      # 稀土: REalloys/NioCorp 為稀土關鍵礦
-}
-# ---- proxy baskets for the two rows the workbook leaves without tickers ----
-PROXY = {
-    76: ["DNLI", "ALEC", "SANA", "AKRO", "VKTX", "MDGL", "IONS", "DTIL"],     # 臨床期中小型生技 (XBI 型)
-    77: ["LEGN", "IOVA", "ALLO", "ARVN", "RVMD", "NKTX", "FATE", "CRVS"],     # 腫瘤與細胞治療
-}
+SUPP = {}      # no hand substitutes: the brief restricts baskets to US listings / ADRs
+PROXY = {}
 
 # ---------------- load real daily OHLCV ----------------
 MID_SESSION = {"mirror": set(), "yahoo": set()}   # sessions a source has not closed yet
@@ -426,7 +418,7 @@ NZ_UNSETTLED |= {d for d, (tot, rnd) in _mv.items()
 print(f"mirror sessions published but not settled: {sorted(NZ_UNSETTLED) or 'none'} "
       f"(typical mirror coverage {_typ:.0f})")
 
-listed_all = {t for s in subs for t in s["tickers"]}
+listed_all = {t for s in subs for t in s["us"]}
 NOTES = sorted(t for t in listed_all if not TICKER_RE.match(t))          # F8
 wanted = sorted({t for t in listed_all if TICKER_RE.match(t)}
                 | {t for v in PROXY.values() for t in v} | {t for v in SUPP.values() for t in v})
@@ -685,13 +677,14 @@ def capped_weights(raw):
 # ---------------- aggregate per sub-sector ----------------
 rows = []
 for s in subs:
-    listed = PROXY.get(s["n"]) or [t for t in s["tickers"] if TICKER_RE.match(t)]
+    listed = [t for t in s["us"] if TICKER_RE.match(t)]
     tk = [t for t in listed if t in TICK]
     supp = [t for t in SUPP.get(s["n"], []) if t in TICK and t not in tk]
     tk = tk + supp
     proxy = s["n"] in PROXY
     if not tk:
-        rows.append(dict(s, basket=[], n_basket=0, proxy=proxy, days=None, note="無可用樣本"))
+        rows.append(dict(s, basket=[], n_basket=0, proxy=proxy, days=None,
+                         note=("成分股全部非美股上市／無 US ADR" if not s["us"] else "美股成分股數據不足")))
         continue
     daily = {}
     for day in DAYS:
@@ -708,7 +701,20 @@ for s in subs:
                       "breadth": up / len(tk), "up": up, "wmax": max(ws.values()),
                       "ohlc_cov": ohlc_dv / dv if dv else 0.0,
                       "novol": sum(1 for t in tk if TICK[t]["days"][day]["novol"])}
-    rows.append(dict(s, basket=tk, n_basket=len(tk), proxy=proxy, supp=supp,
+    # per-ticker 5-day flow, same recency weights as the group score, for the ticker column
+    W5 = [1.0, 1.15, 1.35, 1.6, 1.9]
+    ticks = []
+    for t in tk:
+        td = TICK[t]["days"]
+        tf5 = sum(w * td[d]["f"] for w, d in zip(W5, DAYS)) / sum(W5)
+        ticks.append({"sym": t, "tf5": round(tf5, 4),
+                      "mfd5": sum(td[d]["mfd"] for d in DAYS),
+                      "dv5": sum(td[d]["dv"] for d in DAYS),
+                      "ret5": round(math.prod(1 + td[d]["ret"] for d in DAYS) - 1, 5),
+                      "src": TICK[t]["src"], "nobase": TICK[t]["nobase"],
+                      "novol": sum(1 for d in DAYS if td[d]["novol"])})
+    ticks.sort(key=lambda x: -x["tf5"])          # most inflow first, most outflow last
+    rows.append(dict(s, basket=tk, ticks=ticks, n_basket=len(tk), proxy=proxy, supp=supp,
                      missing=[t for t in listed if t not in TICK], days=daily,
                      nobase=[t for t in tk if TICK[t]["nobase"]],
                      src=("real" if all(TICK[t]["src"] in ("real", "yahoo") for t in tk) else
@@ -811,14 +817,17 @@ out = {"meta": {"days": DAYS, "base": [BASE[0], BASE[-1]], "n_base": len(BASE),
                 "yahoo_n_symbols": len(YH), "src_counts": dict(srcn),
                 "source_note": "natezone/market-tracker 日線 OHLCV 與 Yahoo Finance 日線（GitHub Actions runner 拉取）合併，快照序列只作對照及最後補足"},
        "rows": live + [r for r in rows if not r["days"]]}
-json.dump(out, open(os.environ.get("OUT_JSON", f"{SCR}/sub12/flow12.json"), "w"), ensure_ascii=False)
+out["meta"]["asof_dash"] = AI["asof_dash"]
+out["meta"]["asof_gap_sessions"] = gap_sessions(AI["asof_dash"], DAYS[-1])
+out["meta"]["nonus_excluded"] = sorted({m for s in subs for m in s["nonus"]})
+json.dump(out, open(os.environ.get("OUT_JSON", f"{SCR}/ai13/flow13.json"), "w"), ensure_ascii=False)
 print("\nTOP 12 inflow:")
 for r in live[:12]:
-    print(f"  {r['rank']:3d} {r['zh'][:14]:<16} z5{r['z5']:+.2f} 5日分{r['score5']:5.1f} "
+    print(f"  {r['rank']:3d} {r['code']:<5}{r['zh'][:20]:<22} z5{r['z5']:+.2f} 5日分{r['score5']:5.1f} "
           f"日格{[r['days'][d]['grade'] for d in DAYS]} 淨額${r['mfd5']/1e6:+,.0f}M 樣本{r['n_basket']}")
 print("BOTTOM 12 outflow:")
 for r in live[-12:]:
     print(f"  {r['rank']:3d} {r['zh'][:14]:<16} z5{r['z5']:+.2f} 5日分{r['score5']:5.1f} "
           f"日格{[r['days'][d]['grade'] for d in DAYS]} 淨額${r['mfd5']/1e6:+,.0f}M 樣本{r['n_basket']}")
 print("max basket weight across all rows/days:", round(max(r["wmax5"] for r in live), 4))
-print("no-basket rows:", [(r['n'], r['zh']) for r in rows if not r["days"]])
+print("unscorable:", [(r['code'], r['note']) for r in rows if not r["days"]])

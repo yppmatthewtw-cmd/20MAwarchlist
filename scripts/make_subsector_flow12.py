@@ -12,6 +12,15 @@ a mirror failure the existing screens cannot see:
       different failure from the mid-session snapshots of 09-14..09-16, so it needs its
       own counter rather than a wider version of the old one.
 
+  G3  The LNG basket printed a 5-day return of +9111%. Its member NFE did a reverse split:
+      Yahoo's `close` column carries the raw historical price and was not restated, while
+      `adj_close` was, so the close series jumps 0.33 -> 12.77 between two sessions and the
+      engine read it as a +3771% day. tanh saturates, so the score was capped rather than
+      absurd, but two of that group's daily scores were credited as maximum up days and the
+      printed return was meaningless. Comparing the close ratio against the adj_close ratio
+      catches exactly this: a dividend moves the two apart by a fraction of a percent, an
+      unadjusted split by orders of magnitude.
+
   G2  With the mirror carrying no prices, the tail pull was the only source for that
       close, and the tail pull covers the 546-name report list. The balanced market
       panel needs a name quoted on every scored session, so it collapsed from 1,658
@@ -44,6 +53,29 @@ rep('''            except (ValueError, KeyError, TypeError):
                 if d and (row.get("Volume") or "").strip(): MIRROR_PRICELESS[d].add(nzname(sym))
                 continue                      # partial rows (volume published before the bar)''')
 
+# ---- G3: carry adj_close alongside the close, from both the range pull and the tails
+rep('''YH = {}
+for path in YF_FILES:''',
+'''YH = {}
+ADJ = {}          # G3: symbol -> date -> adj_close, used only to spot unadjusted splits
+for path in YF_FILES:''')
+rep('''            if c > 0: YH.setdefault(r["symbol"].replace("/", ".").replace("-", "."), {})[r["date"]] = (o, h, l, c, v)''',
+'''            if c > 0:
+                _s = r["symbol"].replace("/", ".").replace("-", ".")
+                YH.setdefault(_s, {})[r["date"]] = (o, h, l, c, v)
+                try:
+                    _a = float(r.get("adj_close") or 0)
+                    if _a > 0: ADJ.setdefault(_s, {})[r["date"]] = _a
+                except (ValueError, TypeError): pass''')
+rep('''            YH.setdefault(sym, {})[d] = (o, h, l, c, v)
+            TAIL_ROUTE[sym][d] = r.get("route", "")''',
+'''            YH.setdefault(sym, {})[d] = (o, h, l, c, v)
+            try:
+                _a = float(r.get("adj_close") or 0)
+                if _a > 0: ADJ.setdefault(sym, {})[d] = _a
+            except (ValueError, TypeError): pass
+            TAIL_ROUTE[sym][d] = r.get("route", "")''')
+
 # ---- G2: accept every tail pull in the data directory ------------------------------
 rep('''TAIL = os.environ.get("YAHOO_TAIL", "/home/user/20MAwarchlist/data/yahoo/tail.csv.gz")
 TAIL_ROUTE = collections.defaultdict(dict)
@@ -71,12 +103,59 @@ if TAIL_FILES:
 else:
     print("yahoo tail: not present")''')
 
+# ---- G3: drop bars where `close` carries an unadjusted corporate action -------------
+rep('''# ---- Yahoo tail: the session that closed a few hours ago, which the range pull does not carry ----''',
+'''# G3: `close` is the raw historical price and `adj_close` is restated for splits and
+# dividends, so the two ratios track each other to within a dividend on an ordinary day
+# and diverge by the split factor on an unadjusted one.
+SPLIT_DROPPED = {}
+def _drop_unadjusted(tol=1.25, hard=4.0):
+    """Remove price history left on a pre-corporate-action basis.
+
+    Two tests, because one alone is not enough:
+      * close-vs-adj_close ratio -- `close` is the raw historical price and `adj_close` is
+        restated, so the two track each other to within a dividend on an ordinary day and
+        diverge by the split factor on an unadjusted one.
+      * an absolute session ratio outside 1/hard .. hard -- needed because Yahoo sometimes
+        restates NEITHER column (NFE's adj_close equals its close on every row, so the first
+        test is blind to its reverse split: 0.33 -> 12.77 between two sessions).
+
+    Everything up to and including the action date is dropped, not just the transition bar:
+    the bars before it are on the old basis, so keeping them only moves the bad ratio to the
+    following session.
+    """
+    for sym, bars in YH.items():
+        adj = ADJ.get(sym) or {}
+        ds = sorted(bars)
+        hit = None
+        for prev, cur in zip(ds, ds[1:]):
+            c0, c1 = bars[prev][3], bars[cur][3]
+            if min(c0, c1) <= 0: continue
+            rc = c1 / c0
+            if rc > hard or rc < 1 / hard:
+                hit = cur; continue
+            a0, a1 = adj.get(prev), adj.get(cur)
+            if a0 and a1 and a0 > 0 and a1 > 0:
+                ratio = rc / (a1 / a0)
+                if ratio > tol or ratio < 1 / tol: hit = cur
+        if hit:
+            SPLIT_DROPPED.setdefault(hit, []).append(sym)
+            for d in [d for d in ds if d <= hit]: bars.pop(d, None)
+_drop_unadjusted()
+if SPLIT_DROPPED:
+    print("bars dropped -- close carries an unadjusted corporate action: "
+          + str({d: sorted(v) for d, v in sorted(SPLIT_DROPPED.items())}))
+
+# ---- Yahoo tail: the session that closed a few hours ago, which the range pull does not carry ----''')
+
 # ---- report both in meta ------------------------------------------------------------
 rep('''                "relvol_by_source": RELVOL, "relvol_light": LIGHT, "relvol_cross_tol": CROSS_TOL,''',
 '''                # G1: named here so a mirror that publishes a session without prices is a
                 # stated fact rather than something inferred from a low coverage count.
                 "mirror_priceless": {d: len(s) for d, s in sorted(MIRROR_PRICELESS.items()) if d >= DAYS[0]},
                 "tail_files": [os.path.basename(p) for p in TAIL_FILES],
+                # G3: bars removed because `close` had not been restated for a split
+                "split_dropped": {d: sorted(v) for d, v in sorted(SPLIT_DROPPED.items()) if d >= DAYS[0]},
                 "relvol_by_source": RELVOL, "relvol_light": LIGHT, "relvol_cross_tol": CROSS_TOL,''')
 
 rep('''print(f"daily-bar files too stale to merge (Yahoo used alone): {len(STALE)} {sorted(STALE)}")''',
