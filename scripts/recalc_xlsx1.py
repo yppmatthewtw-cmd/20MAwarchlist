@@ -72,11 +72,17 @@ def evaluate_workbook(path):
             if fn == "AVERAGE": return repr(sum(nums) / len(nums)) if nums else "0"
             if fn == "COUNT":   return repr(float(len(nums)))
             if fn == "COUNTA":  return repr(float(len(vals)))
-            op, num = re.match(r"(>=|<=|<>|>|<|=)?\s*(-?[\d.]+)", crit).groups()
-            num, op = float(num), op or "="
-            test = {">=": lambda v: v >= num, "<=": lambda v: v <= num, ">": lambda v: v > num,
-                    "<": lambda v: v < num, "=": lambda v: v == num, "<>": lambda v: v != num}[op]
-            return repr(float(sum(1 for v in nums if test(v))))
+            m = re.fullmatch(r"(>=|<=|<>|>|<|=)?\s*(-?[\d.]+)", crit)
+            if m:
+                op, num = m.groups()
+                num, op = float(num), op or "="
+                test = {">=": lambda v: v >= num, "<=": lambda v: v <= num, ">": lambda v: v > num,
+                        "<": lambda v: v < num, "=": lambda v: v == num, "<>": lambda v: v != num}[op]
+                return repr(float(sum(1 for v in nums if test(v))))
+            # text criterion with Excel's * and ? wildcards, matched case-insensitively
+            rx = re.compile("^" + re.escape(crit).replace(r"\*", ".*").replace(r"\?", ".") + "$",
+                            re.IGNORECASE)
+            return repr(float(sum(1 for v in vals if isinstance(v, str) and rx.match(v))))
 
         e = expr
         while FUNC.search(e):
